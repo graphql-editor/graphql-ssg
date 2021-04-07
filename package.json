@@ -1,0 +1,50 @@
+{
+  "name": "graphql-ssg",
+  "version": "0.0.0",
+  "description": "Simple data feed HTML bundler",
+  "main": "lib/index.js",
+  "scripts": {
+    "build": "ttsc --build tsconfig.build.json",
+    "watch": "ttsc --watch --project tsconfig.build.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/graphql-editor/graphql-ssg.git"
+  },
+  "keywords": [
+    "react",
+    "graphql"
+  ],
+  "author": "Aexol <aexol@aexol.com> (http://aexol.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/graphql-editor/graphql-ssg/issues"
+  },
+  "homepage": "https://github.com/graphql-editor/graphql-ssg#readme",
+  "dependencies": {
+    "chokidar": "^3.5.1",
+    "esbuild": "^0.11.6",
+    "graphql-zeus": "^3.0.5",
+    "live-server": "^1.2.1",
+    "node-fetch": "^2.6.1",
+    "remarkable": "^2.0.1",
+    "yargs": "^16.2.0"
+  },
+  "devDependencies": {
+    "@types/live-server": "^1.2.0",
+    "@types/node-fetch": "^2.5.9",
+    "@typescript-eslint/eslint-plugin": "^2.12.0",
+    "@typescript-eslint/parser": "^2.12.0",
+    "cypress": "^6.8.0",
+    "eslint": "^6.7.2",
+    "eslint-config-prettier": "^6.7.0",
+    "eslint-plugin-prettier": "^3.1.1",
+    "jest": "^26.6.3",
+    "prettier": "^1.19.1",
+    "treelang": "0.0.1",
+    "ts-node": "^9.1.1",
+    "ttypescript": "^1.5.12",
+    "typescript": "^4.0.3",
+    "typescript-transform-paths": "^2.2.3"
+  }
+}
