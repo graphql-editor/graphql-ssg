@@ -17,6 +17,125 @@
     </style>
     <script type="module">
       const AllTypesProps = {
+	DealStatus: "enum",
+	UserMutation:{
+		makeAdmin:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		register:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	UserBasicData:{
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateComment:{
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	SignUp:{
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	CreateFeatureRequest:{
+		issueURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		languages:{
+			type:"String",
+			array:true,
+			arrayRequired:true,
+			required:true
+		},
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -67,142 +186,7 @@
 			}
 		}
 	},
-	SignUp:{
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserBasicData:{
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	DealStatus: "enum",
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserMutation:{
-		makeAdmin:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		register:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	CreateFeatureRequest:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		issueURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
-		}
-	},
 	CreateDealRequest:{
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
 		featureRequest:{
 			type:"String",
 			array:false,
@@ -214,11 +198,74 @@
 			array:false,
 			arrayRequired:false,
 			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	}
 }
 
 const ReturnTypes = {
+	FeatureRequest:{
+		comments:"Comment",
+		content:"String",
+		createdAt:"String",
+		createdBy:"MoleUser",
+		issueURL:"String",
+		languages:"ProgrammingLanguage",
+		offeredWorms:"Int",
+		repositoryURL:"String",
+		title:"String"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	UserMutation:{
+		makeAdmin:"Boolean",
+		register:"LoggedInData"
+	},
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
+	},
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
+	},
+	LoggedInData:{
+		token:"String"
+	},
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
+	},
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
+	},
 	MoleUserMutation:{
 		acceptDealRequest:"Boolean",
 		closeDeal:"Boolean",
@@ -233,35 +280,6 @@ const ReturnTypes = {
 		givenDealRequsts:"DealRequest",
 		receivedDealRequests:"DealRequest"
 	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
-	},
-	MoleUser:{
-		avatar:"String",
-		company:"String",
-		createdAt:"String",
-		featureRequests:"FeatureRequest",
-		firstName:"String",
-		lastName:"String",
-		worms:"Int"
-	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
 	Query:{
 		featureRequest:"FeatureRequest",
 		home:"FeatureRequest",
@@ -275,32 +293,14 @@ const ReturnTypes = {
 		index:"Int",
 		replyTo:"Comment"
 	},
-	FeatureRequest:{
-		comments:"Comment",
-		content:"String",
+	MoleUser:{
+		avatar:"String",
+		company:"String",
 		createdAt:"String",
-		createdBy:"MoleUser",
-		issueURL:"String",
-		languages:"ProgrammingLanguage",
-		offeredWorms:"Int",
-		repositoryURL:"String",
-		title:"String"
-	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
-	},
-	UserMutation:{
-		makeAdmin:"Boolean",
-		register:"LoggedInData"
-	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
-	},
-	LoggedInData:{
-		token:"String"
+		featureRequests:"FeatureRequest",
+		firstName:"String",
+		lastName:"String",
+		worms:"Int"
 	}
 }
 
@@ -782,13 +782,13 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
             "
             >
               <div class="text-xs text-gray-600">
-                Created by  from back-end unleash web services
-                on Wed Apr 15 2020
+                Created by  from e-business benchmark technologies
+                on Wed Jul 08 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/diagram
+                https://github.com/graphql-editor/graphql-zeus
               </div>
-              <div class="mb-4">West</div>
+              <div class="mb-4">Port</div>
               <div
                 class="
                     flex
@@ -809,9 +809,117 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     js
   </div>
 
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by  from viral productize web-readiness
+                on Sun Mar 28 2021
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">Lake</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
   <div
     class="
-    bg-blue-600
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-red-600
     text-white
     text-xs
     p-1
@@ -890,13 +998,13 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Federico from magnetic cultivate communities
-                on Sat Apr 11 2020
+                Created by  from magnetic reintermediate e-markets
+                on Sat Dec 12 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/diagram
+                https://github.com/graphql-editor/graphql-editor
               </div>
-              <div class="mb-4">New</div>
+              <div class="mb-4">West</div>
               <div
                 class="
                     flex
@@ -914,6 +1022,17 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     p-1
 "
   >
+    css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
     js
   </div>
 
@@ -925,18 +1044,7 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     p-1
 "
   >
-    css
-  </div>
-
-  <div
-    class="
-    bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    css
+    js
   </div>
 
               </div>
@@ -1009,13 +1117,13 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Antonina from world-class synthesize initiatives
-                on Sat May 02 2020
+                Created by Herbert from cross-media synergize e-business
+                on Fri Aug 07 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/graphql-editor
+                https://github.com/graphql-editor/diagram
               </div>
-              <div class="mb-4">South</div>
+              <div class="mb-4">East</div>
               <div
                 class="
                     flex
@@ -1025,6 +1133,17 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
                 "
               >
                 
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
   <div
     class="
     bg-blue-600
@@ -1047,6 +1166,211 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     css
   </div>
 
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Carole from ubiquitous synergize e-business
+                on Sat Apr 18 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-zeus
+              </div>
+              <div class="mb-4">East</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Eduardo from 
+                on Thu Jul 16 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-zeus
+              </div>
+              <div class="mb-4">New</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
   <div
     class="
     bg-red-600
@@ -1056,6 +1380,28 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
 "
   >
     css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
   </div>
 
               </div>
@@ -1128,13 +1474,13 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Adrian from holistic revolutionize infrastructures
-                on Sun May 10 2020
+                Created by Damaris from 
+                on Sat Mar 20 2021
               </div>
               <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/diagram
+                https://github.com/graphql-editor/graphql-zeus
               </div>
-              <div class="mb-4">New</div>
+              <div class="mb-4">North</div>
               <div
                 class="
                     flex
@@ -1144,6 +1490,28 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
                 "
               >
                 
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
   <div
     class="
     bg-blue-600
@@ -1155,28 +1523,6 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     css
   </div>
 
-  <div
-    class="
-    bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    js
-  </div>
-
-  <div
-    class="
-    bg-blue-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    c++
-  </div>
-
               </div>
               <div class="flex">
                 
@@ -1199,7 +1545,7 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
         ml-auto
     "
   >
-    Try for 4🐛
+    Try for 1🐛
   </a>
 
               </div>
@@ -1247,130 +1593,11 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Dario from 
-                on Wed Jun 17 2020
+                Created by Clotilde from open-source incubate applications
+                on Thu Aug 13 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
                 https://github.com/graphql-editor/graphql-zeus
-              </div>
-              <div class="mb-4">West</div>
-              <div
-                class="
-                    flex
-                    flex-row
-                    flex-wrap
-                    space-x-1
-                "
-              >
-                
-  <div
-    class="
-    bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    js
-  </div>
-
-  <div
-    class="
-    bg-blue-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    c++
-  </div>
-
-  <div
-    class="
-    bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    c++
-  </div>
-
-              </div>
-              <div class="flex">
-                
-  <a
-    class="
-        text-blue-600
-        border
-        border-blue-600
-        hover:bg-blue-600
-        hover:text-white
-        flex
-        items-center
-        justify-center
-        cursor-pointer
-        rounded
-        font-bold
-        px-5
-        py-2
-        text-xs
-        ml-auto
-    "
-  >
-    Try for 4🐛
-  </a>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      
-        <div
-          class="
-        bg-white
-        p-5
-        rounded
-        cursor-pointer
-        hover:bg-gray-100
-        transition
-        duration-500 
-        ease-in-out 
-        hover:bg-blue-200 
-        transform 
-        hover:-translate-y-1 
-        hover:scale-105
-    "
-        >
-          <div
-            class="
-            flex
-            flex-row
-            items-start
-        "
-          >
-            <div
-              style="background-image:url(http://placekitten.com/200/300)";
-              class="
-                    w-8
-                    h-8
-                    rounded
-                    bg-contain
-                    bg-gray-400
-                    mr-4
-                "
-            ></div>
-            <div
-              class="
-                flex-1
-            "
-            >
-              <div class="text-xs text-gray-600">
-                Created by Brennan from 
-                on Wed Mar 10 2021
-              </div>
-              <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/diagram
               </div>
               <div class="mb-4">East</div>
               <div
@@ -1384,7 +1611,7 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
                 
   <div
     class="
-    bg-blue-600
+    bg-red-600
     text-white
     text-xs
     p-1
@@ -1395,7 +1622,7 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
 
   <div
     class="
-    bg-blue-600
+    bg-red-600
     text-white
     text-xs
     p-1
@@ -1485,8 +1712,299 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Retta from killer productize synergies
-                on Sat Jul 25 2020
+                Created by  from collaborative syndicate portals
+                on Wed Jan 06 2021
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-zeus
+              </div>
+              <div class="mb-4">Lake</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 2🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Sally from bricks-and-clicks engage channels
+                on Tue Aug 18 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">Lake</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by  from best-of-breed innovate experiences
+                on Sun Oct 04 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-zeus
+              </div>
+              <div class="mb-4">Port</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by D'angelo from value-added whiteboard infrastructures
+                on Fri Jun 26 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
                 https://github.com/graphql-editor/graphql-editor
@@ -1556,7 +2074,818 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
         ml-auto
     "
   >
-    Try for 1🐛
+    Try for 2🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by  from revolutionary syndicate action-items
+                on Wed Oct 21 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">West</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Melvina from extensible mesh eyeballs
+                on Wed May 06 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">South</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 2🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by  from granular enable e-markets
+                on Fri Aug 14 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-editor
+              </div>
+              <div class="mb-4">East</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Keira from holistic revolutionize synergies
+                on Wed Feb 03 2021
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">Lake</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Dexter from customized syndicate schemas
+                on Fri Nov 20 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-editor
+              </div>
+              <div class="mb-4">Lake</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Claudie from distributed visualize platforms
+                on Sat Feb 27 2021
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-editor
+              </div>
+              <div class="mb-4">East</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by  from strategic deploy partnerships
+                on Sat Oct 24 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-editor
+              </div>
+              <div class="mb-4">West</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
   </a>
 
               </div>
