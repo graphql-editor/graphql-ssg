@@ -1,11 +1,12 @@
 import chokidar from 'chokidar';
 import liveServer from 'live-server';
 import { readConfig } from './config';
-import { readFiles, transformFiles } from './transform';
+import { generateGlobalFile, readFiles, transformFiles } from './transform';
 import path from 'path';
 
 export const build = async () => {
   const configFile = readConfig('./graphql-ssg.json');
+  await generateGlobalFile(configFile);
   const allFiles = readFiles(configFile.in);
   await transformFiles(configFile, allFiles);
 };

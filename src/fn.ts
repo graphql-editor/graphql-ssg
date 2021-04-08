@@ -31,6 +31,18 @@ declare var html: (strings: TemplateStringsArray, ...expr: string[]) => string
 declare var css: (strings: TemplateStringsArray, ...expr: string[]) => string
 declare var md: (strings: TemplateStringsArray, ...expr: string[]) => string
 `;
+
+export const GenerateGlobalTypings = ({
+  schema,
+  url,
+}: Pick<DryadFunctionProps, 'schema' | 'url'>) => {
+  const graphqlTree = Parser.parse(schema);
+  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
+  return [DryadDeclarations, jsSplit.definitions]
+    .join('\n')
+    .replace(/export /gm, '');
+};
+
 export const DryadFunction = async ({
   schema,
   url,

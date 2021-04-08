@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import { bundle } from './module';
+import { bundle, globalTypings } from './module';
 import { ConfigFile } from './config';
 
 const mockRegex = /(.*)\.zeus.(js|ts)$/;
@@ -68,11 +68,18 @@ export const transformFiles = async (
 ) => {
   const transformWithConfig = transformFile(configFile);
   const htmlFiles = await Promise.all(files.map(transformWithConfig));
-  const outDir = path.join(process.cwd(), configFile.out);
-  if (!fs.existsSync(outDir)) {
-    fs.mkdirSync(outDir);
+
+  if (!fs.existsSync(configFile.out)) {
+    fs.mkdirSync(configFile.out);
   }
   htmlFiles.forEach((f) => {
-    fs.writeFileSync(path.join(outDir, `${f.name}`), f.content);
+    fs.writeFileSync(path.join(configFile.out, `${f.name}`), f.content);
   });
+};
+
+export const generateGlobalFile = async (configFile: ConfigFile) => {
+  fs.writeFileSync(
+    path.join(configFile.in, 'global.d.ts'),
+    await globalTypings({ schemaUrl: configFile.url }),
+  );
 };

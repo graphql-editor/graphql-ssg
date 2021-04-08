@@ -1,5 +1,5 @@
 import { Utils } from 'graphql-zeus';
-import { DryadFunction } from './fn';
+import { DryadFunction, GenerateGlobalTypings } from './fn';
 
 export const HtmlSkeletonStatic = ({
   body,
@@ -49,4 +49,9 @@ export const bundle = async ({
     script: r.script,
     style: css,
   });
+};
+
+export const globalTypings = async ({ schemaUrl }: { schemaUrl: string }) => {
+  const schema = await Utils.getFromUrl(schemaUrl);
+  return GenerateGlobalTypings({ schema, url: schemaUrl });
 };
