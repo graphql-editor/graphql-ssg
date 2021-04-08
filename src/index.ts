@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 import { build, watch } from './serve';
 import * as yargs from 'yargs';
+import { initConfig } from './config';
 const args = yargs
   .usage(
     `
@@ -24,7 +25,7 @@ Run: graphql-ssg to watch current folder for compatible files
 if (args.build) {
   build();
 } else if (args.init) {
-  //init config
+  initConfig();
 } else {
   watch();
 }

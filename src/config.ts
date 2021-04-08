@@ -35,3 +35,10 @@ export const readConfig = (path: string) => {
   validateConfig(configFile);
   return configFile;
 };
+
+export const initConfig = async () => {
+  fs.writeFileSync(
+    'graphql-ssg.json',
+    JSON.stringify(GLOBAL_CONFIG_FILE, null, 4),
+  );
+};
