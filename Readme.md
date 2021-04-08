@@ -1,5 +1,8 @@
 # GraphQL SSG
 
+[![NPM Version](https://img.shields.io/npm/v/graphql-ssg.svg?style=flat)]()
+![Build](https://github.com/graphql-editor/graphql-ssg/actions/workflows/release.yml/badge.svg)
+
 Simple bundler for GraphQL based website using esmodules.
 
 ## Installation
