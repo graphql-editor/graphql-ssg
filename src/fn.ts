@@ -40,7 +40,8 @@ export const GenerateGlobalTypings = ({
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
   return [DryadDeclarations, jsSplit.definitions]
     .join('\n')
-    .replace(/export /gm, '');
+    .replace(/export declare/gm, 'declare ')
+    .replace(/export /gm, 'declare ');
 };
 
 export const DryadFunction = async ({

@@ -41,3 +41,9 @@ Build
 ```sh
 graphql-ssg --build
 ```
+
+## Roadmap
+
+- [ ] Add esbuild
+- [ ] Add TS support
+- [ ] Add loaders for internal files
