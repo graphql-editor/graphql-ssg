@@ -50,3 +50,6 @@ graphql-ssg --build
 - [ ] Add esbuild
 - [ ] Add TS support
 - [ ] Add loaders for internal files
+- [ ] Add intelligent global.d.ts autocompletion for imported es modules
+- [ ] Add image supports
+- [ ] Add classic import support
