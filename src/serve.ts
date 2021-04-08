@@ -14,7 +14,7 @@ export const build = async () => {
 export const watch = async () => {
   const configFile = readConfig('./graphql-ssg.json');
   chokidar
-    .watch(path.join(configFile.in, `**/*.{ts,js,css}`), {
+    .watch(path.join(configFile.in, `**/*.{js,css}`), {
       interval: 0, // No delay
     })
     .on('all', async () => {
