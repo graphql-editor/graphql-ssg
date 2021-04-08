@@ -1,3 +1,5 @@
 {
-  "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql"
+  "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql",
+  "in": "./pages",
+  "out": "./out"
 }

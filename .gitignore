@@ -13,3 +13,4 @@ lib
 package-lock.json
 *.tsbuildinfo*
 yarn.lock
+coverage

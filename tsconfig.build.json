@@ -35,9 +35,10 @@
   "exclude": [
     "lib",
     "node_modules",
+    "__tests__",
     "sandbox",
     "out",
-    "coverage",
-    "jest.config.ts"
+    "jest.config.ts",
+    "coverage"
   ]
 }
