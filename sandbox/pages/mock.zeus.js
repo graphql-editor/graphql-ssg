@@ -158,6 +158,12 @@ const Features = () => {
     .join('');
 };
 
+useInBrowser({ Title });
+
+useBrowser(() => {
+  console.log(Title);
+});
+
 return html`
   <div
     class="

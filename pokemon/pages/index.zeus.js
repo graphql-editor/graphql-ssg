@@ -1,5 +1,3 @@
-/// <reference path="./global.d.ts" />
-
 const { render } = await import(
   'https://cdn.skypack.dev/preact-render-to-string'
 );

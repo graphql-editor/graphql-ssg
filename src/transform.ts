@@ -3,7 +3,8 @@ import path from 'path';
 import { bundle, globalTypings } from './module';
 import { ConfigFile } from './config';
 
-const mockRegex = /(.*)\.zeus.(js|ts)$/;
+const mockRegex = /(.*)\.zeus\.(js|ts)$/;
+const fileRegex = /(.*)\.(js|ts)$/;
 
 export const readFiles = (path: string) => {
   const allFiles: string[] = [];
@@ -17,8 +18,12 @@ export const readFiles = (path: string) => {
   return allFiles;
 };
 
-export const createTwinFile = (fileToTransform: string, extension: string) => {
-  const regexResult = fileToTransform.match(mockRegex);
+export const createTwinFileWithRegex = (
+  fileToTransform: string,
+  extension: string,
+  reg: RegExp,
+) => {
+  const regexResult = fileToTransform.match(reg);
   if (!regexResult) {
     throw new Error(
       'Invalid file provided to function. Only accepting files matching mock regex',
@@ -26,6 +31,10 @@ export const createTwinFile = (fileToTransform: string, extension: string) => {
   }
   const twinFileName = `${regexResult[1]}.${extension}`;
   return twinFileName;
+};
+
+export const createTwinFile = (fileToTransform: string, extension: string) => {
+  return createTwinFileWithRegex(fileToTransform, extension, mockRegex);
 };
 
 export const hasTwinFile = (
@@ -69,7 +78,13 @@ export const transformFiles = async (
 ) => {
   const transformWithConfig = transformFile(configFile);
   const htmlFiles = await Promise.all(files.map(transformWithConfig));
-
+  const typings = await globalTypings({ schemaUrl: configFile.url });
+  files.forEach((f) => {
+    fs.writeFileSync(
+      path.join(configFile.in, createTwinFileWithRegex(f, 'd.ts', fileRegex)),
+      typings,
+    );
+  });
   if (!fs.existsSync(configFile.out)) {
     fs.mkdirSync(configFile.out);
   }
@@ -78,9 +93,12 @@ export const transformFiles = async (
   });
 };
 
-export const generateGlobalFile = async (configFile: ConfigFile) => {
+export const generateGlobalFile = async (
+  filename: string,
+  configFile: ConfigFile,
+) => {
   fs.writeFileSync(
-    path.join(configFile.in, 'global.d.ts'),
+    path.join(configFile.in, `${filename}.d.ts`),
     await globalTypings({ schemaUrl: configFile.url }),
   );
 };

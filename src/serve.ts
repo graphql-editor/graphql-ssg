@@ -1,7 +1,7 @@
 import chokidar from 'chokidar';
 import liveServer from 'live-server';
-import { readConfig } from './config';
-import { generateGlobalFile, readFiles, transformFiles } from './transform';
+import { ConfigFile, readConfig } from './config';
+import { readFiles, transformFiles } from './transform';
 import path from 'path';
 import WebSocket from 'ws';
 import http from 'http';
@@ -30,23 +30,7 @@ const getPort = (port = 80, maxPort = 65535): Promise<number> => {
   );
 };
 
-export const build = async () => {
-  const configFile = readConfig('./graphql-ssg.json');
-  await generateGlobalFile(configFile);
-  const allFiles = readFiles(configFile.in);
-  await transformFiles(configFile, allFiles);
-};
-
-export const watch = async () => {
-  const configFile = readConfig('./graphql-ssg.json');
-  chokidar
-    .watch(path.join(configFile.in, `**/*.{js,css}`), {
-      interval: 0, // No delay
-    })
-    .on('all', async () => {
-      await build();
-    });
-  // `liveServer` local server for hot reload.
+const initBrowserBundler = async (configFile: ConfigFile) => {
   const ws = new WebSocket.Server({
     port: configFile.websocketPort,
     perMessageDeflate: true,
@@ -66,7 +50,39 @@ export const watch = async () => {
   });
   const browserBundlePort = await getPort(configFile.port + 1);
   browserBundle.listen(browserBundlePort);
-  runBrowser(browserBundlePort);
+  const browser = await runBrowser(browserBundlePort);
+  return {
+    browserBundle,
+    ws,
+    browser,
+  };
+};
+
+export const build = async () => {
+  const configFile = readConfig('./graphql-ssg.json');
+  const { browser, browserBundle, ws } = await initBrowserBundler(configFile);
+  await transform(configFile);
+  ws.close();
+  browserBundle.close();
+  await browser.close();
+};
+
+const transform = async (configFile: ConfigFile) => {
+  const allFiles = readFiles(configFile.in);
+  await transformFiles(configFile, allFiles);
+};
+
+export const watch = async () => {
+  const configFile = readConfig('./graphql-ssg.json');
+  chokidar
+    .watch(path.join(configFile.in, `**/*.{js,css}`), {
+      interval: 0, // No delay
+    })
+    .on('all', async () => {
+      await transform(configFile);
+    });
+  // `liveServer` local server for hot reload.
+  await initBrowserBundler(configFile);
   liveServer.start({
     open: true,
     port: configFile.port,
