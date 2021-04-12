@@ -45,6 +45,41 @@ Build
 graphql-ssg --build
 ```
 
+### Injected built in functions
+
+GraphQL SSG comes with injected functions
+
+#### html
+
+It doesnt transform html in any way, but gives you syntax coloring
+
+```js
+const ADiv = html`
+  <div>Hello world</div>
+`;
+```
+
+### useBrowser
+
+Allows to write code that will be executed inside browser
+
+```js
+useBrowser(() => {
+  // This will be imported in browser module
+  const { h  = await import ("https://cdn.skypack.dev/preact")
+  console.log("I will be executed in browser module yay!")
+})
+```
+
+### useInBrowser
+
+Allows to use variable generated during SSG phase in browser
+
+```js
+const someVar = { data: await Gql.query({ pokemons: { id: true } }) };
+useInBrowser({ someVar });
+```
+
 ## Roadmap
 
 - [ ] Add esbuild

@@ -21,12 +21,12 @@ export interface DryadFunctionFunction {
 }
 
 export const DryadDeclarations = `
-// Define custom element by passing its class to this function. It will be available in your static site. Remember to make everything used from outside element useDynamic
+// Define custom element by passing its class to this function. It will be available in your static site. Remember to make everything used from outside element useInBrowser
 declare const useCustomElement: <T>(classDefinition:T) => void
 // Declare variables/functions/objects that will be available dynamically in your static site
-declare const useDynamic: <T extends string>(functions:Record<T, T extends keyof typeof window ? 'Value is reserved!' : any>) => void;
+declare const useInBrowser: <T extends string>(functions:Record<T, T extends keyof typeof window ? 'Value is reserved!' : any>) => void;
 // Declare function to be called immediately after dom render
-declare const useAfterRender: <T>(fn:Function) => void;
+declare const useBrowser: <T>(fn:Function) => void;
 declare var html: (strings: TemplateStringsArray, ...expr: string[]) => string
 declare var css: (strings: TemplateStringsArray, ...expr: string[]) => string
 declare var md: (strings: TemplateStringsArray, ...expr: string[]) => string
@@ -43,21 +43,7 @@ export const GenerateGlobalTypings = ({
     .replace(/export declare/gm, 'declare ')
     .replace(/export /gm, 'declare ');
 };
-
-export const DryadFunction = async ({
-  schema,
-  url,
-  js,
-}: DryadFunctionProps): Promise<DryadFunctionResult> => {
-  const graphqlTree = Parser.parse(schema);
-  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
-  const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
-  const functions = jsString.replace(/export /gm, '');
-  const isMatching = js.match(/return/);
-  if (!isMatching) {
-    throw new Error('Cannot find return');
-  }
-  const addonFunctions = `
+const addonFunctions = `
   var html = typeof html === "undefined" ? (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
@@ -73,8 +59,7 @@ export const DryadFunction = async ({
     return str;
   } : css
   `;
-  const functionBody = [functions, addonFunctions, js].join('\n');
-  const useFunctionCodeBuild = `
+const useFunctionCodeBuild = `
     const classesAdded = []
     let dynamicsO = {}
     let afterRenderO = null
@@ -92,28 +77,16 @@ export const DryadFunction = async ({
           .replace(/([A-Z])/g, ($1) => '-' + $1.toLowerCase())
       );
     };
-    const useDynamic = (e) => {
+    const useInBrowser = (e) => {
       dynamicsO = {...dynamicsO,...e}
     }
-    const useAfterRender = (e) => {
+    const useBrowser = (e) => {
       afterRenderO = e
     }
     const useCustomElement = (elementClass) => {
       classesAdded.push(elementClass)
     }`;
-
-  const r = new Function(
-    'remarkableRenderer',
-    'fetch',
-    `return new Promise(async (resolve) => {
-        ${useFunctionCodeBuild}
-      const dryadFunction = async () => {
-        ${functionBody}
-      }
-      dryadFunction().then(b => {
-        let script = ""
-        let newBody = b
-        ${`
+const dryadBody = `
             if(classesAdded.length > 0){
               script = classesAdded.map(c => c.toString()).join("\\n")
               classesAdded.forEach(c => {
@@ -139,12 +112,50 @@ export const DryadFunction = async ({
               script += "\\n"
               script += 'afterRender();'
             }
-            `}
+            `;
+
+export const DryadFunctionBodyString = async ({
+  schema,
+  url,
+  js,
+}: DryadFunctionProps) => {
+  const graphqlTree = Parser.parse(schema);
+  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
+  const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
+  const functions = jsString.replace(/export /gm, '');
+  const isMatching = js.match(/return/);
+  if (!isMatching) {
+    throw new Error('Cannot find return');
+  }
+  const functionBody = [functions, addonFunctions, js].join('\n');
+  return {
+    code: `${useFunctionCodeBuild}
+      const dryadFunction = async () => {
+        ${functionBody}
+      }
+      dryadFunction().then(b => {
+        let script = ""
+        let newBody = b
+        ${dryadBody}
         resolve({
           body:newBody,
           script,
         })
-      })
+      })`,
+    functions,
+  };
+};
+export const DryadFunction = async ({
+  schema,
+  url,
+  js,
+}: DryadFunctionProps): Promise<DryadFunctionResult> => {
+  const d = await DryadFunctionBodyString({ schema, url, js });
+  const r = new Function(
+    'remarkableRenderer',
+    'fetch',
+    `return new Promise(async (resolve) => {
+      ${d.code}
     })`,
   ) as DryadFunctionFunction;
   const remarkableRenderer = new Remarkable();
@@ -156,6 +167,6 @@ export const DryadFunction = async ({
   }
   return {
     ...result,
-    script: [functions, addonFunctions, result.script].join('\n'),
+    script: [d.functions, addonFunctions, result.script].join('\n'),
   };
 };

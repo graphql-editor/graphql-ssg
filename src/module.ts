@@ -1,5 +1,11 @@
 import { Utils } from 'graphql-zeus';
-import { DryadFunction, GenerateGlobalTypings } from './fn';
+import {
+  DryadFunctionBodyString,
+  DryadFunctionResult,
+  GenerateGlobalTypings,
+} from './fn';
+import WebSocket from 'ws';
+import { ConfigFile } from '@/config';
 
 export const HtmlSkeletonStatic = ({
   body,
@@ -29,24 +35,40 @@ export const HtmlSkeletonStatic = ({
   </body>
 </html>`;
 
+export const sendAndReceiveCode = (
+  code: string,
+  config: ConfigFile,
+): Promise<DryadFunctionResult> =>
+  new Promise((resolve) => {
+    const wsClient = new WebSocket(`ws://127.0.0.1:${config.websocketPort}`);
+    wsClient.on('message', (e) => {
+      const event = JSON.parse(e.toString());
+      if (event.type === 'rendered' && event.result) {
+        resolve(event.result as DryadFunctionResult);
+      }
+    });
+    wsClient.on('open', () => {
+      wsClient.send(JSON.stringify({ code, type: 'initial' }));
+    });
+  });
+
 export const bundle = async ({
   schemaUrl,
   js,
   css,
+  config,
 }: {
   schemaUrl: string;
   js: string;
   css?: string;
+  config: ConfigFile;
 }) => {
   const schema = await Utils.getFromUrl(schemaUrl);
-  const r = await DryadFunction({
-    js,
-    schema,
-    url: schemaUrl,
-  });
+  const pure = await DryadFunctionBodyString({ schema, js, url: schemaUrl });
+  const socketResult = await sendAndReceiveCode(pure.code, config);
   return HtmlSkeletonStatic({
-    body: r.body,
-    script: r.script,
+    body: socketResult.body,
+    script: socketResult.script,
     style: css,
   });
 };

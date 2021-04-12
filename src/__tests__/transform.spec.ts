@@ -12,6 +12,8 @@ const config: ConfigFile = {
   url: 'https://example.org/graphql',
   in: '',
   out: './out',
+  websocketPort: 1414,
+  port: 8080,
 };
 
 import fs from 'fs';

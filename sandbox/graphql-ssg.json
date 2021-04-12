@@ -1,5 +1,7 @@
 {
   "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql",
   "in": "./pages",
-  "out": "./out"
+  "out": "./out",
+  "websocketPort": 1416,
+  "port": 8082
 }

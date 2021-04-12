@@ -4,6 +4,8 @@ const GLOBAL_CONFIG_FILE = {
   url: 'https://example.org/graphql',
   out: './out',
   in: './pages',
+  port: 8080,
+  websocketPort: 1414,
 };
 
 export type ConfigFile = typeof GLOBAL_CONFIG_FILE;

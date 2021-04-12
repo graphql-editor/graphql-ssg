@@ -58,6 +58,7 @@ export const transformFile = (configFile: ConfigFile) => async (
       css: cssFile
         ? fs.readFileSync(path.join(configFile.in, cssFile)).toString('utf8')
         : undefined,
+      config: configFile,
     }),
   };
 };

@@ -37,6 +37,7 @@
     "node_modules",
     "__tests__",
     "sandbox",
+    "pokemon",
     "out",
     "jest.config.ts",
     "coverage"
