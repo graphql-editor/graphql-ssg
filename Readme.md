@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/graphql-ssg.svg?style=flat)]()
 ![Build](https://github.com/graphql-editor/graphql-ssg/actions/workflows/release.yml/badge.svg)
 
-Simple bundler for GraphQL based website using esmodules.
+Simple bundler for GraphQL based website using esmodules. What makes it unique? It uses browser for bundling (not node)
 
 ## Installation
 
@@ -56,6 +56,20 @@ It doesnt transform html in any way, but gives you syntax coloring
 ```js
 const ADiv = html`
   <div>Hello world</div>
+`;
+```
+
+#### md
+
+It renders markdown using remarkable renderer so it is transformed to html.
+
+```js
+const MarkdownContent = md`
+# Title of my Story
+
+blah blah blah blah blah blah
+
+## How to read it?
 `;
 ```
 

@@ -28,7 +28,7 @@ const Title = html`
 `;
 const Motto = html`
   <h2 class="text-gray-100">
-    Resolve your issues immediately
+    Resolve your issues immediatelyy
   </h2>
 `;
 

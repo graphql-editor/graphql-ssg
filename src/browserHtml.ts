@@ -9,10 +9,10 @@ export const browserHtml = (config: ConfigFile) => `
       const ws = new WebSocket('ws://127.0.0.1:${config.websocketPort}');
 
       ws.onmessage = async (ev) => {
-        const { code, type } = JSON.parse(ev.data);
-        if (type === 'initial') {
+        const { code, type, operationId } = JSON.parse(ev.data);
+        if (type === 'initial' && operationId) {
           const c = await Render(code);
-          ws.send(JSON.stringify({ type: 'rendered', result: c }));
+          ws.send(JSON.stringify({ type: 'rendered', result: c, operationId }));
         }
       }
 

@@ -41,14 +41,19 @@ export const sendAndReceiveCode = (
 ): Promise<DryadFunctionResult> =>
   new Promise((resolve) => {
     const wsClient = new WebSocket(`ws://127.0.0.1:${config.websocketPort}`);
+    const operationId = Math.random().toString(36);
     wsClient.on('message', (e) => {
       const event = JSON.parse(e.toString());
-      if (event.type === 'rendered' && event.result) {
+      if (
+        event.type === 'rendered' &&
+        event.result &&
+        event.operationId === operationId
+      ) {
         resolve(event.result as DryadFunctionResult);
       }
     });
     wsClient.on('open', () => {
-      wsClient.send(JSON.stringify({ code, type: 'initial' }));
+      wsClient.send(JSON.stringify({ code, type: 'initial', operationId }));
     });
   });
 

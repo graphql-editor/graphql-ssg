@@ -104,7 +104,7 @@ const dryadBody = `
             Object.keys(strfns).forEach( s => {
               script += "\\n"
               const value = typeof strfns[s] === 'string' ? strfns[s] : JSON.stringify(strfns[s])
-              script += "const "+s+" = "+value
+              script += "const "+s+" = "+"\`"+value+"\`"
             })
             if(afterRenderO){
               script += "\\n"
