@@ -1,25 +1,11 @@
-const { render } = await import(
-  'https://cdn.skypack.dev/preact-render-to-string'
-);
+import { render as r } from 'https://cdn.skypack.dev/preact-render-to-string';
+import { html as htm, h } from 'https://unpkg.com/htm/preact/index.mjs?module';
 
-const { html: htm, h } = await import(
-  'https://unpkg.com/htm/preact/index.mjs?module'
-);
-html = htm;
-
-const response = await Gql.query({
-  pokemons: [
-    { first: 151 },
-    {
-      number: true,
-      name: true,
-      image: true,
-      types: true,
-      resistant: true,
-      weaknesses: true,
-    },
-  ],
+const Fetch = Chain('https://graphql-pokemon2.vercel.app/', {
+  'Content-Type': 'application/json',
 });
+
+html = htm;
 
 const Pokemon = ({ number, name, image, weaknesses, resistant, types }) => {
   return html`
@@ -34,6 +20,7 @@ const Pokemon = ({ number, name, image, weaknesses, resistant, types }) => {
     </hstack>
   `;
 };
+
 const DisplayCategory = ({ title, textArray }) => html`
   <vstack spacing="xs">
     <span>${title}</span>${textArray.map(
@@ -53,8 +40,24 @@ function App({ response }) {
     </vstack>
   `;
 }
+
 // Create your app
-const app = html`
-  <${App} response=${response} />
-`;
-return render(app);
+export default async () => {
+  const response = await Fetch.query({
+    pokemons: [
+      { first: 151 },
+      {
+        number: true,
+        name: true,
+        image: true,
+        types: true,
+        resistant: true,
+        weaknesses: true,
+      },
+    ],
+  });
+  const app = html`
+    <${App} response=${response} />
+  `;
+  return r(app);
+};

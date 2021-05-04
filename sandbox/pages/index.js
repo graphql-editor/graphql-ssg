@@ -1,26 +1,3 @@
-const response = await Gql.query({
-  home: {
-    title: true,
-    content: true,
-    createdAt: true,
-    offeredWorms: true,
-    issueURL: true,
-    repositoryURL: true,
-    languages: {
-      name: true,
-      colour: true,
-    },
-    createdBy: {
-      firstName: true,
-      lastName: true,
-      company: true,
-      avatar: true,
-    },
-  },
-});
-
-const features = response.home;
-
 const Title = html`
   <h1 class="font-black">
     ✅ FeatureMole.com
@@ -28,7 +5,7 @@ const Title = html`
 `;
 const Motto = html`
   <h2 class="text-gray-100">
-    Resolve your issues immediatelyy
+    Resolve your issues immediately
   </h2>
 `;
 
@@ -81,7 +58,7 @@ const Lang = (l) => html`
   </div>
 `;
 
-const Features = () => {
+const Features = (features) => {
   return features
     .map(
       (f) => html`
@@ -114,7 +91,7 @@ const Features = () => {
                 : ''}
               class="
                     w-8
-                    h-8
+                    h-12
                     rounded
                     bg-contain
                     bg-gray-400
@@ -158,16 +135,39 @@ const Features = () => {
     .join('');
 };
 
-return html`
-  <div
-    class="
+export default async () => {
+  const response = await Gql.query({
+    home: {
+      title: true,
+      content: true,
+      createdAt: true,
+      offeredWorms: true,
+      issueURL: true,
+      repositoryURL: true,
+      languages: {
+        name: true,
+        colour: true,
+      },
+      createdBy: {
+        firstName: true,
+        lastName: true,
+        company: true,
+        avatar: true,
+      },
+    },
+  });
+
+  return html`
+    <div
+      class="
     bg-gray-200
     font-noto
 "
-  >
-    ${Header}
-    <div class="container mx-auto space-y-5 p-5">
-      ${Features()}
+    >
+      ${Header}
+      <div class="container mx-auto space-y-5 p-5">
+        ${Features(response.home)}
+      </div>
     </div>
-  </div>
-`;
+  `;
+};

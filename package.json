@@ -1,6 +1,6 @@
 {
   "name": "graphql-ssg",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Simple data feed HTML bundler",
   "main": "lib/index.js",
   "scripts": {
@@ -30,12 +30,14 @@
   },
   "homepage": "https://github.com/graphql-editor/graphql-ssg#readme",
   "dependencies": {
+    "chalk": "^4.1.1",
     "chokidar": "^3.5.1",
     "chrome-remote-interface": "^0.30.0",
     "esbuild": "^0.11.6",
     "graphql-zeus": "^3.0.5",
     "live-server": "^1.2.1",
     "node-fetch": "^2.6.1",
+    "ora": "^5.4.0",
     "puppeteer": "^8.0.0",
     "remarkable": "^2.0.1",
     "ws": "^7.4.4",

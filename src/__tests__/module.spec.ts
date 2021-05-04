@@ -44,8 +44,7 @@ describe('module.ts tests', () => {
     });
 
     const dryadResult = await sendAndReceiveCode('code', mock.configFile);
-    expect(dryadResult.body).toBeTruthy();
-    expect(dryadResult.script).toBeTruthy();
+    expect(dryadResult).toBeTruthy();
     ws.close();
   });
 });

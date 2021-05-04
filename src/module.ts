@@ -1,11 +1,13 @@
 import { Utils } from 'graphql-zeus';
-import {
-  DryadFunctionBodyString,
-  DryadFunctionResult,
-  GenerateGlobalTypings,
-} from './fn';
+import { DryadFunctionBodyString, GenerateGlobalTypings } from './fn';
 import WebSocket from 'ws';
 import { ConfigFile } from '@/config';
+
+interface EventFromWebsocket {
+  type: 'rendered' | 'error';
+  operationId: string;
+  result: string;
+}
 
 export const HtmlSkeletonStatic = ({
   body,
@@ -38,18 +40,22 @@ export const HtmlSkeletonStatic = ({
 export const sendAndReceiveCode = (
   code: string,
   config: ConfigFile,
-): Promise<DryadFunctionResult> =>
+): Promise<string> =>
   new Promise((resolve) => {
     const wsClient = new WebSocket(`ws://127.0.0.1:${config.websocketPort}`);
     const operationId = Math.random().toString(36);
+    wsClient.on('error', (e) => {
+      throw new Error(e.message);
+    });
     wsClient.on('message', (e) => {
-      const event = JSON.parse(e.toString());
-      if (
-        event.type === 'rendered' &&
-        event.result &&
-        event.operationId === operationId
-      ) {
-        resolve(event.result as DryadFunctionResult);
+      const event = JSON.parse(e.toString()) as EventFromWebsocket;
+      if (event.operationId === operationId) {
+        if (event.type === 'rendered' && event.result) {
+          resolve(event.result as string);
+        }
+        if (event.type === 'error') {
+          throw new Error(event.result);
+        }
       }
     });
     wsClient.on('open', () => {
@@ -58,22 +64,23 @@ export const sendAndReceiveCode = (
   });
 
 export const bundle = async ({
+  schema,
   schemaUrl,
   js,
   css,
   config,
 }: {
   schemaUrl: string;
+  schema: string;
   js: string;
   css?: string;
   config: ConfigFile;
 }) => {
-  const schema = await Utils.getFromUrl(schemaUrl);
   const pure = await DryadFunctionBodyString({ schema, js, url: schemaUrl });
   const socketResult = await sendAndReceiveCode(pure.code, config);
   return HtmlSkeletonStatic({
-    body: socketResult.body,
-    script: socketResult.script,
+    body: socketResult,
+    script: pure.code,
     style: css,
   });
 };

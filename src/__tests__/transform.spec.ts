@@ -1,12 +1,7 @@
 import { ConfigFile } from '@/config';
 import { createTwinFile, hasTwinFile, readFiles } from '@/transform';
 
-const paths = [
-  'Detail.mock.zeus.js',
-  'Detail.mock.css',
-  'index.html',
-  'somemodule.js',
-];
+const paths = ['Detail.js', 'Detail.css', 'index.html', 'somemodule.js'];
 
 const config: ConfigFile = {
   url: 'https://example.org/graphql',
@@ -34,18 +29,18 @@ jest.mock('fs', () => {
 
 describe('Transform tests', () => {
   it('Create twin files for mock files', () => {
-    const htmlFile = createTwinFile('Detail.myfile.zeus.js', 'html');
-    expect(htmlFile).toEqual('Detail.myfile.html');
+    const htmlFile = createTwinFile('Detail.js', 'html');
+    expect(htmlFile).toEqual('Detail.html');
   });
   it('Throw on invalid file', () => {
-    expect(() => createTwinFile('Detail.myfile.js', 'html')).toThrow();
+    expect(() => createTwinFile('Detail.ts', 'html')).toThrow();
   });
   it('List files that are ssg compatible', () => {
     const files = readFiles('./mockpath');
-    expect(files).toHaveLength(1);
+    expect(files).toHaveLength(2);
   });
-  it('Shoud find twin file for Detaail.mock.zeus.js', () => {
-    const file = hasTwinFile('Detail.mock.zeus.js', config, 'css');
+  it('Shoud find twin file for Detail.js', () => {
+    const file = hasTwinFile('Detail.js', config, 'css');
     expect(file).toBeTruthy();
   });
 });

@@ -45,7 +45,11 @@ Build
 graphql-ssg --build
 ```
 
-### Injected built in functions
+### File must contain export default
+
+String returned in contained in file export default is generated via SSG phase.
+
+### Injected built in helper code syntax functions
 
 GraphQL SSG comes with injected functions
 
@@ -73,32 +77,10 @@ blah blah blah blah blah blah
 `;
 ```
 
-### useBrowser
-
-Allows to write code that will be executed inside browser
-
-```js
-useBrowser(() => {
-  // This will be imported in browser module
-  const { h  = await import ("https://cdn.skypack.dev/preact")
-  console.log("I will be executed in browser module yay!")
-})
-```
-
-### useInBrowser
-
-Allows to use variable generated during SSG phase in browser
-
-```js
-const someVar = { data: await Gql.query({ pokemons: { id: true } }) };
-useInBrowser({ someVar });
-```
-
 ## Roadmap
 
 - [ ] Add esbuild
 - [ ] Add TS support
 - [ ] Add loaders for internal files
-- [ ] Add intelligent global.d.ts autocompletion for imported es modules
+- [x] Add intelligent .d.ts autocompletion for imported es modules
 - [ ] Add image supports
-- [ ] Add classic import support

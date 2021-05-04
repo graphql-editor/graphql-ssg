@@ -7,8 +7,9 @@ import WebSocket from 'ws';
 import http from 'http';
 import { browserHtml } from '@/browserHtml';
 import { runBrowser } from '@/browser';
-
 import { createServer } from 'net';
+import ora from 'ora';
+import fs from 'fs';
 
 const getPort = (port = 80, maxPort = 65535): Promise<number> => {
   if (maxPort < port) {
@@ -61,26 +62,46 @@ const initBrowserBundler = async (configFile: ConfigFile) => {
 export const build = async () => {
   const configFile = readConfig('./graphql-ssg.json');
   const { browser, browserBundle, ws } = await initBrowserBundler(configFile);
-  await transform(configFile);
+  await transformAllFiles(configFile);
   ws.close();
   browserBundle.close();
   await browser.close();
 };
 
-const transform = async (configFile: ConfigFile) => {
+const transformSingleFile = async (
+  configFile: ConfigFile,
+  individualFile: string,
+) => {
+  const schemaLoading = ora('Transforming...').start();
+  await transformFiles(configFile, [individualFile]);
+  schemaLoading.succeed();
+};
+const transformAllFiles = async (configFile: ConfigFile) => {
+  const schemaLoading = ora('Transforming...').start();
   const allFiles = readFiles(configFile.in);
   await transformFiles(configFile, allFiles);
+  schemaLoading.succeed();
 };
 
 export const watch = async () => {
+  let isTransforming = true;
   const configFile = readConfig('./graphql-ssg.json');
   chokidar
     .watch(path.join(configFile.in, `**/*.{js,css}`), {
-      interval: 0, // No delay
+      interval: 10, // No delay
     })
-    .on('all', async () => {
-      await transform(configFile);
+    .on('all', async (event, p) => {
+      if (!isTransforming) {
+        isTransforming = true;
+        const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
+        if (fs.existsSync(jsFilePath)) {
+          const filePath = path.relative(configFile.in, jsFilePath);
+          await transformSingleFile(configFile, filePath);
+        }
+        isTransforming = false;
+      }
     });
+  transformAllFiles(configFile).then(() => (isTransforming = false));
   // `liveServer` local server for hot reload.
   await initBrowserBundler(configFile);
   liveServer.start({

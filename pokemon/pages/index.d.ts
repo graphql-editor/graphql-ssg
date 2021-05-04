@@ -1,10 +1,6 @@
 
-// Define custom element by passing its class to this function. It will be available in your static site. Remember to make everything used from outside element useDynamic
-declare const useCustomElement: <T>(classDefinition:T) => void
-// Declare variables/functions/objects that will be available dynamically in your static site
-declare const useDynamic: <T extends string>(functions:Record<T, T extends keyof typeof window ? 'Value is reserved!' : any>) => void;
-// Declare function to be called immediately after dom render
-declare const useAfterRender: <T>(fn:Function) => void;
+// Return html string from this function fo ssg;
+declare const render: <T>(fn:Function) => void;
 declare var html: (strings: TemplateStringsArray, ...expr: string[]) => string
 declare var css: (strings: TemplateStringsArray, ...expr: string[]) => string
 declare var md: (strings: TemplateStringsArray, ...expr: string[]) => string

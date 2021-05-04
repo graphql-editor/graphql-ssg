@@ -2,15 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import { bundle, globalTypings } from './module';
 import { ConfigFile } from './config';
+import { Utils } from 'graphql-zeus';
 
-const mockRegex = /(.*)\.zeus\.(js|ts)$/;
-const fileRegex = /(.*)\.(js|ts)$/;
+const fileRegex = /(.*)\.js$/;
 
 export const readFiles = (path: string) => {
   const allFiles: string[] = [];
   const files = fs.readdirSync(path);
   files.forEach((f) => {
-    const regexResult = f.match(mockRegex);
+    const regexResult = f.match(fileRegex);
     if (regexResult && regexResult.length > 1) {
       allFiles.push(f);
     }
@@ -34,7 +34,7 @@ export const createTwinFileWithRegex = (
 };
 
 export const createTwinFile = (fileToTransform: string, extension: string) => {
-  return createTwinFileWithRegex(fileToTransform, extension, mockRegex);
+  return createTwinFileWithRegex(fileToTransform, extension, fileRegex);
 };
 
 export const hasTwinFile = (
@@ -53,7 +53,7 @@ export const hasTwinFile = (
   return twinFile;
 };
 
-export const transformFile = (configFile: ConfigFile) => async (
+export const transformFile = (configFile: ConfigFile, schema: string) => async (
   fileToTransform: string,
 ) => {
   const cssFile = hasTwinFile(fileToTransform, configFile, 'css');
@@ -61,6 +61,7 @@ export const transformFile = (configFile: ConfigFile) => async (
     name: createTwinFile(fileToTransform, 'html'),
     content: await bundle({
       schemaUrl: configFile.url,
+      schema,
       js: fs
         .readFileSync(path.join(configFile.in, fileToTransform))
         .toString('utf8'),
@@ -76,7 +77,8 @@ export const transformFiles = async (
   configFile: ConfigFile,
   files: string[],
 ) => {
-  const transformWithConfig = transformFile(configFile);
+  const schema = await Utils.getFromUrl(configFile.url);
+  const transformWithConfig = transformFile(configFile, schema);
   const htmlFiles = await Promise.all(files.map(transformWithConfig));
   const typings = await globalTypings({ schemaUrl: configFile.url });
   files.forEach((f) => {
