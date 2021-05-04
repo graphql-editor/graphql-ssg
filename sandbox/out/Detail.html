@@ -17,18 +17,14 @@
     </style>
     <script type="module">
       const AllTypesProps = {
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	},
 	CreateComment:{
@@ -51,47 +47,7 @@
 			required:true
 		}
 	},
-	UserBasicData:{
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	CreateDealRequest:{
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
 	CreateFeatureRequest:{
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
-		},
 		content:{
 			type:"String",
 			array:false,
@@ -109,26 +65,12 @@
 			array:false,
 			arrayRequired:false,
 			required:false
-		}
-	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
 		},
-		lastName:{
+		languages:{
 			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
+			array:true,
+			arrayRequired:true,
+			required:true
 		}
 	},
 	Mutation:{
@@ -141,51 +83,6 @@
 			}
 		}
 	},
-	UserMutation:{
-		forgotPassword:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		makeAdmin:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		register:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		resetPassword:{
-			reset:{
-				type:"ResetPassword",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	DealStatus: "enum",
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -236,59 +133,160 @@
 			}
 		}
 	},
-	UserQuery:{
-		login:{
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	UserMutation:{
+		forgotPassword:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		makeAdmin:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		register:{
 			user:{
 				type:"UserBasicData",
 				array:false,
 				arrayRequired:false,
 				required:true
 			}
+		},
+		resetPassword:{
+			reset:{
+				type:"ResetPassword",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	DealStatus: "enum",
+	CreateDealRequest:{
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	UserBasicData:{
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	SignUp:{
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	ResetPassword:{
+		token:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		newPassword:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	}
 }
 
 const ReturnTypes = {
-	FeatureRequest:{
-		comments:"Comment",
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
+	},
+	LoggedInData:{
+		token:"String"
+	},
+	Comment:{
 		content:"String",
 		createdAt:"String",
-		createdBy:"MoleUser",
-		issueURL:"String",
-		languages:"ProgrammingLanguage",
-		offeredWorms:"Int",
-		repositoryURL:"String",
-		title:"String"
+		featureRequest:"FeatureRequest",
+		index:"Int",
+		replyTo:"Comment"
 	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
 	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
 	},
 	Mutation:{
 		moleUser:"MoleUserMutation",
 		signUp:"Boolean",
 		user:"UserMutation"
 	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
-	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
-	},
-	LoggedInData:{
-		token:"String"
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -299,13 +297,6 @@ const ReturnTypes = {
 		lastName:"String",
 		worms:"Int"
 	},
-	Comment:{
-		content:"String",
-		createdAt:"String",
-		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comment"
-	},
 	MoleUserMutation:{
 		acceptDealRequest:"Boolean",
 		closeDeal:"Boolean",
@@ -314,25 +305,34 @@ const ReturnTypes = {
 		finishWork:"Boolean",
 		offerDealRequest:"Boolean"
 	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
+	Query:{
 		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
 	},
-	DealRequest:{
-		accepted:"Boolean",
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
+	},
+	UserMutation:{
+		forgotPassword:"Boolean",
+		makeAdmin:"Boolean",
+		register:"LoggedInData",
+		resetPassword:"Boolean"
+	},
+	FeatureRequest:{
+		comments:"Comment",
+		content:"String",
 		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
+		createdBy:"MoleUser",
+		issueURL:"String",
+		languages:"ProgrammingLanguage",
+		offeredWorms:"Int",
+		repositoryURL:"String",
+		title:"String"
 	}
 }
 
@@ -733,6 +733,7 @@ mutation: ZeusSelect()
 
 const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole/graphql')
 
+  import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
   var html = typeof html === "undefined" ? (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
@@ -993,13 +994,99 @@ export default async () => {
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Floyd from 
-                on Sun Feb 21 2021
+                Created by  from turn-key implement synergies
+                on Fri Jun 26 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/graphql-editor
+              </div>
+              <div class="mb-4">West</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 3🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Clare from 
+                on Fri Jun 26 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
                 https://github.com/graphql-editor/graphql-zeus
               </div>
-              <div class="mb-4">East</div>
+              <div class="mb-4">Lake</div>
               <div
                 class="
                     flex
@@ -1022,13 +1109,13 @@ export default async () => {
 
   <div
     class="
-    bg-blue-600
+    bg-red-600
     text-white
     text-xs
     p-1
 "
   >
-    css
+    js
   </div>
 
   <div
@@ -1039,7 +1126,7 @@ export default async () => {
     p-1
 "
   >
-    js
+    css
   </div>
 
               </div>
@@ -1112,13 +1199,13 @@ export default async () => {
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Filiberto from vertical benchmark users
-                on Sun Dec 20 2020
+                Created by Ari from cutting-edge envisioneer models
+                on Sun Jan 10 2021
               </div>
               <div class="text-xs font-bold text-gray-600">
                 https://github.com/graphql-editor/graphql-zeus
               </div>
-              <div class="mb-4">West</div>
+              <div class="mb-4">South</div>
               <div
                 class="
                     flex
@@ -1142,142 +1229,23 @@ export default async () => {
   <div
     class="
     bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    c++
-  </div>
-
-  <div
-    class="
-    bg-blue-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    c++
-  </div>
-
-              </div>
-              <div class="flex">
-                
-  <a
-    class="
-        text-blue-600
-        border
-        border-blue-600
-        hover:bg-blue-600
-        hover:text-white
-        flex
-        items-center
-        justify-center
-        cursor-pointer
-        rounded
-        font-bold
-        px-5
-        py-2
-        text-xs
-        ml-auto
-    "
-  >
-    Try for 3🐛
-  </a>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      
-        <div
-          class="
-        bg-white
-        p-5
-        rounded
-        cursor-pointer
-        hover:bg-gray-100
-        transition
-        duration-500 
-        ease-in-out 
-        hover:bg-blue-200 
-        transform 
-        hover:-translate-y-1 
-        hover:scale-105
-    "
-        >
-          <div
-            class="
-            flex
-            flex-row
-            items-start
-        "
-          >
-            <div
-              style="background-image:url(http://placekitten.com/200/300)";
-              class="
-                    w-8
-                    h-8
-                    rounded
-                    bg-contain
-                    bg-gray-400
-                    mr-4
-                "
-            ></div>
-            <div
-              class="
-                flex-1
-            "
-            >
-              <div class="text-xs text-gray-600">
-                Created by Janice from 24/365 architect interfaces
-                on Fri Oct 30 2020
-              </div>
-              <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/graphql-editor
-              </div>
-              <div class="mb-4">Lake</div>
-              <div
-                class="
-                    flex
-                    flex-row
-                    flex-wrap
-                    space-x-1
-                "
-              >
-                
-  <div
-    class="
-    bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    css
-  </div>
-
-  <div
-    class="
-    bg-red-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    css
-  </div>
-
-  <div
-    class="
-    bg-blue-600
     text-white
     text-xs
     p-1
 "
   >
     js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
   </div>
 
               </div>
@@ -1350,13 +1318,251 @@ export default async () => {
             "
             >
               <div class="text-xs text-gray-600">
-                Created by  from 
-                on Sat Mar 13 2021
+                Created by Dalton from one-to-one disintermediate initiatives
+                on Tue Mar 23 2021
               </div>
               <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/graphql-editor
+                https://github.com/graphql-editor/graphql-zeus
+              </div>
+              <div class="mb-4">East</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 1🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Stone from plug-and-play embrace solutions
+                on Thu Apr 01 2021
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
               </div>
               <div class="mb-4">Lake</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+  <div
+    class="
+    bg-blue-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 1🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Amalia from next-generation synergize e-services
+                on Mon Aug 03 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">South</div>
               <div
                 class="
                     flex
@@ -1374,18 +1580,126 @@ export default async () => {
     p-1
 "
   >
-    js
+    c++
   </div>
 
   <div
     class="
-    bg-blue-600
+    bg-red-600
     text-white
     text-xs
     p-1
 "
   >
     js
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    js
+  </div>
+
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Darwin from open-source orchestrate functionalities
+                on Tue May 26 2020
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">East</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
   </div>
 
   <div
@@ -1397,6 +1711,17 @@ export default async () => {
 "
   >
     c++
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    css
   </div>
 
               </div>
@@ -1469,13 +1794,99 @@ export default async () => {
             "
             >
               <div class="text-xs text-gray-600">
-                Created by Kendrick from next-generation grow initiatives
-                on Wed Oct 14 2020
+                Created by Brett from end-to-end transition web services
+                on Wed Jul 15 2020
               </div>
               <div class="text-xs font-bold text-gray-600">
-                https://github.com/graphql-editor/graphql-editor
+                https://github.com/graphql-editor/diagram
               </div>
-              <div class="mb-4">New</div>
+              <div class="mb-4">South</div>
+              <div
+                class="
+                    flex
+                    flex-row
+                    flex-wrap
+                    space-x-1
+                "
+              >
+                
+              </div>
+              <div class="flex">
+                
+  <a
+    class="
+        text-blue-600
+        border
+        border-blue-600
+        hover:bg-blue-600
+        hover:text-white
+        flex
+        items-center
+        justify-center
+        cursor-pointer
+        rounded
+        font-bold
+        px-5
+        py-2
+        text-xs
+        ml-auto
+    "
+  >
+    Try for 4🐛
+  </a>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      
+        <div
+          class="
+        bg-white
+        p-5
+        rounded
+        cursor-pointer
+        hover:bg-gray-100
+        transition
+        duration-500 
+        ease-in-out 
+        hover:bg-blue-200 
+        transform 
+        hover:-translate-y-1 
+        hover:scale-105
+    "
+        >
+          <div
+            class="
+            flex
+            flex-row
+            items-start
+        "
+          >
+            <div
+              style="background-image:url(http://placekitten.com/200/300)";
+              class="
+                    w-8
+                    h-8
+                    rounded
+                    bg-contain
+                    bg-gray-400
+                    mr-4
+                "
+            ></div>
+            <div
+              class="
+                flex-1
+            "
+            >
+              <div class="text-xs text-gray-600">
+                Created by Abigale from bleeding-edge monetize models
+                on Sat Mar 13 2021
+              </div>
+              <div class="text-xs font-bold text-gray-600">
+                https://github.com/graphql-editor/diagram
+              </div>
+              <div class="mb-4">West</div>
               <div
                 class="
                     flex
@@ -1487,18 +1898,7 @@ export default async () => {
                 
   <div
     class="
-    bg-blue-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    c++
-  </div>
-
-  <div
-    class="
-    bg-blue-600
+    bg-red-600
     text-white
     text-xs
     p-1
@@ -1515,7 +1915,18 @@ export default async () => {
     p-1
 "
   >
-    js
+    c++
+  </div>
+
+  <div
+    class="
+    bg-red-600
+    text-white
+    text-xs
+    p-1
+"
+  >
+    c++
   </div>
 
               </div>
@@ -1540,7 +1951,7 @@ export default async () => {
         ml-auto
     "
   >
-    Try for 2🐛
+    Try for 4🐛
   </a>
 
               </div>

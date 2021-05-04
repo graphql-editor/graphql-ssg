@@ -21,7 +21,7 @@ export const browserHtml = (config: ConfigFile) => `
 
       async function Render(code) {
         const esmUrl = URL.createObjectURL(
-          new Blob(["import {Remarkable} from 'https://cdn.skypack.dev/remarkable'\\n"+code], { type: 'text/javascript' }),
+          new Blob([code], { type: 'text/javascript' }),
         );
         const module = await import(esmUrl)
         return module.default();

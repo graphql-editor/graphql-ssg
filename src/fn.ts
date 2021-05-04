@@ -40,6 +40,7 @@ export const GenerateGlobalTypings = ({
 };
 
 const addonFunctions = `
+  import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
   var html = typeof html === "undefined" ? (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
