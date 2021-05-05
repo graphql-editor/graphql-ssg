@@ -23,7 +23,7 @@ export const HtmlSkeletonStatic = ({
   <head>
     ${head}${
   cssName
-    ? `<link rel="stylesheet" type="text/css" media="screen" href="./${cssName}" />`
+    ? `<link rel="stylesheet" type="text/css" media="screen" href="./${cssName}"/>`
     : ''
 }
     ${`<script type="module" src="./${scriptName}"></script>`}

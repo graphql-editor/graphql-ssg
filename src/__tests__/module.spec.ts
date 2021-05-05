@@ -10,7 +10,7 @@ describe('module.ts tests', () => {
     });
     expect(htmlskeleton).toEqual(`<html>
   <head>
-    <link rel="stylesheet" type="text/css" href="./hello.css" media="screen" />
+    <link rel="stylesheet" type="text/css" media="screen" href="./hello.css"/>
     <script type="module" src="./hello.js"></script>
   </head>
   <body>
