@@ -5,17 +5,13 @@ describe('module.ts tests', () => {
   it('Generates static HTML Skeleton', () => {
     const htmlskeleton = HtmlSkeletonStatic({
       body: 'Hello world',
-      script: "console.log('Hello world')",
-      style: 'body{margin:0;}',
+      scriptName: 'hello.js',
+      cssName: 'hello.css',
     });
     expect(htmlskeleton).toEqual(`<html>
   <head>
-    <style id="styleTag">
-      body{margin:0;}
-    </style>
-    <script type="module">
-      console.log('Hello world')
-    </script>
+    <link rel="stylesheet" type="text/css" href="./hello.css" media="screen" />
+    <script type="module" src="./hello.js"></script>
   </head>
   <body>
     Hello world

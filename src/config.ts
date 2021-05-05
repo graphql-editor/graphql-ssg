@@ -8,7 +8,9 @@ const GLOBAL_CONFIG_FILE = {
   websocketPort: 1414,
 };
 
-export type ConfigFile = typeof GLOBAL_CONFIG_FILE;
+export type ConfigFile = typeof GLOBAL_CONFIG_FILE & {
+  headers?: string[];
+};
 
 export const validateConfig = (configFile: ConfigFile) => {
   const errors: string[] = [];

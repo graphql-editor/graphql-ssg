@@ -3,6 +3,7 @@ import path from 'path';
 import { bundle, globalTypings } from './module';
 import { ConfigFile } from './config';
 import { Utils } from 'graphql-zeus';
+import { DryadFunctionBodyString } from '@/fn';
 
 const fileRegex = /(.*)\.js$/;
 
@@ -57,19 +58,37 @@ export const transformFile = (configFile: ConfigFile, schema: string) => async (
   fileToTransform: string,
 ) => {
   const cssFile = hasTwinFile(fileToTransform, configFile, 'css');
+  const js = fs
+    .readFileSync(path.join(configFile.in, fileToTransform))
+    .toString('utf8');
+  const pure = await DryadFunctionBodyString({
+    schema,
+    js,
+    url: configFile.url,
+  });
+
   return {
-    name: createTwinFile(fileToTransform, 'html'),
-    content: await bundle({
-      schemaUrl: configFile.url,
-      schema,
-      js: fs
-        .readFileSync(path.join(configFile.in, fileToTransform))
-        .toString('utf8'),
-      css: cssFile
-        ? fs.readFileSync(path.join(configFile.in, cssFile)).toString('utf8')
-        : undefined,
-      config: configFile,
-    }),
+    html: {
+      name: createTwinFile(fileToTransform, 'html'),
+      code: await bundle({
+        name: fileToTransform,
+        code: pure.code,
+        config: configFile,
+        css: cssFile,
+      }),
+    },
+    css: cssFile
+      ? {
+          code: fs
+            .readFileSync(path.join(configFile.in, cssFile))
+            .toString('utf8'),
+          name: cssFile,
+        }
+      : undefined,
+    js: {
+      name: fileToTransform,
+      code: pure.code,
+    },
   };
 };
 
@@ -77,7 +96,7 @@ export const transformFiles = async (
   configFile: ConfigFile,
   files: string[],
 ) => {
-  const schema = await Utils.getFromUrl(configFile.url);
+  const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
   const transformWithConfig = transformFile(configFile, schema);
   const htmlFiles = await Promise.all(files.map(transformWithConfig));
   const typings = await globalTypings({ schemaUrl: configFile.url });
@@ -90,8 +109,10 @@ export const transformFiles = async (
   if (!fs.existsSync(configFile.out)) {
     fs.mkdirSync(configFile.out);
   }
-  htmlFiles.forEach((f) => {
-    fs.writeFileSync(path.join(configFile.out, `${f.name}`), f.content);
+  htmlFiles.forEach(({ css, html, js }) => {
+    fs.writeFileSync(path.join(configFile.out, `${html.name}`), html.code);
+    fs.writeFileSync(path.join(configFile.out, `${js.name}`), js.code);
+    css && fs.writeFileSync(path.join(configFile.out, `${css.name}`), css.code);
   });
 };
 

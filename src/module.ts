@@ -1,5 +1,5 @@
 import { Utils } from 'graphql-zeus';
-import { DryadFunctionBodyString, GenerateGlobalTypings } from './fn';
+import { GenerateGlobalTypings } from './fn';
 import WebSocket from 'ws';
 import { ConfigFile } from '@/config';
 
@@ -11,26 +11,22 @@ interface EventFromWebsocket {
 
 export const HtmlSkeletonStatic = ({
   body,
-  style,
-  script = '',
+  cssName,
+  scriptName,
   head = '',
 }: {
   body: string;
-  style?: string;
-  script?: string;
+  cssName?: string;
+  scriptName: string;
   head?: string;
 }) => `<html>
   <head>
     ${head}${
-  style
-    ? `<style id="styleTag">
-      ${style}
-    </style>`
+  cssName
+    ? `<link rel="stylesheet" type="text/css" media="screen" href="./${cssName}" />`
     : ''
 }
-    ${`<script type="module">
-      ${script}
-    </script>`}
+    ${`<script type="module" src="./${scriptName}"></script>`}
   </head>
   <body>
     ${body}
@@ -64,24 +60,21 @@ export const sendAndReceiveCode = (
   });
 
 export const bundle = async ({
-  schema,
-  schemaUrl,
-  js,
+  code,
   css,
   config,
+  name,
 }: {
-  schemaUrl: string;
-  schema: string;
-  js: string;
+  code: string;
+  name: string;
   css?: string;
   config: ConfigFile;
 }) => {
-  const pure = await DryadFunctionBodyString({ schema, js, url: schemaUrl });
-  const socketResult = await sendAndReceiveCode(pure.code, config);
+  const socketResult = await sendAndReceiveCode(code, config);
   return HtmlSkeletonStatic({
     body: socketResult,
-    script: pure.code,
-    style: css,
+    scriptName: name,
+    cssName: css,
   });
 };
 

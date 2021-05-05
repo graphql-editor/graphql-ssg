@@ -25,13 +25,23 @@ Set up config.
 
 ```json
 {
-  "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql",
+  "url": "https://graphql-pokemon2.vercel.app/",
   "in": "./pages",
-  "out": "./out"
+  "out": "./out",
+  "websocketPort": 1414,
+  "port": 8080
 }
 ```
 
 So you need to provide your schema url in and out dirs for graphql-ssg
+
+You can also add headers if needed:
+
+```json
+{
+  "headers": ["Authorization: Bearer MyToken"]
+}
+```
 
 Watch
 
@@ -84,3 +94,5 @@ blah blah blah blah blah blah
 - [ ] Add loaders for internal files
 - [x] Add intelligent .d.ts autocompletion for imported es modules
 - [ ] Add image supports
+- [ ] Generate tsconfig
+- [ ] Relative imports

@@ -1,0 +1,13 @@
+@import 'https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css';
+@import 'https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;900&display=swap';
+
+.font-noto {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+.bg-sblue {
+  background-color: #4107f5;
+}
+.text-sblue {
+  background-color: #4107f5;
+}
