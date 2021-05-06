@@ -1,4 +1,18 @@
 const AllTypesProps = {
+	ResetPassword:{
+		token:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		newPassword:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
 	Mutation:{
 		signUp:{
 			user:{
@@ -7,6 +21,46 @@ const AllTypesProps = {
 				arrayRequired:false,
 				required:false
 			}
+		}
+	},
+	SignUp:{
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	CreateComment:{
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
 	CreateDealRequest:{
@@ -27,6 +81,16 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:false
+		}
+	},
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	},
 	UserMutation:{
@@ -63,14 +127,40 @@ const AllTypesProps = {
 			}
 		}
 	},
-	UserBasicData:{
-		username:{
+	CreateFeatureRequest:{
+		content:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		issueURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		languages:{
+			type:"String",
+			array:true,
+			arrayRequired:true,
+			required:true
+		}
+	},
+	UserBasicData:{
 		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		username:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
@@ -87,41 +177,7 @@ const AllTypesProps = {
 			}
 		}
 	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
 	DealStatus: "enum",
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -171,76 +227,38 @@ const AllTypesProps = {
 				required:true
 			}
 		}
-	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	CreateFeatureRequest:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		issueURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
-		}
-	},
-	CreateComment:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
 	}
 }
 
 const ReturnTypes = {
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
+	Comment:{
+		content:"String",
+		createdAt:"String",
+		featureRequest:"FeatureRequest",
+		index:"Int",
+		replyTo:"Comment"
+	},
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
 	},
 	Mutation:{
 		moleUser:"MoleUserMutation",
 		signUp:"Boolean",
 		user:"UserMutation"
+	},
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
+	},
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
 	},
 	UserMutation:{
 		forgotPassword:"Boolean",
@@ -259,12 +277,11 @@ const ReturnTypes = {
 		repositoryURL:"String",
 		title:"String"
 	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
 	},
 	Query:{
 		featureRequest:"FeatureRequest",
@@ -272,36 +289,8 @@ const ReturnTypes = {
 		moleUserQuery:"MoleUserQuery",
 		user:"UserQuery"
 	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
-	},
 	LoggedInData:{
 		token:"String"
-	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
-	},
-	MoleUser:{
-		avatar:"String",
-		company:"String",
-		createdAt:"String",
-		featureRequests:"FeatureRequest",
-		firstName:"String",
-		lastName:"String",
-		worms:"Int"
-	},
-	Comment:{
-		content:"String",
-		createdAt:"String",
-		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comment"
 	},
 	MoleUserMutation:{
 		acceptDealRequest:"Boolean",
@@ -311,10 +300,21 @@ const ReturnTypes = {
 		finishWork:"Boolean",
 		offerDealRequest:"Boolean"
 	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	MoleUser:{
+		avatar:"String",
+		company:"String",
+		createdAt:"String",
+		featureRequests:"FeatureRequest",
+		firstName:"String",
+		lastName:"String",
+		worms:"Int"
 	}
 }
 
@@ -828,7 +828,7 @@ const Features = (features) => {
           >
             <div
               ${f.createdBy.avatar
-                ? `style="background-image:url(${f.createdBy.avatar})";`
+                ? `style="background-image:url(${f.createdBy.avatar})"`
                 : ''}
               class="
                     w-8
@@ -875,6 +875,10 @@ const Features = (features) => {
     )
     .join('');
 };
+
+export const head = () => html`
+  <title>Hello world!</title>
+`;
 
 export default async () => {
   const response = await Gql.query({

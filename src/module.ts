@@ -6,7 +6,14 @@ import { ConfigFile } from '@/config';
 interface EventFromWebsocket {
   type: 'rendered' | 'error';
   operationId: string;
-  result: string;
+  result: EventResult;
+  head?: string;
+  error?: string;
+}
+
+interface EventResult {
+  body: string;
+  head?: string;
 }
 
 export const HtmlSkeletonStatic = ({
@@ -19,14 +26,17 @@ export const HtmlSkeletonStatic = ({
   cssName?: string;
   scriptName: string;
   head?: string;
-}) => `<html>
+}) => `<!DOCTYPE html><html>
   <head>
-    ${head}${
-  cssName
-    ? `<link rel="stylesheet" type="text/css" media="screen" href="./${cssName}"/>`
-    : ''
+    <meta charset="UTF-8">
+    ${
+      cssName
+        ? `<link rel="stylesheet" type="text/css" media="screen" href="./${cssName}"/>`
+        : ''
+    }
+    ${`<script type="module" src="./${scriptName}"></script>`}${
+  head ? `\n${head}` : ''
 }
-    ${`<script type="module" src="./${scriptName}"></script>`}
   </head>
   <body>
     ${body}
@@ -36,7 +46,7 @@ export const HtmlSkeletonStatic = ({
 export const sendAndReceiveCode = (
   code: string,
   config: ConfigFile,
-): Promise<string> =>
+): Promise<EventResult> =>
   new Promise((resolve) => {
     const wsClient = new WebSocket(`ws://127.0.0.1:${config.websocketPort}`);
     const operationId = Math.random().toString(36);
@@ -47,10 +57,10 @@ export const sendAndReceiveCode = (
       const event = JSON.parse(e.toString()) as EventFromWebsocket;
       if (event.operationId === operationId) {
         if (event.type === 'rendered' && event.result) {
-          resolve(event.result as string);
+          resolve(event.result as EventResult);
         }
         if (event.type === 'error') {
-          throw new Error(event.result);
+          console.error(event.error);
         }
       }
     });
@@ -72,7 +82,8 @@ export const bundle = async ({
 }) => {
   const socketResult = await sendAndReceiveCode(code, config);
   return HtmlSkeletonStatic({
-    body: socketResult,
+    body: socketResult.body,
+    head: socketResult.head,
     scriptName: name,
     cssName: css,
   });

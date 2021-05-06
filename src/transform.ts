@@ -6,6 +6,7 @@ import { Utils } from 'graphql-zeus';
 import { DryadFunctionBodyString } from '@/fn';
 
 const fileRegex = /(.*)\.js$/;
+const cssRegex = /(.*)\.css$/;
 
 export const readFiles = (path: string) => {
   const allFiles: string[] = [];
@@ -77,14 +78,6 @@ export const transformFile = (configFile: ConfigFile, schema: string) => async (
         css: cssFile,
       }),
     },
-    css: cssFile
-      ? {
-          code: fs
-            .readFileSync(path.join(configFile.in, cssFile))
-            .toString('utf8'),
-          name: cssFile,
-        }
-      : undefined,
     js: {
       name: fileToTransform,
       code: pure.code,
@@ -109,10 +102,26 @@ export const transformFiles = async (
   if (!fs.existsSync(configFile.out)) {
     fs.mkdirSync(configFile.out);
   }
-  htmlFiles.forEach(({ css, html, js }) => {
+  htmlFiles.forEach(({ html, js }) => {
     fs.writeFileSync(path.join(configFile.out, `${html.name}`), html.code);
     fs.writeFileSync(path.join(configFile.out, `${js.name}`), js.code);
-    css && fs.writeFileSync(path.join(configFile.out, `${css.name}`), css.code);
+  });
+};
+
+export const copyFile = (configFile: ConfigFile, fileName: string) => {
+  fs.writeFileSync(
+    path.join(configFile.out, fileName),
+    fs.readFileSync(path.join(configFile.in, fileName)),
+  );
+};
+
+export const copyCssFiles = async (configFile: ConfigFile) => {
+  const files = fs.readdirSync(configFile.in);
+  files.forEach((f) => {
+    const regexResult = f.match(cssRegex);
+    if (regexResult && regexResult.length > 1) {
+      copyFile(configFile, f);
+    }
   });
 };
 

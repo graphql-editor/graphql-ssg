@@ -87,7 +87,7 @@ const Features = (features) => {
           >
             <div
               ${f.createdBy.avatar
-                ? `style="background-image:url(${f.createdBy.avatar})";`
+                ? `style="background-image:url(${f.createdBy.avatar})"`
                 : ''}
               class="
                     w-8
@@ -134,6 +134,10 @@ const Features = (features) => {
     )
     .join('');
 };
+
+export const head = () => html`
+  <title>Hello world!</title>
+`;
 
 export default async () => {
   const response = await Gql.query({

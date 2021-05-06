@@ -96,4 +96,4 @@ blah blah blah blah blah blah
 - [ ] Add image supports
 - [ ] Generate tsconfig
 - [ ] Relative imports
-- [ ] Allow head modification
+- [x] Allow head modification

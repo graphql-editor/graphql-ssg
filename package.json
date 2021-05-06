@@ -1,6 +1,6 @@
 {
   "name": "graphql-ssg",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Simple data feed HTML bundler",
   "main": "lib/index.js",
   "scripts": {
@@ -37,7 +37,6 @@
     "graphql-zeus": "^3.0.5",
     "live-server": "^1.2.1",
     "node-fetch": "^2.6.1",
-    "ora": "^5.4.0",
     "puppeteer": "^8.0.0",
     "remarkable": "^2.0.1",
     "ws": "^7.4.4",

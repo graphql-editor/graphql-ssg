@@ -8,15 +8,18 @@ describe('module.ts tests', () => {
       scriptName: 'hello.js',
       cssName: 'hello.css',
     });
-    expect(htmlskeleton).toEqual(`<html>
+    expect(htmlskeleton.replace(/(\s|\n|\t)/, '')).toEqual(
+      `<!DOCTYPE html><html>
   <head>
+    <meta charset="UTF-8">
     <link rel="stylesheet" type="text/css" media="screen" href="./hello.css"/>
     <script type="module" src="./hello.js"></script>
   </head>
   <body>
     Hello world
   </body>
-</html>`);
+</html>`.replace(/(\s|\n|\t)/, ''),
+    );
   });
   it('Sends and receive bundle info from websocket', async (done) => {
     const ws = new WebSocket.Server({ port: mock.configFile.websocketPort });

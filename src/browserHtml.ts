@@ -12,9 +12,16 @@ export const browserHtml = (config: ConfigFile) => `
         if (type === 'initial' && operationId) {
           try{
             const c = await Render(code);
-            ws.send(JSON.stringify({ type: 'rendered', result: c, operationId }));
+            if(c.default){
+              const body = await c.default()
+              const head = c.head ? await c.head() : ''
+              ws.send(JSON.stringify({ type: 'rendered', result: {
+                body: await c.default(),
+                head,
+              }, operationId }));
+            }
           }catch(e){
-            ws.send(JSON.stringify({ type: 'error', result: e.message, operationId }));
+            ws.send(JSON.stringify({ type: 'error', error: e.message, operationId }));
           }
         }
       }
@@ -24,7 +31,7 @@ export const browserHtml = (config: ConfigFile) => `
           new Blob([code], { type: 'text/javascript' }),
         );
         const module = await import(esmUrl)
-        return module.default();
+        return module
       }
 
     </script>
