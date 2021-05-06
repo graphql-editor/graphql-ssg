@@ -1,4 +1,6 @@
 import { Parser, TreeToTS } from 'graphql-zeus';
+import { parse } from 'dotenv';
+import fs from 'fs';
 // @ts-ignore
 import { Remarkable } from 'remarkable';
 import fetch from 'node-fetch';
@@ -33,7 +35,7 @@ export const GenerateGlobalTypings = ({
 }: Pick<DryadFunctionProps, 'schema' | 'url'>) => {
   const graphqlTree = Parser.parse(schema);
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
-  return [DryadDeclarations, jsSplit.definitions]
+  return [DryadDeclarations, envsTypings(), jsSplit.definitions]
     .join('\n')
     .replace(/export declare/gm, 'declare ')
     .replace(/export /gm, 'declare ');
@@ -65,6 +67,17 @@ const addonFunctions = `
   } : md
   `;
 
+const envsTypings = () => `declare var process: {
+    env: ${JSON.stringify(
+      fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {},
+    )}
+  }`;
+const envs = () => `const process = {
+  env: ${JSON.stringify(
+    fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {},
+  )}
+}`;
+
 export const DryadFunctionBodyString = async ({
   schema,
   url,
@@ -74,7 +87,7 @@ export const DryadFunctionBodyString = async ({
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
   const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
   const functions = jsString.replace(/export /gm, '');
-  const functionBody = [functions, addonFunctions, js].join('\n');
+  const functionBody = [functions, addonFunctions, envs(), js].join('\n');
   return {
     code: functionBody,
     functions,

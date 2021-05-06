@@ -1,29 +1,89 @@
 const AllTypesProps = {
-	UserBasicData:{
-		username:{
+	CreateDealRequest:{
+		featureRequest:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
-		password:{
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	SignUp:{
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	DealStatus: "enum",
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	ResetPassword:{
+		token:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		newPassword:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		}
 	},
-	Query:{
+	CreateComment:{
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
-	DealStatus: "enum",
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -74,88 +134,14 @@ const AllTypesProps = {
 			}
 		}
 	},
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
 				array:false,
 				arrayRequired:false,
-				required:false
+				required:true
 			}
-		}
-	},
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	CreateDealRequest:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
 		}
 	},
 	UserQuery:{
@@ -166,6 +152,20 @@ const AllTypesProps = {
 				arrayRequired:false,
 				required:true
 			}
+		}
+	},
+	UserBasicData:{
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
 	UserMutation:{
@@ -231,11 +231,29 @@ const AllTypesProps = {
 }
 
 const ReturnTypes = {
-	Query:{
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
 		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
+		message:"String",
+		user:"MoleUser"
+	},
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
+	},
+	FeatureRequest:{
+		comments:"Comment",
+		content:"String",
+		createdAt:"String",
+		createdBy:"MoleUser",
+		issueURL:"String",
+		languages:"ProgrammingLanguage",
+		offeredWorms:"Int",
+		repositoryURL:"String",
+		title:"String"
 	},
 	LoggedInData:{
 		token:"String"
@@ -248,33 +266,18 @@ const ReturnTypes = {
 		finishWork:"Boolean",
 		offerDealRequest:"Boolean"
 	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	MoleUser:{
-		avatar:"String",
-		company:"String",
-		createdAt:"String",
-		featureRequests:"FeatureRequest",
-		firstName:"String",
-		lastName:"String",
-		worms:"Int"
-	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
 	Comment:{
 		content:"String",
 		createdAt:"String",
 		featureRequest:"FeatureRequest",
 		index:"Int",
 		replyTo:"Comment"
+	},
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
 	},
 	ProgrammingLanguage:{
 		colour:"String",
@@ -286,35 +289,32 @@ const ReturnTypes = {
 		givenDealRequsts:"DealRequest",
 		receivedDealRequests:"DealRequest"
 	},
-	DealRequest:{
-		accepted:"Boolean",
+	MoleUser:{
+		avatar:"String",
+		company:"String",
 		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
+		featureRequests:"FeatureRequest",
+		firstName:"String",
+		lastName:"String",
+		worms:"Int"
 	},
 	UserQuery:{
 		isAdmin:"Boolean",
 		isAdminClaimPossible:"Boolean",
 		login:"LoggedInData"
 	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
 	UserMutation:{
 		forgotPassword:"Boolean",
 		makeAdmin:"Boolean",
 		register:"LoggedInData",
 		resetPassword:"Boolean"
-	},
-	FeatureRequest:{
-		comments:"Comment",
-		content:"String",
-		createdAt:"String",
-		createdBy:"MoleUser",
-		issueURL:"String",
-		languages:"ProgrammingLanguage",
-		offeredWorms:"Int",
-		repositoryURL:"String",
-		title:"String"
 	}
 }
 
@@ -739,6 +739,9 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     return remarkableRenderer.render(str);
   } : md
   
+const process = {
+  env: {"HELLO":"World"}
+}
 const Title = html`
   <h1 class="font-black">
     ✅ FeatureMole.com

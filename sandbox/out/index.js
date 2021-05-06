@@ -1,4 +1,24 @@
 const AllTypesProps = {
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
 	ResetPassword:{
 		token:{
 			type:"String",
@@ -13,34 +33,18 @@ const AllTypesProps = {
 			required:true
 		}
 	},
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		}
-	},
-	SignUp:{
-		firstName:{
+	UserBasicData:{
+		password:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
-		lastName:{
+		username:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
+			required:true
 		}
 	},
 	CreateComment:{
@@ -63,71 +67,13 @@ const AllTypesProps = {
 			required:true
 		}
 	},
-	CreateDealRequest:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserMutation:{
-		forgotPassword:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		makeAdmin:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		register:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		resetPassword:{
-			reset:{
-				type:"ResetPassword",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
 	CreateFeatureRequest:{
+		languages:{
+			type:"String",
+			array:true,
+			arrayRequired:true,
+			required:true
+		},
 		content:{
 			type:"String",
 			array:false,
@@ -145,39 +91,38 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:false
-		},
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
 		}
 	},
-	UserBasicData:{
-		password:{
+	SignUp:{
+		company:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
-			required:true
+			required:false
 		},
-		username:{
+		firstName:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
-			required:true
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
 		}
 	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
 				array:false,
 				arrayRequired:false,
-				required:true
+				required:false
 			}
 		}
 	},
-	DealStatus: "enum",
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -227,10 +172,76 @@ const AllTypesProps = {
 				required:true
 			}
 		}
+	},
+	DealStatus: "enum",
+	CreateDealRequest:{
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	UserMutation:{
+		forgotPassword:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		makeAdmin:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		register:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		resetPassword:{
+			reset:{
+				type:"ResetPassword",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
 	}
 }
 
 const ReturnTypes = {
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
+	},
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
+	},
 	Comment:{
 		content:"String",
 		createdAt:"String",
@@ -238,14 +249,11 @@ const ReturnTypes = {
 		index:"Int",
 		replyTo:"Comment"
 	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
-	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
 	},
 	DealRequest:{
 		accepted:"Boolean",
@@ -255,16 +263,21 @@ const ReturnTypes = {
 		message:"String",
 		user:"MoleUser"
 	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
 	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
+	MoleUserMutation:{
+		acceptDealRequest:"Boolean",
+		closeDeal:"Boolean",
+		createComment:"Boolean",
+		createFeatureRequest:"Boolean",
+		finishWork:"Boolean",
+		offerDealRequest:"Boolean"
+	},
+	LoggedInData:{
+		token:"String"
 	},
 	FeatureRequest:{
 		comments:"Comment",
@@ -277,36 +290,6 @@ const ReturnTypes = {
 		repositoryURL:"String",
 		title:"String"
 	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
-	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
-	},
-	LoggedInData:{
-		token:"String"
-	},
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
 	MoleUser:{
 		avatar:"String",
 		company:"String",
@@ -315,6 +298,23 @@ const ReturnTypes = {
 		firstName:"String",
 		lastName:"String",
 		worms:"Int"
+	},
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	UserMutation:{
+		forgotPassword:"Boolean",
+		makeAdmin:"Boolean",
+		register:"LoggedInData",
+		resetPassword:"Boolean"
 	}
 }
 
@@ -739,6 +739,9 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     return remarkableRenderer.render(str);
   } : md
   
+const process = {
+  env: {"HELLO":"World"}
+}
 const Title = html`
   <h1 class="font-black">
     ✅ FeatureMole.com
@@ -879,7 +882,6 @@ const Features = (features) => {
 export const head = () => html`
   <title>Hello world!</title>
 `;
-
 export default async () => {
   const response = await Gql.query({
     home: {

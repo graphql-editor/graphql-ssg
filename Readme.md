@@ -87,6 +87,10 @@ blah blah blah blah blah blah
 `;
 ```
 
+## Environment variables
+
+You can use variables like normally from `process.env`. All variables should be placed in `.env` file side by side with `graphql-ssg.json` file.
+
 ## Roadmap
 
 - [ ] Add esbuild
@@ -97,3 +101,4 @@ blah blah blah blah blah blah
 - [ ] Generate tsconfig
 - [ ] Relative imports
 - [x] Allow head modification
+- [x] Pass env to browser

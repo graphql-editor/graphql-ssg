@@ -4,7 +4,6 @@ export const browserHtml = (config: ConfigFile) => `
 <html>
   <head>
     <script type="module">
-
       const ws = new WebSocket('ws://127.0.0.1:${config.websocketPort}');
 
       ws.onmessage = async (ev) => {
