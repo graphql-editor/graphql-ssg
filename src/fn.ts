@@ -67,16 +67,20 @@ const addonFunctions = `
   } : md
   `;
 
-const envsTypings = () => `declare var process: {
-    env: ${JSON.stringify(
-      fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {},
-    )}
+const envsTypings = () => {
+  const envs = fs.existsSync('./.env')
+    ? parse(fs.readFileSync('./.env'))
+    : undefined;
+  const envT: string[] = [];
+  if (envs) {
+    Object.keys(envs as Record<string, string>).forEach((k) => {
+      envT.push(`${k}: string`);
+    });
+  }
+  return `declare const ssg: {
+    env: {${envT.join(';\\n')}}
   }`;
-const envs = () => `const process = {
-  env: ${JSON.stringify(
-    fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {},
-  )}
-}`;
+};
 
 export const DryadFunctionBodyString = async ({
   schema,
@@ -87,7 +91,7 @@ export const DryadFunctionBodyString = async ({
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
   const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
   const functions = jsString.replace(/export /gm, '');
-  const functionBody = [functions, addonFunctions, envs(), js].join('\n');
+  const functionBody = [functions, addonFunctions, js].join('\n');
   return {
     code: functionBody,
     functions,

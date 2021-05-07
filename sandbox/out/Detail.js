@@ -1,22 +1,90 @@
 const AllTypesProps = {
-	CreateDealRequest:{
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	UserBasicData:{
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateComment:{
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		featureRequest:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
+		}
+	},
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	UserMutation:{
+		forgotPassword:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
+		makeAdmin:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
+		register:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		resetPassword:{
+			reset:{
+				type:"ResetPassword",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	},
 	SignUp:{
@@ -40,14 +108,60 @@ const AllTypesProps = {
 		}
 	},
 	DealStatus: "enum",
-	Mutation:{
-		signUp:{
+	UserQuery:{
+		login:{
 			user:{
-				type:"SignUp",
+				type:"UserBasicData",
 				array:false,
 				arrayRequired:false,
-				required:false
+				required:true
 			}
+		}
+	},
+	CreateDealRequest:{
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	CreateFeatureRequest:{
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		issueURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		languages:{
+			type:"String",
+			array:true,
+			arrayRequired:true,
+			required:true
+		},
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
 	ResetPassword:{
@@ -58,26 +172,6 @@ const AllTypesProps = {
 			required:true
 		},
 		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
@@ -133,116 +227,19 @@ const AllTypesProps = {
 				required:true
 			}
 		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserBasicData:{
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	UserMutation:{
-		forgotPassword:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		makeAdmin:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		register:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		resetPassword:{
-			reset:{
-				type:"ResetPassword",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	CreateFeatureRequest:{
-		issueURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
-		},
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
 	}
 }
 
 const ReturnTypes = {
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
+	Query:{
 		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
 	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
 	},
 	FeatureRequest:{
 		comments:"Comment",
@@ -255,16 +252,16 @@ const ReturnTypes = {
 		repositoryURL:"String",
 		title:"String"
 	},
-	LoggedInData:{
-		token:"String"
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
 	},
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
+	UserMutation:{
+		forgotPassword:"Boolean",
+		makeAdmin:"Boolean",
+		register:"LoggedInData",
+		resetPassword:"Boolean"
 	},
 	Comment:{
 		content:"String",
@@ -273,21 +270,34 @@ const ReturnTypes = {
 		index:"Int",
 		replyTo:"Comment"
 	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
 	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
+	LoggedInData:{
+		token:"String"
 	},
 	MoleUserQuery:{
 		deals:"Deal",
 		featureRequests:"FeatureRequest",
 		givenDealRequsts:"DealRequest",
 		receivedDealRequests:"DealRequest"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -298,23 +308,13 @@ const ReturnTypes = {
 		lastName:"String",
 		worms:"Int"
 	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
+	MoleUserMutation:{
+		acceptDealRequest:"Boolean",
+		closeDeal:"Boolean",
+		createComment:"Boolean",
+		createFeatureRequest:"Boolean",
+		finishWork:"Boolean",
+		offerDealRequest:"Boolean"
 	}
 }
 
@@ -739,9 +739,6 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     return remarkableRenderer.render(str);
   } : md
   
-const process = {
-  env: {"HELLO":"World"}
-}
 const Title = html`
   <h1 class="font-black">
     ✅ FeatureMole.com

@@ -1,5 +1,4 @@
 import { ConfigFile } from '@/config';
-
 export const browserHtml = (config: ConfigFile) => `
 <html>
   <head>
@@ -27,7 +26,7 @@ export const browserHtml = (config: ConfigFile) => `
 
       async function Render(code) {
         const esmUrl = URL.createObjectURL(
-          new Blob([code], { type: 'text/javascript' }),
+          new Blob([[code].join("\\n")], { type: 'text/javascript' }),
         );
         const module = await import(esmUrl)
         return module

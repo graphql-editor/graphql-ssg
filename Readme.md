@@ -102,3 +102,4 @@ You can use variables like normally from `process.env`. All variables should be 
 - [ ] Relative imports
 - [x] Allow head modification
 - [x] Pass env to browser
+- [ ] Provide a way to inject data

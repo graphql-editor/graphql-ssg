@@ -138,6 +138,7 @@ const Features = (features) => {
 export const head = () => html`
   <title>Hello world!</title>
 `;
+
 export default async () => {
   const response = await Gql.query({
     home: {
