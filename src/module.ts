@@ -2,22 +2,10 @@ import { Utils } from 'graphql-zeus';
 import { GenerateGlobalTypings } from './fn';
 import WebSocket from 'ws';
 import { ConfigFile } from '@/config';
-import fs from 'fs';
-import { parse } from 'dotenv';
 import { message } from '@/console';
 
-const envs = () =>
-  fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {};
-
-const internals = () => {
-  const ssg = {
-    env: envs(),
-  };
-  return `const ssg = ${JSON.stringify(ssg, null, 4)}`;
-};
-
 interface EventFromWebsocket {
-  type: 'rendered' | 'error';
+  type: 'rendered' | 'error' | 'module';
   operationId: string;
   result: EventResult;
   head?: string;
@@ -57,13 +45,12 @@ export const HtmlSkeletonStatic = ({
 </html>`;
 
 export const sendAndReceiveCode = (
-  code: string,
+  filePath: string,
   config: ConfigFile,
-): Promise<EventResult> =>
+): Promise<EventResult | undefined> =>
   new Promise((resolve) => {
     const wsClient = new WebSocket(`ws://127.0.0.1:${config.websocketPort}`);
     const operationId = Math.random().toString(36);
-    const inject = internals();
     wsClient.on('error', (e) => {
       message('Sending code to browser', 'yellowBright');
       throw new Error(e.message);
@@ -78,6 +65,10 @@ export const sendAndReceiveCode = (
         if (event.type === 'error') {
           message('Unexpected error ocurred', 'red');
           console.error(event.error);
+          resolve(undefined);
+        }
+        if (event.type === 'module') {
+          resolve(undefined);
         }
       }
     });
@@ -85,7 +76,7 @@ export const sendAndReceiveCode = (
       message('Sending code to browser', 'yellowBright');
       wsClient.send(
         JSON.stringify({
-          code: [inject, code].join('\n'),
+          code: filePath,
           type: 'initial',
           operationId,
         }),
@@ -94,17 +85,18 @@ export const sendAndReceiveCode = (
   });
 
 export const bundle = async ({
-  code,
   css,
   config,
   name,
 }: {
-  code: string;
   name: string;
   css?: string;
   config: ConfigFile;
 }) => {
-  const socketResult = await sendAndReceiveCode(code, config);
+  const socketResult = await sendAndReceiveCode(name, config);
+  if (!socketResult) {
+    return;
+  }
   return HtmlSkeletonStatic({
     body: socketResult.body,
     head: socketResult.head,

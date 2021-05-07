@@ -2,8 +2,8 @@ import fs from 'fs';
 import path from 'path';
 import { bundle, globalTypings } from './module';
 import { ConfigFile } from './config';
-import { Utils } from 'graphql-zeus';
 import { DryadFunctionBodyString } from '@/fn';
+import { message } from '@/console';
 
 const fileRegex = /(.*)\.js$/;
 const cssRegex = /(.*)\.css$/;
@@ -55,56 +55,72 @@ export const hasTwinFile = (
   return twinFile;
 };
 
-export const transformFile = (configFile: ConfigFile, schema: string) => async (
-  fileToTransform: string,
-) => {
+export const injectHtmlFile = async ({
+  fileToTransform,
+  configFile,
+}: {
+  fileToTransform: string;
+  configFile: ConfigFile;
+}) => {
   const cssFile = hasTwinFile(fileToTransform, configFile, 'css');
-  const js = fs
-    .readFileSync(path.join(configFile.in, fileToTransform))
-    .toString('utf8');
-  const pure = await DryadFunctionBodyString({
-    schema,
-    js,
-    url: configFile.url,
-  });
-
   return {
-    html: {
-      name: createTwinFile(fileToTransform, 'html'),
-      code: await bundle({
-        name: fileToTransform,
-        code: pure.code,
-        config: configFile,
-        css: cssFile,
-      }),
-    },
-    js: {
+    name: createTwinFile(fileToTransform, 'html'),
+    code: await bundle({
       name: fileToTransform,
-      code: pure.code,
-    },
+      config: configFile,
+      css: cssFile,
+    }),
   };
 };
 
-export const transformFiles = async (
-  configFile: ConfigFile,
-  files: string[],
-) => {
-  const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
-  const transformWithConfig = transformFile(configFile, schema);
-  const htmlFiles = await Promise.all(files.map(transformWithConfig));
+export const generateTypingsFiles = async (configFile: ConfigFile) => {
   const typings = await globalTypings({ schemaUrl: configFile.url });
-  files.forEach((f) => {
-    fs.writeFileSync(
-      path.join(configFile.in, createTwinFileWithRegex(f, 'd.ts', fileRegex)),
-      typings,
-    );
+  fs.writeFileSync(path.join(configFile.in, 'ssg.d.ts'), typings);
+};
+
+export const injectJs = ({
+  configFile,
+  file,
+  schema,
+}: {
+  configFile: ConfigFile;
+  file: string;
+  schema: string;
+}) => {
+  const pure = DryadFunctionBodyString({
+    schema,
+    url: configFile.url,
   });
+  return [pure, fs.readFileSync(path.join(configFile.in, file))].join('\n');
+};
+
+export const transformFiles = async ({
+  configFile,
+  files,
+  schema,
+}: {
+  configFile: ConfigFile;
+  files: string[];
+  schema: string;
+}) => {
+  const htmlFiles = await Promise.all(
+    files.map((f) => injectHtmlFile({ fileToTransform: f, configFile })),
+  );
   if (!fs.existsSync(configFile.out)) {
     fs.mkdirSync(configFile.out);
   }
-  htmlFiles.forEach(({ html, js }) => {
-    fs.writeFileSync(path.join(configFile.out, `${html.name}`), html.code);
-    fs.writeFileSync(path.join(configFile.out, `${js.name}`), js.code);
+  files.forEach((f) => {
+    message(`Writing ${path.join(configFile.out, f)}`, 'yellow');
+    fs.writeFileSync(
+      path.join(configFile.out, f),
+      injectJs({ configFile, file: f, schema }),
+    );
+  });
+  htmlFiles.forEach(({ name, code }) => {
+    if (code) {
+      message(`Writing ${path.join(configFile.out, name)}`, 'yellow');
+      fs.writeFileSync(path.join(configFile.out, name), code);
+    }
   });
 };
 
@@ -115,7 +131,7 @@ export const copyFile = (configFile: ConfigFile, fileName: string) => {
   );
 };
 
-export const copyCssFiles = async (configFile: ConfigFile) => {
+export const copyCssFiles = (configFile: ConfigFile) => {
   const files = fs.readdirSync(configFile.in);
   files.forEach((f) => {
     const regexResult = f.match(cssRegex);

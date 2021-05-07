@@ -7,7 +7,6 @@ import fetch from 'node-fetch';
 export interface DryadFunctionProps {
   schema: string;
   url: string;
-  js: string;
 }
 
 export interface DryadFunctionResult {
@@ -78,22 +77,18 @@ const envsTypings = () => {
     });
   }
   return `declare const ssg: {
-    env: {${envT.join(';\\n')}}
+    env: {${envT.join(';\\n')}};
+    host: string
   }`;
 };
 
-export const DryadFunctionBodyString = async ({
+export const DryadFunctionBodyString = ({
   schema,
   url,
-  js,
 }: DryadFunctionProps) => {
   const graphqlTree = Parser.parse(schema);
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
   const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
   const functions = jsString.replace(/export /gm, '');
-  const functionBody = [functions, addonFunctions, js].join('\n');
-  return {
-    code: functionBody,
-    functions,
-  };
+  return [functions, addonFunctions].join('\n');
 };

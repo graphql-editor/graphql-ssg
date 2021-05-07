@@ -1,14 +1,4 @@
 const AllTypesProps = {
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -59,6 +49,21 @@ const AllTypesProps = {
 			}
 		}
 	},
+	UserBasicData:{
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	DealStatus: "enum",
 	Mutation:{
 		signUp:{
 			user:{
@@ -69,48 +74,34 @@ const AllTypesProps = {
 			}
 		}
 	},
-	CreateDealRequest:{
-		featureRequest:{
+	CreateComment:{
+		content:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
+		replyToIndex:{
+			type:"Int",
 			array:false,
 			arrayRequired:false,
 			required:false
+		},
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
 				array:false,
 				arrayRequired:false,
 				required:true
 			}
-		}
-	},
-	UserBasicData:{
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
 		}
 	},
 	UserMutation:{
@@ -147,33 +138,7 @@ const AllTypesProps = {
 			}
 		}
 	},
-	CreateComment:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
 	SignUp:{
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
 		firstName:{
 			type:"String",
 			array:false,
@@ -185,6 +150,22 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	},
 	ResetPassword:{
@@ -201,14 +182,27 @@ const AllTypesProps = {
 			required:true
 		}
 	},
-	DealStatus: "enum",
-	CreateFeatureRequest:{
-		repositoryURL:{
+	CreateDealRequest:{
+		featureRequest:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	CreateFeatureRequest:{
 		issueURL:{
 			type:"String",
 			array:false,
@@ -226,20 +220,17 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:true
+		},
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	}
 }
 
 const ReturnTypes = {
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
-	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
-	},
 	MoleUserMutation:{
 		acceptDealRequest:"Boolean",
 		closeDeal:"Boolean",
@@ -247,6 +238,26 @@ const ReturnTypes = {
 		createFeatureRequest:"Boolean",
 		finishWork:"Boolean",
 		offerDealRequest:"Boolean"
+	},
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
+	},
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
+	},
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
+	},
+	LoggedInData:{
+		token:"String"
 	},
 	FeatureRequest:{
 		comments:"Comment",
@@ -259,34 +270,16 @@ const ReturnTypes = {
 		repositoryURL:"String",
 		title:"String"
 	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
 	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
-	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	LoggedInData:{
-		token:"String"
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
 	},
 	UserMutation:{
 		forgotPassword:"Boolean",
@@ -294,11 +287,18 @@ const ReturnTypes = {
 		register:"LoggedInData",
 		resetPassword:"Boolean"
 	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
+	},
+	Comment:{
+		content:"String",
+		createdAt:"String",
+		featureRequest:"FeatureRequest",
+		index:"Int",
+		replyTo:"Comment"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -309,12 +309,12 @@ const ReturnTypes = {
 		lastName:"String",
 		worms:"Int"
 	},
-	Comment:{
-		content:"String",
+	Deal:{
 		createdAt:"String",
+		deadline:"String",
 		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comment"
+		status:"DealStatus",
+		user:"MoleUser"
 	}
 }
 
@@ -739,6 +739,8 @@ const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole
     return remarkableRenderer.render(str);
   } : md
   
+import { Features } from './Features.js';
+
 const Title = html`
   <h1 class="font-black">
     ✅ FeatureMole.com
@@ -762,124 +764,9 @@ md`
 - das as
 `;
 
-const WormIt = (worms) => html`
-  <a
-    class="
-        text-blue-600
-        border
-        border-blue-600
-        hover:bg-blue-600
-        hover:text-white
-        flex
-        items-center
-        justify-center
-        cursor-pointer
-        rounded
-        font-bold
-        px-5
-        py-2
-        text-xs
-        ml-auto
-    "
-  >
-    Try for ${worms}🐛
-  </a>
-`;
-
-const Lang = (l) => html`
-  <div
-    class="
-    bg-${l.colour}-600
-    text-white
-    text-xs
-    p-1
-"
-  >
-    ${l.name}
-  </div>
-`;
-
-const Features = (features) => {
-  return features
-    .map(
-      (f) => html`
-        <div
-          class="
-        bg-white
-        p-5
-        rounded
-        cursor-pointer
-        hover:bg-gray-100
-        transition
-        duration-500 
-        ease-in-out 
-        hover:bg-blue-200 
-        transform 
-        hover:-translate-y-1 
-        hover:scale-105
-    "
-        >
-          <div
-            class="
-            flex
-            flex-row
-            items-start
-        "
-          >
-            <div
-              ${f.createdBy.avatar
-                ? `style="background-image:url(${f.createdBy.avatar})"`
-                : ''}
-              class="
-                    w-8
-                    h-12
-                    rounded
-                    bg-contain
-                    bg-gray-400
-                    mr-4
-                "
-            ></div>
-            <div
-              class="
-                flex-1
-            "
-            >
-              <div class="text-xs text-gray-600">
-                Created by ${f.createdBy.firstName} from ${f.createdBy.company}
-                on ${new Date(f.createdAt).toDateString()}
-              </div>
-              <div class="text-xs font-bold text-gray-600">
-                ${f.repositoryURL}
-              </div>
-              <div class="mb-4">${f.content}</div>
-              <div
-                class="
-                    flex
-                    flex-row
-                    flex-wrap
-                    space-x-1
-                "
-              >
-                ${f.languages
-                  .slice(0, 3)
-                  .map((l) => Lang(l))
-                  .join('')}
-              </div>
-              <div class="flex">
-                ${WormIt(f.offeredWorms)}
-              </div>
-            </div>
-          </div>
-        </div>
-      `,
-    )
-    .join('');
-};
-
 export const head = () => html`
   <title>Hello world!</title>
 `;
-
 export default async () => {
   const response = await Gql.query({
     home: {
@@ -905,7 +792,7 @@ export default async () => {
   return html`
     <div
       class="
-    bg-gray-200
+    bg-gray-100
     font-noto
 "
     >
