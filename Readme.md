@@ -55,13 +55,69 @@ Build
 graphql-ssg --build
 ```
 
+## How it works?
+
 ### File must contain export default
 
 String returned in contained in file export default is generated via SSG phase.
 
+```js
+export default () => {
+  return html`
+    <div>Hello world</div>
+  `;
+};
+```
+
+To have syntax coloring in html pleas install appropriate litelement extension for your IDE.
+
+### Config
+
+Config file can be generated or created manually. It should contain all the following values.
+
+```json
+{
+  "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql",
+  "in": "./pages",
+  "out": "./out",
+  "websocketPort": 1416,
+  "port": 8082
+}
+```
+
+#### Config Injection
+
+Config file is injected and typed. It is available only inside `export default` and `export const head` function to prevent leaking of secrets.
+
+### Environment variables
+
+Environment variables must be put side by side to `graphql-ssg.json` in `.env` file.
+
+Usage in JS example:
+
+```js
+const graphQLClient = Chain(ssg.env.HOST, {
+  headers: {
+    Authorization: `Bearer ${ssg.env.TOKEN}`,
+  },
+});
+```
+
+It is available only inside `export default` and `export const head` function to prevent leaking of secrets.
+
 ### Injected built in helper code syntax functions
 
 GraphQL SSG comes with injected functions
+
+#### Chain
+
+Works like fetch to GraphQL, where you need to provide host and/or options to receive fully Autocompleted client for schema url from your config.
+
+```js
+const graphQLClient = Chain(ssg.config.host);
+
+const response = await graphQLClient.query({ people: true });
+```
 
 #### html
 
@@ -87,9 +143,13 @@ blah blah blah blah blah blah
 `;
 ```
 
-## Environment variables
+#### head
 
-You can use variables like normally from `process.env`. All variables should be placed in `.env` file side by side with `graphql-ssg.json` file.
+```js
+export const head = () => html`<title>Hello world!</div>`;
+```
+
+## TypeScript
 
 ## Roadmap
 

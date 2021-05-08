@@ -25,6 +25,7 @@ const envs = () =>
 const internals = (config: ConfigFile, build?: boolean) => {
   const ssg = {
     env: envs(),
+    config,
     host: build ? `http://0.0.0.0:${config.port}` : '.',
   };
   return `const ssg = ${JSON.stringify(ssg, null, 4)}`;
@@ -77,7 +78,10 @@ const initBrowserBundler = async ({
     }
     if (p?.endsWith('.js')) {
       const filePath = path.join(configFile.in, p);
-      const dryad = DryadFunctionBodyString({ schema, url: configFile.url });
+      const dryad = DryadFunctionBodyString({
+        schema,
+        configFile,
+      });
       //TODO: bundling goes here
       const pathContent = fs.readFileSync(filePath).toString('utf-8');
       const fContent = [dryad, internals(configFile), pathContent].join('\n');

@@ -74,7 +74,9 @@ export const injectHtmlFile = async ({
 };
 
 export const generateTypingsFiles = async (configFile: ConfigFile) => {
-  const typings = await globalTypings({ schemaUrl: configFile.url });
+  const typings = await globalTypings({
+    configFile,
+  });
   fs.writeFileSync(path.join(configFile.in, 'ssg.d.ts'), typings);
 };
 
@@ -89,7 +91,7 @@ export const injectJs = ({
 }) => {
   const pure = DryadFunctionBodyString({
     schema,
-    url: configFile.url,
+    configFile,
   });
   return [pure, fs.readFileSync(path.join(configFile.in, file))].join('\n');
 };
@@ -147,6 +149,6 @@ export const generateGlobalFile = async (
 ) => {
   fs.writeFileSync(
     path.join(configFile.in, `${filename}.d.ts`),
-    await globalTypings({ schemaUrl: configFile.url }),
+    await globalTypings({ configFile }),
   );
 };

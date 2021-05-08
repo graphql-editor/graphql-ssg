@@ -4,9 +4,11 @@ import fs from 'fs';
 // @ts-ignore
 import { Remarkable } from 'remarkable';
 import fetch from 'node-fetch';
+import { ConfigFile } from './config';
+
 export interface DryadFunctionProps {
   schema: string;
-  url: string;
+  configFile: ConfigFile;
 }
 
 export interface DryadFunctionResult {
@@ -30,11 +32,11 @@ declare var md: (strings: TemplateStringsArray, ...expr: string[]) => string
 
 export const GenerateGlobalTypings = ({
   schema,
-  url,
-}: Pick<DryadFunctionProps, 'schema' | 'url'>) => {
+  configFile,
+}: DryadFunctionProps) => {
   const graphqlTree = Parser.parse(schema);
-  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
-  return [DryadDeclarations, envsTypings(), jsSplit.definitions]
+  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
+  return [DryadDeclarations, envsTypings(configFile), jsSplit.definitions]
     .join('\n')
     .replace(/export declare/gm, 'declare ')
     .replace(/export /gm, 'declare ');
@@ -66,28 +68,42 @@ const addonFunctions = `
   } : md
   `;
 
-const envsTypings = () => {
+const tsType = (a: unknown): string => {
+  if (a === undefined) {
+    return '{}';
+  }
+  if (Array.isArray(a)) {
+    return `[${a.map((k) => tsType(a[k])).join(', ')}]`;
+  }
+  if (typeof a === 'object') {
+    if (a === null) {
+      return 'null';
+    }
+    return `{${Object.keys(a)
+      .map((k) => `${k}: ${tsType((a as Record<string, string>)[k])}`)
+      .join(';\n')}}`;
+  }
+  return typeof a;
+};
+
+const envsTypings = (configFile: ConfigFile) => {
   const envs = fs.existsSync('./.env')
     ? parse(fs.readFileSync('./.env'))
     : undefined;
-  const envT: string[] = [];
-  if (envs) {
-    Object.keys(envs as Record<string, string>).forEach((k) => {
-      envT.push(`${k}: string`);
-    });
-  }
-  return `declare const ssg: {
-    env: {${envT.join(';\\n')}};
-    host: string
-  }`;
+  const ssg = {
+    envs,
+    config: configFile,
+  };
+  return `
+declare const ssg: ${tsType(ssg)}`;
 };
 
 export const DryadFunctionBodyString = ({
   schema,
-  url,
+  configFile,
 }: DryadFunctionProps) => {
   const graphqlTree = Parser.parse(schema);
-  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser', url);
+  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
   const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
   const functions = jsString.replace(/export /gm, '');
   return [functions, addonFunctions].join('\n');

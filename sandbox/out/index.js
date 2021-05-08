@@ -1,4 +1,18 @@
 const AllTypesProps = {
+	UserBasicData:{
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -49,31 +63,6 @@ const AllTypesProps = {
 			}
 		}
 	},
-	UserBasicData:{
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	DealStatus: "enum",
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		}
-	},
 	CreateComment:{
 		content:{
 			type:"String",
@@ -92,6 +81,27 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:true
+		}
+	},
+	DealStatus: "enum",
+	CreateDealRequest:{
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
 		}
 	},
 	UserQuery:{
@@ -158,13 +168,13 @@ const AllTypesProps = {
 			required:false
 		}
 	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
 				array:false,
 				arrayRequired:false,
-				required:true
+				required:false
 			}
 		}
 	},
@@ -182,27 +192,13 @@ const AllTypesProps = {
 			required:true
 		}
 	},
-	CreateDealRequest:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
 	CreateFeatureRequest:{
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
 		issueURL:{
 			type:"String",
 			array:false,
@@ -220,12 +216,16 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:true
-		},
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
+		}
+	},
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
 		}
 	}
 }
@@ -239,42 +239,8 @@ const ReturnTypes = {
 		finishWork:"Boolean",
 		offerDealRequest:"Boolean"
 	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
-	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
-	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
 	LoggedInData:{
 		token:"String"
-	},
-	FeatureRequest:{
-		comments:"Comment",
-		content:"String",
-		createdAt:"String",
-		createdBy:"MoleUser",
-		issueURL:"String",
-		languages:"ProgrammingLanguage",
-		offeredWorms:"Int",
-		repositoryURL:"String",
-		title:"String"
-	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
 	},
 	UserQuery:{
 		isAdmin:"Boolean",
@@ -287,11 +253,20 @@ const ReturnTypes = {
 		register:"LoggedInData",
 		resetPassword:"Boolean"
 	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
+	},
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
+	},
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
 	},
 	Comment:{
 		content:"String",
@@ -299,6 +274,38 @@ const ReturnTypes = {
 		featureRequest:"FeatureRequest",
 		index:"Int",
 		replyTo:"Comment"
+	},
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
+	},
+	FeatureRequest:{
+		comments:"Comment",
+		content:"String",
+		createdAt:"String",
+		createdBy:"MoleUser",
+		issueURL:"String",
+		languages:"ProgrammingLanguage",
+		offeredWorms:"Int",
+		repositoryURL:"String",
+		title:"String"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -308,13 +315,6 @@ const ReturnTypes = {
 		firstName:"String",
 		lastName:"String",
 		worms:"Int"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
 	}
 }
 
@@ -713,8 +713,6 @@ mutation: ZeusSelect()
 };
     
 
-const Gql = Chain('https://faker.graphqleditor.com/explore-projects/feature-mole/graphql')
-
   import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
   var html = typeof html === "undefined" ? (strings, ...expr) => {
     let str = '';
@@ -768,7 +766,7 @@ export const head = () => html`
   <title>Hello world!</title>
 `;
 export default async () => {
-  const response = await Gql.query({
+  const response = await Chain(ssg.config.url).query({
     home: {
       title: true,
       content: true,

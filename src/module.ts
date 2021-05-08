@@ -105,7 +105,11 @@ export const bundle = async ({
   });
 };
 
-export const globalTypings = async ({ schemaUrl }: { schemaUrl: string }) => {
-  const schema = await Utils.getFromUrl(schemaUrl);
-  return GenerateGlobalTypings({ schema, url: schemaUrl });
+export const globalTypings = async ({
+  configFile,
+}: {
+  configFile: ConfigFile;
+}) => {
+  const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
+  return GenerateGlobalTypings({ schema, configFile });
 };
