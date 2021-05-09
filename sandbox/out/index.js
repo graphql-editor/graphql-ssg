@@ -1,18 +1,39 @@
 const AllTypesProps = {
-	UserBasicData:{
-		username:{
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	ResetPassword:{
+		token:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
-		password:{
+		newPassword:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		}
 	},
+	DealStatus: "enum",
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -63,27 +84,6 @@ const AllTypesProps = {
 			}
 		}
 	},
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	DealStatus: "enum",
 	CreateDealRequest:{
 		featureRequest:{
 			type:"String",
@@ -104,14 +104,68 @@ const AllTypesProps = {
 			required:false
 		}
 	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
 				array:false,
 				arrayRequired:false,
 				required:true
 			}
+		}
+	},
+	SignUp:{
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	UserBasicData:{
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateComment:{
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	},
 	UserMutation:{
@@ -148,57 +202,7 @@ const AllTypesProps = {
 			}
 		}
 	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		}
-	},
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
 	CreateFeatureRequest:{
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
 		issueURL:{
 			type:"String",
 			array:false,
@@ -216,42 +220,33 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:true
-		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
+		},
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
 		}
 	}
 }
 
 const ReturnTypes = {
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
-	},
-	LoggedInData:{
-		token:"String"
+	Comment:{
+		content:"String",
+		createdAt:"String",
+		featureRequest:"FeatureRequest",
+		index:"Int",
+		replyTo:"Comment"
 	},
 	UserQuery:{
 		isAdmin:"Boolean",
 		isAdminClaimPossible:"Boolean",
 		login:"LoggedInData"
 	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
 	},
 	ProgrammingLanguage:{
 		colour:"String",
@@ -262,26 +257,6 @@ const ReturnTypes = {
 		featureRequests:"FeatureRequest",
 		givenDealRequsts:"DealRequest",
 		receivedDealRequests:"DealRequest"
-	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
-	Comment:{
-		content:"String",
-		createdAt:"String",
-		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comment"
-	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
 	},
 	FeatureRequest:{
 		comments:"Comment",
@@ -294,18 +269,30 @@ const ReturnTypes = {
 		repositoryURL:"String",
 		title:"String"
 	},
-	Deal:{
+	DealRequest:{
+		accepted:"Boolean",
 		createdAt:"String",
 		deadline:"String",
 		featureRequest:"FeatureRequest",
-		status:"DealStatus",
+		message:"String",
 		user:"MoleUser"
+	},
+	MoleUserMutation:{
+		acceptDealRequest:"Boolean",
+		closeDeal:"Boolean",
+		createComment:"Boolean",
+		createFeatureRequest:"Boolean",
+		finishWork:"Boolean",
+		offerDealRequest:"Boolean"
 	},
 	Query:{
 		featureRequest:"FeatureRequest",
 		home:"FeatureRequest",
 		moleUserQuery:"MoleUserQuery",
 		user:"UserQuery"
+	},
+	LoggedInData:{
+		token:"String"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -315,6 +302,19 @@ const ReturnTypes = {
 		firstName:"String",
 		lastName:"String",
 		worms:"Int"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	UserMutation:{
+		forgotPassword:"Boolean",
+		makeAdmin:"Boolean",
+		register:"LoggedInData",
+		resetPassword:"Boolean"
 	}
 }
 
@@ -745,8 +745,8 @@ const Title = html`
   </h1>
 `;
 const Motto = html`
-  <h2 class="text-gray-100">
-    Resolve your issues immediately
+  <h2 class="text-gray-400">
+    Resolve your issues
   </h2>
 `;
 

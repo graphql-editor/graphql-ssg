@@ -76,7 +76,7 @@ export const sendAndReceiveCode = (
       message('Sending code to browser', 'yellowBright');
       wsClient.send(
         JSON.stringify({
-          code: filePath,
+          code: `${Math.random().toString(32)}/${filePath}`,
           type: 'initial',
           operationId,
         }),

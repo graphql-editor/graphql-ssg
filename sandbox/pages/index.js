@@ -6,8 +6,8 @@ const Title = html`
   </h1>
 `;
 const Motto = html`
-  <h2 class="text-gray-100">
-    Resolve your issues immediately
+  <h2 class="text-gray-400">
+    Resolve your issues
   </h2>
 `;
 

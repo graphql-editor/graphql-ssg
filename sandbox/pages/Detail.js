@@ -135,7 +135,7 @@ const Features = (features) => {
     .join('');
 };
 export default async () => {
-  const response = await Gql.query({
+  const response = await Chain(ssg.config.url).query({
     home: {
       title: true,
       content: true,

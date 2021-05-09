@@ -93,7 +93,7 @@ export const Features = (features) => {
                       flex
                       flex-row
                       flex-wrap
-                      space-x-1
+                      space-x-2
                   "
               >
                 ${f.languages

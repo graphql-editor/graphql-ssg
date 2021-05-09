@@ -27,35 +27,9 @@ declare type ValueTypes = {
 	replyTo?:ValueTypes["Comment"],
 		__typename?: true
 }>;
-	/** Request to help on the issue */
-["DealRequest"]: AliasType<{
-	/** If offer is accepted */
-	accepted?:true,
-	createdAt?:true,
-	/** Deadline proposed by the user (must be sooner than deadline of feature request) */
-	deadline?:true,
-	/** Feature request this deal is about */
-	featureRequest?:ValueTypes["FeatureRequest"],
-	/** Additional message */
-	message?:true,
-	/** OUser who offered deal */
-	user?:ValueTypes["MoleUser"],
-		__typename?: true
-}>;
-	["Mutation"]: AliasType<{
-	/** pipe to mole user mutations */
-	moleUser?:ValueTypes["MoleUserMutation"],
-signUp?: [{	user?:ValueTypes["SignUp"]},true],
-	/** pipe to user related mutations in users system */
-	user?:ValueTypes["UserMutation"],
-		__typename?: true
-}>;
-	/** Reset password details */
-["ResetPassword"]: {
-	/** token received from email */
-	token:string,
-	/** New password for the user */
-	newPassword:string
+	["UserBasicData"]: {
+	username:string,
+	password:string
 };
 	/** Request Issue help */
 ["FeatureRequest"]: AliasType<{
@@ -79,25 +53,24 @@ signUp?: [{	user?:ValueTypes["SignUp"]},true],
 	title?:true,
 		__typename?: true
 }>;
-	["CreateFeatureRequest"]: {
-	/** git repository url */
-	repositoryURL:string,
-	/** url of the issue in the repository */
-	issueURL?:string,
-	/** programming languages to be used to solve the issue */
-	languages:string[],
-	/** Extra information for featuremole.com users */
-	content:string
-};
-	["Query"]: AliasType<{
-featureRequest?: [{	featureRequest:string},ValueTypes["FeatureRequest"]],
-	/** Feature requests displayed on the home page */
-	home?:ValueTypes["FeatureRequest"],
-	moleUserQuery?:ValueTypes["MoleUserQuery"],
-	/** Queries for logged in users */
-	user?:ValueTypes["UserQuery"],
+	["ProgrammingLanguage"]: AliasType<{
+	colour?:true,
+	name?:true,
 		__typename?: true
 }>;
+	["CreateComment"]: {
+	/** feature request issue URL */
+	featureRequest:string,
+	/** content of the comment */
+	content:string,
+	/** If replying to another comment provide its index */
+	replyToIndex?:number
+};
+	["SignUp"]: {
+	lastName?:string,
+	company?:string,
+	firstName?:string
+};
 	["MoleUser"]: AliasType<{
 	avatar?:true,
 	company?:true,
@@ -108,6 +81,90 @@ featureRequest?: [{	featureRequest:string},ValueTypes["FeatureRequest"]],
 	lastName?:true,
 	/** worms in the wallet */
 	worms?:true,
+		__typename?: true
+}>;
+	/** Request to help on the issue */
+["DealRequest"]: AliasType<{
+	/** If offer is accepted */
+	accepted?:true,
+	createdAt?:true,
+	/** Deadline proposed by the user (must be sooner than deadline of feature request) */
+	deadline?:true,
+	/** Feature request this deal is about */
+	featureRequest?:ValueTypes["FeatureRequest"],
+	/** Additional message */
+	message?:true,
+	/** OUser who offered deal */
+	user?:ValueTypes["MoleUser"],
+		__typename?: true
+}>;
+	/** All queries of users system */
+["UserQuery"]: AliasType<{
+	/** Check if logged in user is admin<br> */
+	isAdmin?:true,
+	/** Check if there is admin already */
+	isAdminClaimPossible?:true,
+login?: [{	user:ValueTypes["UserBasicData"]},ValueTypes["LoggedInData"]],
+		__typename?: true
+}>;
+	/** All mutations of users system */
+["UserMutation"]: AliasType<{
+forgotPassword?: [{	username:string},true],
+makeAdmin?: [{	/** username of admin user<br> */
+	username:string},true],
+register?: [{	user:ValueTypes["UserBasicData"]},ValueTypes["LoggedInData"]],
+resetPassword?: [{	reset:ValueTypes["ResetPassword"]},true],
+		__typename?: true
+}>;
+	["DealStatus"]:DealStatus;
+	["MoleUserMutation"]: AliasType<{
+acceptDealRequest?: [{	request:string},true],
+closeDeal?: [{	deal:string},true],
+createComment?: [{	comment:ValueTypes["CreateComment"]},true],
+createFeatureRequest?: [{	featureRequest:ValueTypes["CreateFeatureRequest"]},true],
+finishWork?: [{	deal:string},true],
+offerDealRequest?: [{	request:ValueTypes["CreateDealRequest"]},true],
+		__typename?: true
+}>;
+	["CreateDealRequest"]: {
+	/** Additional message */
+	message?:string,
+	/** Feature request issue URL */
+	featureRequest:string,
+	/** Deadline proposed by the user (must be sooner than deadline of feature request)  */
+	deadline:string
+};
+	["MoleUserQuery"]: AliasType<{
+	/** active deals I am in */
+	deals?:ValueTypes["Deal"],
+	/** my feature requests */
+	featureRequests?:ValueTypes["FeatureRequest"],
+	/** given deal requests for the feature */
+	givenDealRequsts?:ValueTypes["DealRequest"],
+	/** received deal requests for the feature */
+	receivedDealRequests?:ValueTypes["DealRequest"],
+		__typename?: true
+}>;
+	["LoggedInData"]: AliasType<{
+	token?:true,
+		__typename?: true
+}>;
+	["CreateFeatureRequest"]: {
+	/** url of the issue in the repository */
+	issueURL?:string,
+	/** programming languages to be used to solve the issue */
+	languages:string[],
+	/** Extra information for featuremole.com users */
+	content:string,
+	/** git repository url */
+	repositoryURL:string
+};
+	["Mutation"]: AliasType<{
+	/** pipe to mole user mutations */
+	moleUser?:ValueTypes["MoleUserMutation"],
+signUp?: [{	user?:ValueTypes["SignUp"]},true],
+	/** pipe to user related mutations in users system */
+	user?:ValueTypes["UserMutation"],
 		__typename?: true
 }>;
 	/** # Deal
@@ -127,79 +184,22 @@ It happens when DealRequest is accepted by both parties */
 	user?:ValueTypes["MoleUser"],
 		__typename?: true
 }>;
-	["UserBasicData"]: {
-	username:string,
-	password:string
+	/** Reset password details */
+["ResetPassword"]: {
+	/** token received from email */
+	token:string,
+	/** New password for the user */
+	newPassword:string
 };
-	["MoleUserMutation"]: AliasType<{
-acceptDealRequest?: [{	request:string},true],
-closeDeal?: [{	deal:string},true],
-createComment?: [{	comment:ValueTypes["CreateComment"]},true],
-createFeatureRequest?: [{	featureRequest:ValueTypes["CreateFeatureRequest"]},true],
-finishWork?: [{	deal:string},true],
-offerDealRequest?: [{	request:ValueTypes["CreateDealRequest"]},true],
+	["Query"]: AliasType<{
+featureRequest?: [{	featureRequest:string},ValueTypes["FeatureRequest"]],
+	/** Feature requests displayed on the home page */
+	home?:ValueTypes["FeatureRequest"],
+	moleUserQuery?:ValueTypes["MoleUserQuery"],
+	/** Queries for logged in users */
+	user?:ValueTypes["UserQuery"],
 		__typename?: true
-}>;
-	["CreateComment"]: {
-	/** content of the comment */
-	content:string,
-	/** If replying to another comment provide its index */
-	replyToIndex?:number,
-	/** feature request issue URL */
-	featureRequest:string
-};
-	["LoggedInData"]: AliasType<{
-	token?:true,
-		__typename?: true
-}>;
-	["DealStatus"]:DealStatus;
-	/** All queries of users system */
-["UserQuery"]: AliasType<{
-	/** Check if logged in user is admin<br> */
-	isAdmin?:true,
-	/** Check if there is admin already */
-	isAdminClaimPossible?:true,
-login?: [{	user:ValueTypes["UserBasicData"]},ValueTypes["LoggedInData"]],
-		__typename?: true
-}>;
-	/** All mutations of users system */
-["UserMutation"]: AliasType<{
-forgotPassword?: [{	username:string},true],
-makeAdmin?: [{	/** username of admin user<br> */
-	username:string},true],
-register?: [{	user:ValueTypes["UserBasicData"]},ValueTypes["LoggedInData"]],
-resetPassword?: [{	reset:ValueTypes["ResetPassword"]},true],
-		__typename?: true
-}>;
-	["CreateDealRequest"]: {
-	/** Additional message */
-	message?:string,
-	/** Feature request issue URL */
-	featureRequest:string,
-	/** Deadline proposed by the user (must be sooner than deadline of feature request)  */
-	deadline:string
-};
-	["ProgrammingLanguage"]: AliasType<{
-	colour?:true,
-	name?:true,
-		__typename?: true
-}>;
-	["MoleUserQuery"]: AliasType<{
-	/** active deals I am in */
-	deals?:ValueTypes["Deal"],
-	/** my feature requests */
-	featureRequests?:ValueTypes["FeatureRequest"],
-	/** given deal requests for the feature */
-	givenDealRequsts?:ValueTypes["DealRequest"],
-	/** received deal requests for the feature */
-	receivedDealRequests?:ValueTypes["DealRequest"],
-		__typename?: true
-}>;
-	["SignUp"]: {
-	company?:string,
-	firstName?:string,
-	lastName?:string
-}
+}>
   }
 
 declare type ModelTypes = {
@@ -213,30 +213,7 @@ declare type ModelTypes = {
 	index:number,
 	replyTo?:ModelTypes["Comment"]
 };
-	/** Request to help on the issue */
-["DealRequest"]: {
-		/** If offer is accepted */
-	accepted?:boolean,
-	createdAt:string,
-	/** Deadline proposed by the user (must be sooner than deadline of feature request) */
-	deadline:string,
-	/** Feature request this deal is about */
-	featureRequest:ModelTypes["FeatureRequest"],
-	/** Additional message */
-	message?:string,
-	/** OUser who offered deal */
-	user:ModelTypes["MoleUser"]
-};
-	["Mutation"]: {
-		/** pipe to mole user mutations */
-	moleUser?:ModelTypes["MoleUserMutation"],
-	/** sign up a new MoleUser */
-	signUp?:boolean,
-	/** pipe to user related mutations in users system */
-	user?:ModelTypes["UserMutation"]
-};
-	/** Reset password details */
-["ResetPassword"]: GraphQLTypes["ResetPassword"];
+	["UserBasicData"]: GraphQLTypes["UserBasicData"];
 	/** Request Issue help */
 ["FeatureRequest"]: {
 		/** comments on this issue */
@@ -258,16 +235,12 @@ declare type ModelTypes = {
 	/** Representative title of the issue in git portal */
 	title:string
 };
-	["CreateFeatureRequest"]: GraphQLTypes["CreateFeatureRequest"];
-	["Query"]: {
-		/** detail view of the feature request. Should be used to fetch comments */
-	featureRequest?:ModelTypes["FeatureRequest"],
-	/** Feature requests displayed on the home page */
-	home:ModelTypes["FeatureRequest"][],
-	moleUserQuery?:ModelTypes["MoleUserQuery"],
-	/** Queries for logged in users */
-	user?:ModelTypes["UserQuery"]
+	["ProgrammingLanguage"]: {
+		colour:string,
+	name:string
 };
+	["CreateComment"]: GraphQLTypes["CreateComment"];
+	["SignUp"]: GraphQLTypes["SignUp"];
 	["MoleUser"]: {
 		avatar?:string,
 	company?:string,
@@ -279,42 +252,20 @@ declare type ModelTypes = {
 	/** worms in the wallet */
 	worms:number
 };
-	/** # Deal
-Deal between 2 **MoleUsers**
-
-## Creation of a deal
-It happens when DealRequest is accepted by both parties */
-["Deal"]: {
-		createdAt:string,
-	/** Deadline proposed by the supplier */
+	/** Request to help on the issue */
+["DealRequest"]: {
+		/** If offer is accepted */
+	accepted?:boolean,
+	createdAt:string,
+	/** Deadline proposed by the user (must be sooner than deadline of feature request) */
 	deadline:string,
-	/** feature request for this deal */
+	/** Feature request this deal is about */
 	featureRequest:ModelTypes["FeatureRequest"],
-	/** Status of the deal */
-	status?:ModelTypes["DealStatus"],
-	/** Supplier accepted for the deal */
+	/** Additional message */
+	message?:string,
+	/** OUser who offered deal */
 	user:ModelTypes["MoleUser"]
 };
-	["UserBasicData"]: GraphQLTypes["UserBasicData"];
-	["MoleUserMutation"]: {
-		/** accept offered deal request */
-	acceptDealRequest?:boolean,
-	/** close deal after the task is done by the supplier */
-	closeDeal?:boolean,
-	/** create comment underneath the feature request or another comment */
-	createComment?:boolean,
-	/** create new feature request */
-	createFeatureRequest?:boolean,
-	/** finish working on the feture request */
-	finishWork?:boolean,
-	/** offer a deal request */
-	offerDealRequest?:boolean
-};
-	["CreateComment"]: GraphQLTypes["CreateComment"];
-	["LoggedInData"]: {
-		token?:string
-};
-	["DealStatus"]: GraphQLTypes["DealStatus"];
 	/** All queries of users system */
 ["UserQuery"]: {
 		/** Check if logged in user is admin<br> */
@@ -333,11 +284,22 @@ It happens when DealRequest is accepted by both parties */
 	register?:ModelTypes["LoggedInData"],
 	resetPassword?:boolean
 };
-	["CreateDealRequest"]: GraphQLTypes["CreateDealRequest"];
-	["ProgrammingLanguage"]: {
-		colour:string,
-	name:string
+	["DealStatus"]: GraphQLTypes["DealStatus"];
+	["MoleUserMutation"]: {
+		/** accept offered deal request */
+	acceptDealRequest?:boolean,
+	/** close deal after the task is done by the supplier */
+	closeDeal?:boolean,
+	/** create comment underneath the feature request or another comment */
+	createComment?:boolean,
+	/** create new feature request */
+	createFeatureRequest?:boolean,
+	/** finish working on the feture request */
+	finishWork?:boolean,
+	/** offer a deal request */
+	offerDealRequest?:boolean
 };
+	["CreateDealRequest"]: GraphQLTypes["CreateDealRequest"];
 	["MoleUserQuery"]: {
 		/** active deals I am in */
 	deals:ModelTypes["Deal"][],
@@ -348,7 +310,45 @@ It happens when DealRequest is accepted by both parties */
 	/** received deal requests for the feature */
 	receivedDealRequests:ModelTypes["DealRequest"][]
 };
-	["SignUp"]: GraphQLTypes["SignUp"]
+	["LoggedInData"]: {
+		token?:string
+};
+	["CreateFeatureRequest"]: GraphQLTypes["CreateFeatureRequest"];
+	["Mutation"]: {
+		/** pipe to mole user mutations */
+	moleUser?:ModelTypes["MoleUserMutation"],
+	/** sign up a new MoleUser */
+	signUp?:boolean,
+	/** pipe to user related mutations in users system */
+	user?:ModelTypes["UserMutation"]
+};
+	/** # Deal
+Deal between 2 **MoleUsers**
+
+## Creation of a deal
+It happens when DealRequest is accepted by both parties */
+["Deal"]: {
+		createdAt:string,
+	/** Deadline proposed by the supplier */
+	deadline:string,
+	/** feature request for this deal */
+	featureRequest:ModelTypes["FeatureRequest"],
+	/** Status of the deal */
+	status?:ModelTypes["DealStatus"],
+	/** Supplier accepted for the deal */
+	user:ModelTypes["MoleUser"]
+};
+	/** Reset password details */
+["ResetPassword"]: GraphQLTypes["ResetPassword"];
+	["Query"]: {
+		/** detail view of the feature request. Should be used to fetch comments */
+	featureRequest?:ModelTypes["FeatureRequest"],
+	/** Feature requests displayed on the home page */
+	home:ModelTypes["FeatureRequest"][],
+	moleUserQuery?:ModelTypes["MoleUserQuery"],
+	/** Queries for logged in users */
+	user?:ModelTypes["UserQuery"]
+}
     }
 
 declare type GraphQLTypes = {
@@ -363,36 +363,9 @@ declare type GraphQLTypes = {
 	index: number,
 	replyTo: GraphQLTypes["Comment"] | null
 };
-	/** Request to help on the issue */
-["DealRequest"]: {
-	__typename: "DealRequest",
-	/** If offer is accepted */
-	accepted: boolean | null,
-	createdAt: string,
-	/** Deadline proposed by the user (must be sooner than deadline of feature request) */
-	deadline: string,
-	/** Feature request this deal is about */
-	featureRequest: GraphQLTypes["FeatureRequest"],
-	/** Additional message */
-	message: string | null,
-	/** OUser who offered deal */
-	user: GraphQLTypes["MoleUser"]
-};
-	["Mutation"]: {
-	__typename: "Mutation",
-	/** pipe to mole user mutations */
-	moleUser: GraphQLTypes["MoleUserMutation"] | null,
-	/** sign up a new MoleUser */
-	signUp: boolean | null,
-	/** pipe to user related mutations in users system */
-	user: GraphQLTypes["UserMutation"] | null
-};
-	/** Reset password details */
-["ResetPassword"]: {
-		/** token received from email */
-	token: string,
-	/** New password for the user */
-	newPassword: string
+	["UserBasicData"]: {
+		username: string,
+	password: string
 };
 	/** Request Issue help */
 ["FeatureRequest"]: {
@@ -416,25 +389,23 @@ declare type GraphQLTypes = {
 	/** Representative title of the issue in git portal */
 	title: string
 };
-	["CreateFeatureRequest"]: {
-		/** git repository url */
-	repositoryURL: string,
-	/** url of the issue in the repository */
-	issueURL: string | null,
-	/** programming languages to be used to solve the issue */
-	languages: Array<string>,
-	/** Extra information for featuremole.com users */
-	content: string
+	["ProgrammingLanguage"]: {
+	__typename: "ProgrammingLanguage",
+	colour: string,
+	name: string
 };
-	["Query"]: {
-	__typename: "Query",
-	/** detail view of the feature request. Should be used to fetch comments */
-	featureRequest: GraphQLTypes["FeatureRequest"] | null,
-	/** Feature requests displayed on the home page */
-	home: Array<GraphQLTypes["FeatureRequest"]>,
-	moleUserQuery: GraphQLTypes["MoleUserQuery"] | null,
-	/** Queries for logged in users */
-	user: GraphQLTypes["UserQuery"] | null
+	["CreateComment"]: {
+		/** feature request issue URL */
+	featureRequest: string,
+	/** content of the comment */
+	content: string,
+	/** If replying to another comment provide its index */
+	replyToIndex: number | null
+};
+	["SignUp"]: {
+		lastName: string | null,
+	company: string | null,
+	firstName: string | null
 };
 	["MoleUser"]: {
 	__typename: "MoleUser",
@@ -448,55 +419,21 @@ declare type GraphQLTypes = {
 	/** worms in the wallet */
 	worms: number
 };
-	/** # Deal
-Deal between 2 **MoleUsers**
-
-## Creation of a deal
-It happens when DealRequest is accepted by both parties */
-["Deal"]: {
-	__typename: "Deal",
+	/** Request to help on the issue */
+["DealRequest"]: {
+	__typename: "DealRequest",
+	/** If offer is accepted */
+	accepted: boolean | null,
 	createdAt: string,
-	/** Deadline proposed by the supplier */
+	/** Deadline proposed by the user (must be sooner than deadline of feature request) */
 	deadline: string,
-	/** feature request for this deal */
+	/** Feature request this deal is about */
 	featureRequest: GraphQLTypes["FeatureRequest"],
-	/** Status of the deal */
-	status: GraphQLTypes["DealStatus"] | null,
-	/** Supplier accepted for the deal */
+	/** Additional message */
+	message: string | null,
+	/** OUser who offered deal */
 	user: GraphQLTypes["MoleUser"]
 };
-	["UserBasicData"]: {
-		username: string,
-	password: string
-};
-	["MoleUserMutation"]: {
-	__typename: "MoleUserMutation",
-	/** accept offered deal request */
-	acceptDealRequest: boolean | null,
-	/** close deal after the task is done by the supplier */
-	closeDeal: boolean | null,
-	/** create comment underneath the feature request or another comment */
-	createComment: boolean | null,
-	/** create new feature request */
-	createFeatureRequest: boolean | null,
-	/** finish working on the feture request */
-	finishWork: boolean | null,
-	/** offer a deal request */
-	offerDealRequest: boolean | null
-};
-	["CreateComment"]: {
-		/** content of the comment */
-	content: string,
-	/** If replying to another comment provide its index */
-	replyToIndex: number | null,
-	/** feature request issue URL */
-	featureRequest: string
-};
-	["LoggedInData"]: {
-	__typename: "LoggedInData",
-	token: string | null
-};
-	["DealStatus"]: DealStatus;
 	/** All queries of users system */
 ["UserQuery"]: {
 	__typename: "UserQuery",
@@ -517,6 +454,22 @@ It happens when DealRequest is accepted by both parties */
 	register: GraphQLTypes["LoggedInData"] | null,
 	resetPassword: boolean | null
 };
+	["DealStatus"]: DealStatus;
+	["MoleUserMutation"]: {
+	__typename: "MoleUserMutation",
+	/** accept offered deal request */
+	acceptDealRequest: boolean | null,
+	/** close deal after the task is done by the supplier */
+	closeDeal: boolean | null,
+	/** create comment underneath the feature request or another comment */
+	createComment: boolean | null,
+	/** create new feature request */
+	createFeatureRequest: boolean | null,
+	/** finish working on the feture request */
+	finishWork: boolean | null,
+	/** offer a deal request */
+	offerDealRequest: boolean | null
+};
 	["CreateDealRequest"]: {
 		/** Additional message */
 	message: string | null,
@@ -524,11 +477,6 @@ It happens when DealRequest is accepted by both parties */
 	featureRequest: string,
 	/** Deadline proposed by the user (must be sooner than deadline of feature request)  */
 	deadline: string
-};
-	["ProgrammingLanguage"]: {
-	__typename: "ProgrammingLanguage",
-	colour: string,
-	name: string
 };
 	["MoleUserQuery"]: {
 	__typename: "MoleUserQuery",
@@ -541,10 +489,62 @@ It happens when DealRequest is accepted by both parties */
 	/** received deal requests for the feature */
 	receivedDealRequests: Array<GraphQLTypes["DealRequest"]>
 };
-	["SignUp"]: {
-		company: string | null,
-	firstName: string | null,
-	lastName: string | null
+	["LoggedInData"]: {
+	__typename: "LoggedInData",
+	token: string | null
+};
+	["CreateFeatureRequest"]: {
+		/** url of the issue in the repository */
+	issueURL: string | null,
+	/** programming languages to be used to solve the issue */
+	languages: Array<string>,
+	/** Extra information for featuremole.com users */
+	content: string,
+	/** git repository url */
+	repositoryURL: string
+};
+	["Mutation"]: {
+	__typename: "Mutation",
+	/** pipe to mole user mutations */
+	moleUser: GraphQLTypes["MoleUserMutation"] | null,
+	/** sign up a new MoleUser */
+	signUp: boolean | null,
+	/** pipe to user related mutations in users system */
+	user: GraphQLTypes["UserMutation"] | null
+};
+	/** # Deal
+Deal between 2 **MoleUsers**
+
+## Creation of a deal
+It happens when DealRequest is accepted by both parties */
+["Deal"]: {
+	__typename: "Deal",
+	createdAt: string,
+	/** Deadline proposed by the supplier */
+	deadline: string,
+	/** feature request for this deal */
+	featureRequest: GraphQLTypes["FeatureRequest"],
+	/** Status of the deal */
+	status: GraphQLTypes["DealStatus"] | null,
+	/** Supplier accepted for the deal */
+	user: GraphQLTypes["MoleUser"]
+};
+	/** Reset password details */
+["ResetPassword"]: {
+		/** token received from email */
+	token: string,
+	/** New password for the user */
+	newPassword: string
+};
+	["Query"]: {
+	__typename: "Query",
+	/** detail view of the feature request. Should be used to fetch comments */
+	featureRequest: GraphQLTypes["FeatureRequest"] | null,
+	/** Feature requests displayed on the home page */
+	home: Array<GraphQLTypes["FeatureRequest"]>,
+	moleUserQuery: GraphQLTypes["MoleUserQuery"] | null,
+	/** Queries for logged in users */
+	user: GraphQLTypes["UserQuery"] | null
 }
     }
 declare enum DealStatus {

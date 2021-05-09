@@ -149,6 +149,8 @@ blah blah blah blah blah blah
 export const head = () => html`<title>Hello world!</div>`;
 ```
 
+## Assets
+
 ## TypeScript
 
 ## Roadmap
@@ -157,9 +159,10 @@ export const head = () => html`<title>Hello world!</div>`;
 - [ ] Add TS support
 - [ ] Add loaders for internal files
 - [x] Add intelligent .d.ts autocompletion for imported es modules
-- [ ] Add image supports
-- [ ] Generate tsconfig
+- [x] Add image supports
+- [x] Generate tsconfig
 - [x] Relative imports
 - [x] Allow head modification
 - [x] Pass env to browser
-- [ ] Provide a way to inject data
+- [x] Provide a way to inject config
+- [x] TSConfig generation for included declarations to work

@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import liveServer from 'live-server';
-import { ConfigFile, readConfig } from './config';
+import { ConfigFile, readConfig, regenerateTsConfig } from './config';
 import {
   copyCssFiles,
   copyFile,
@@ -71,23 +71,26 @@ const initBrowserBundler = async ({
     });
   });
   const browserBundle = http.createServer((req, res) => {
-    const p = req.url;
-    if (p === '/' || !p) {
+    const requestURL = req.url;
+    if (requestURL === '/' || !requestURL) {
       res.writeHead(200, { 'content-type': 'text/html' });
       res.write(browserHtml(configFile));
-    }
-    if (p?.endsWith('.js')) {
-      const filePath = path.join(configFile.in, p);
-      const dryad = DryadFunctionBodyString({
-        schema,
-        configFile,
-      });
-      //TODO: bundling goes here
-      const pathContent = fs.readFileSync(filePath).toString('utf-8');
-      const fContent = [dryad, internals(configFile), pathContent].join('\n');
+    } else {
+      const [, , ...fileNames] = requestURL.split('/');
+      const fileName = fileNames.join('/');
+      if (fileName?.endsWith('.js')) {
+        const filePath = path.join(configFile.in, fileName);
+        const dryad = DryadFunctionBodyString({
+          schema,
+          configFile,
+        });
+        //TODO: bundling goes here
+        const pathContent = fs.readFileSync(filePath).toString('utf-8');
+        const fContent = [dryad, internals(configFile), pathContent].join('\n');
 
-      res.writeHead(200, { 'content-type': 'text/javascript' });
-      res.write(fContent);
+        res.writeHead(200, { 'content-type': 'text/javascript' });
+        res.write(fContent);
+      }
     }
     res.end();
   });
@@ -108,6 +111,7 @@ const initBrowserBundler = async ({
 
 export const build = async () => {
   const configFile = readConfig('./graphql-ssg.json');
+  regenerateTsConfig(configFile);
   const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
   const { close } = await initBrowserBundler({
     configFile,
@@ -130,7 +134,7 @@ const transformAllFiles = async ({
   await transformFiles({
     configFile,
     files: allFiles,
-    schema: await Utils.getFromUrl(configFile.url, configFile.headers),
+    schema,
   });
 };
 
@@ -138,6 +142,11 @@ export const watch = async () => {
   let block = true;
   const configFile = readConfig('./graphql-ssg.json');
   const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
+  await build();
+  await initBrowserBundler({
+    configFile,
+    schema,
+  });
   chokidar
     .watch(path.join(configFile.in, `**/*.{js,css}`), {
       interval: 0, // No delay
@@ -146,28 +155,24 @@ export const watch = async () => {
       if (block) {
         return;
       }
-      if (p.endsWith('.css')) {
+      if (p.match(/\.css$/)) {
+        copyFile(configFile, path.relative(configFile.in, p));
+        return;
+      }
+      if (p.match(/\.(png|gif|jpg|webp|svg|json)$/)) {
         copyFile(configFile, path.relative(configFile.in, p));
         return;
       }
       const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
       if (fs.existsSync(jsFilePath)) {
         block = true;
-        const { close } = await initBrowserBundler({
+        await transformAllFiles({
           configFile,
           schema,
         });
-        const filePath = path.relative(configFile.in, jsFilePath);
-        await transformFiles({
-          configFile,
-          files: [filePath],
-          schema,
-        });
-        await close();
         block = false;
       }
     });
-  await build();
   block = false;
   // `liveServer` local server for hot reload.
   return liveServer.start({
