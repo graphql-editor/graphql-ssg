@@ -63,7 +63,7 @@ export const sendAndReceiveCode = (
           resolve(event.result as EventResult);
         }
         if (event.type === 'error') {
-          message('Unexpected error ocurred', 'red');
+          message(`Unexpected error ocurred in ${filePath}`, 'red');
           console.error(event.error);
           resolve(undefined);
         }
