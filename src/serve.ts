@@ -130,7 +130,7 @@ const transformAllFiles = async ({
   configFile: ConfigFile;
   schema: string;
 }) => {
-  const allFiles = readFiles(configFile.in);
+  const allFiles = await readFiles(configFile.in);
   await transformFiles({
     configFile,
     files: allFiles,

@@ -8,15 +8,33 @@ import { message } from '@/console';
 const fileRegex = /(.*)\.js$/;
 const cssRegex = /(.*)\.css$/;
 
-export const readFiles = (path: string) => {
-  const allFiles: string[] = [];
-  const files = fs.readdirSync(path);
-  files.forEach((f) => {
-    const regexResult = f.match(fileRegex);
-    if (regexResult && regexResult.length > 1) {
-      allFiles.push(f);
+const getFiles = (dir: string) => {
+  const result = [];
+
+  const files = [dir];
+  do {
+    const filepath = files.pop()!;
+    const stat = fs.lstatSync(filepath);
+    if (stat.isDirectory()) {
+      fs.readdirSync(filepath).forEach((f) =>
+        files.push(path.join(filepath, f)),
+      );
+    } else if (stat.isFile()) {
+      result.push(path.relative(dir, filepath));
     }
-  });
+  } while (files.length !== 0);
+
+  return result;
+};
+export const readFiles = async (p: string) => {
+  const allFiles: string[] = [];
+  for await (const f of getFiles(p)) {
+    const t = f as string;
+    const regexResult = t.match(fileRegex);
+    if (regexResult && regexResult.length > 1) {
+      allFiles.push(t);
+    }
+  }
   return allFiles;
 };
 
@@ -113,6 +131,14 @@ export const transformFiles = async ({
   }
   files.forEach((f) => {
     message(`Writing ${path.join(configFile.out, f)}`, 'yellow');
+    const hasDir = f.split('/');
+    if (hasDir.length > 1) {
+      const dirs = hasDir.splice(0, hasDir.length - 1);
+      const dir = path.join(configFile.out, dirs.join('/'));
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+    }
     fs.writeFileSync(
       path.join(configFile.out, f),
       injectJs({ configFile, file: f, schema }),

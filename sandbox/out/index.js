@@ -1,39 +1,14 @@
 const AllTypesProps = {
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
 				array:false,
 				arrayRequired:false,
 				required:true
 			}
 		}
 	},
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
-				array:false,
-				arrayRequired:false,
-				required:false
-			}
-		}
-	},
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	DealStatus: "enum",
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -84,84 +59,14 @@ const AllTypesProps = {
 			}
 		}
 	},
-	CreateDealRequest:{
-		featureRequest:{
+	ResetPassword:{
+		token:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	UserBasicData:{
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
+		newPassword:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
@@ -202,19 +107,37 @@ const AllTypesProps = {
 			}
 		}
 	},
-	CreateFeatureRequest:{
-		issueURL:{
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	CreateComment:{
+		content:{
 			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		replyToIndex:{
+			type:"Int",
 			array:false,
 			arrayRequired:false,
 			required:false
 		},
-		languages:{
+		featureRequest:{
 			type:"String",
-			array:true,
-			arrayRequired:true,
+			array:false,
+			arrayRequired:false,
 			required:true
-		},
+		}
+	},
+	CreateFeatureRequest:{
 		content:{
 			type:"String",
 			array:false,
@@ -226,11 +149,140 @@ const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:true
+		},
+		issueURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		languages:{
+			type:"String",
+			array:true,
+			arrayRequired:true,
+			required:true
+		}
+	},
+	Mutation:{
+		signUp:{
+			user:{
+				type:"SignUp",
+				array:false,
+				arrayRequired:false,
+				required:false
+			}
+		}
+	},
+	DealStatus: "enum",
+	UserBasicData:{
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateDealRequest:{
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	SignUp:{
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
 		}
 	}
 }
 
 const ReturnTypes = {
+	FeatureRequest:{
+		comments:"Comment",
+		content:"String",
+		createdAt:"String",
+		createdBy:"MoleUser",
+		issueURL:"String",
+		languages:"ProgrammingLanguage",
+		offeredWorms:"Int",
+		repositoryURL:"String",
+		title:"String"
+	},
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
+	},
+	MoleUserMutation:{
+		acceptDealRequest:"Boolean",
+		closeDeal:"Boolean",
+		createComment:"Boolean",
+		createFeatureRequest:"Boolean",
+		finishWork:"Boolean",
+		offerDealRequest:"Boolean"
+	},
+	DealRequest:{
+		accepted:"Boolean",
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		message:"String",
+		user:"MoleUser"
+	},
+	UserMutation:{
+		forgotPassword:"Boolean",
+		makeAdmin:"Boolean",
+		register:"LoggedInData",
+		resetPassword:"Boolean"
+	},
 	Comment:{
 		content:"String",
 		createdAt:"String",
@@ -243,56 +295,17 @@ const ReturnTypes = {
 		isAdminClaimPossible:"Boolean",
 		login:"LoggedInData"
 	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
+	LoggedInData:{
+		token:"String"
 	},
 	ProgrammingLanguage:{
 		colour:"String",
 		name:"String"
 	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
-	},
-	FeatureRequest:{
-		comments:"Comment",
-		content:"String",
-		createdAt:"String",
-		createdBy:"MoleUser",
-		issueURL:"String",
-		languages:"ProgrammingLanguage",
-		offeredWorms:"Int",
-		repositoryURL:"String",
-		title:"String"
-	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
-	},
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
-	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
-	},
-	LoggedInData:{
-		token:"String"
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -302,19 +315,6 @@ const ReturnTypes = {
 		firstName:"String",
 		lastName:"String",
 		worms:"Int"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
 	}
 }
 
