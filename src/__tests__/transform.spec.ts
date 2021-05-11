@@ -1,5 +1,5 @@
 import { ConfigFile } from '@/config';
-import { createTwinFile, hasTwinFile, readFiles } from '@/transform';
+import { createTwinFile, hasTwinFile } from '@/transform';
 
 const paths = ['Detail.js', 'Detail.css', 'index.html', 'somemodule.js'];
 
@@ -34,10 +34,6 @@ describe('Transform tests', () => {
   });
   it('Throw on invalid file', () => {
     expect(() => createTwinFile('Detail.ts', 'html')).toThrow();
-  });
-  it('List files that are ssg compatible', () => {
-    const files = readFiles('./mockpath');
-    expect(files).toHaveLength(2);
   });
   it('Shoud find twin file for Detail.js', () => {
     const file = hasTwinFile('Detail.js', config, 'css');
