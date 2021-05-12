@@ -1,6 +1,6 @@
 import chokidar from 'chokidar';
 import liveServer from 'live-server';
-import { ConfigFile, readConfig, regenerateTsConfig } from './config';
+import { ConfigFile, readConfig, regenerateJsConfig } from './config';
 import {
   copyCssFiles,
   copyFile,
@@ -17,7 +17,6 @@ import { createServer } from 'net';
 import fs from 'fs';
 import { parse } from 'dotenv';
 import { Utils } from 'graphql-zeus';
-import { DryadFunctionBodyString } from '@/fn';
 
 const envs = () =>
   fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {};
@@ -72,22 +71,18 @@ const initBrowserBundler = async ({
   });
   const browserBundle = http.createServer((req, res) => {
     const requestURL = req.url;
+    console.log(requestURL);
     if (requestURL === '/' || !requestURL) {
       res.writeHead(200, { 'content-type': 'text/html' });
       res.write(browserHtml(configFile));
     } else {
       const [, , ...fileNames] = requestURL.split('/');
       const fileName = fileNames.join('/');
+      console.log(fileName);
       if (fileName?.endsWith('.js')) {
         const filePath = path.join(configFile.in, fileName);
-        const dryad = DryadFunctionBodyString({
-          schema,
-          configFile,
-        });
-        //TODO: bundling goes here
         const pathContent = fs.readFileSync(filePath).toString('utf-8');
-        const fContent = [dryad, internals(configFile), pathContent].join('\n');
-
+        const fContent = [internals(configFile), pathContent].join('\n');
         res.writeHead(200, { 'content-type': 'text/javascript' });
         res.write(fContent);
       }
@@ -111,15 +106,15 @@ const initBrowserBundler = async ({
 
 export const build = async () => {
   const configFile = readConfig('./graphql-ssg.json');
-  regenerateTsConfig(configFile);
+  regenerateJsConfig(configFile);
   const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
+  await generateTypingsFiles({ configFile, schema });
   const { close } = await initBrowserBundler({
     configFile,
     schema,
   });
   await transformAllFiles({ configFile, schema });
   copyCssFiles(configFile);
-  await generateTypingsFiles(configFile);
   await close();
 };
 

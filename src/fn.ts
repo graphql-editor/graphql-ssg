@@ -6,11 +6,6 @@ import { Remarkable } from 'remarkable';
 import fetch from 'node-fetch';
 import { ConfigFile } from './config';
 
-export interface DryadFunctionProps {
-  schema: string;
-  configFile: ConfigFile;
-}
-
 export interface DryadFunctionResult {
   body: string;
   script: string;
@@ -25,47 +20,35 @@ export interface DryadFunctionFunction {
 export const DryadDeclarations = `
 // Return html string from this function fo ssg;
 declare const render: <T>(fn:Function) => void;
-declare var html: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare var css: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare var md: (strings: TemplateStringsArray, ...expr: string[]) => string
+declare const html: (strings: TemplateStringsArray, ...expr: string[]) => string
+declare const css: (strings: TemplateStringsArray, ...expr: string[]) => string
+declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string
 `;
 
-export const GenerateGlobalTypings = ({
-  schema,
-  configFile,
-}: DryadFunctionProps) => {
-  const graphqlTree = Parser.parse(schema);
-  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
-  return [DryadDeclarations, envsTypings(configFile), jsSplit.definitions]
-    .join('\n')
-    .replace(/export declare/gm, 'declare ')
-    .replace(/export /gm, 'declare ');
-};
-
-const addonFunctions = `
+const injectedFunctions = `
   import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
-  var html = typeof html === "undefined" ? (strings, ...expr) => {
+  export const html =  (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
         str += string + (expr[i] || '');
     });
     return str;
-  } : html
-  var css = typeof css === "undefined" ? (strings, ...expr) => {
+  }
+  export const css =  (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
         str += string + (expr[i] || '');
     });
     return str;
-  } : css
+  }
   const remarkableRenderer = new Remarkable()
-  var md = typeof md === "undefined" ? (strings, ...expr) => {
+  export const md = (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
         str += string + (expr[i] || '');
     });
     return remarkableRenderer.render(str);
-  } : md
+  } 
   `;
 
 const tsType = (a: unknown): string => {
@@ -86,7 +69,7 @@ const tsType = (a: unknown): string => {
   return typeof a;
 };
 
-const envsTypings = (configFile: ConfigFile) => {
+export const envsTypings = (configFile: ConfigFile) => {
   const envs = fs.existsSync('./.env')
     ? parse(fs.readFileSync('./.env'))
     : undefined;
@@ -98,13 +81,24 @@ const envsTypings = (configFile: ConfigFile) => {
 declare const ssg: ${tsType(ssg)}`;
 };
 
-export const DryadFunctionBodyString = ({
-  schema,
-  configFile,
-}: DryadFunctionProps) => {
+export const DryadFunctionBodyString = (schema: string) => {
   const graphqlTree = Parser.parse(schema);
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
   const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
-  const functions = jsString.replace(/export /gm, '');
-  return [functions, addonFunctions].join('\n');
+  return [jsString, injectedFunctions].join('\n');
+};
+
+export const GenerateGlobalTypings = ({
+  schema,
+  configFile,
+}: {
+  schema: string;
+  configFile: ConfigFile;
+}) => {
+  const graphqlTree = Parser.parse(schema);
+  const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
+  return {
+    ssg: [DryadDeclarations, jsSplit.definitions].join('\n'),
+    env: envsTypings(configFile),
+  };
 };

@@ -1,5 +1,3 @@
-import { Utils } from 'graphql-zeus';
-import { GenerateGlobalTypings } from './fn';
 import WebSocket from 'ws';
 import { ConfigFile } from '@/config';
 import { message } from '@/console';
@@ -64,7 +62,7 @@ export const sendAndReceiveCode = (
         }
         if (event.type === 'error') {
           message(`Unexpected error ocurred in ${filePath}`, 'red');
-          console.error(event.error);
+          message(JSON.parse(event.error || '{}').message || '', 'red');
           resolve(undefined);
         }
         if (event.type === 'module') {
@@ -103,13 +101,4 @@ export const bundle = async ({
     scriptName: name,
     cssName: css,
   });
-};
-
-export const globalTypings = async ({
-  configFile,
-}: {
-  configFile: ConfigFile;
-}) => {
-  const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
-  return GenerateGlobalTypings({ schema, configFile });
 };

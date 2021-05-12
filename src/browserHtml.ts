@@ -23,7 +23,7 @@ export const browserHtml = (config: ConfigFile) => `
               }, operationId }));
             }
           }catch(e){
-            ws.send(JSON.stringify({ type: 'error', error: e.message, operationId }));
+            ws.send(JSON.stringify({ type: 'error', error: JSON.stringify(e, Object.getOwnPropertyNames(e)), operationId }));
           }
         }
       }

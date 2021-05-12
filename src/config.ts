@@ -47,7 +47,7 @@ export const initConfig = async () => {
   );
 };
 
-const TSConfig = (configFile: ConfigFile) => ({
+const TSConfig = () => ({
   compilerOptions: {
     incremental: true /* Enable incremental compilation */,
     target:
@@ -61,16 +61,35 @@ const TSConfig = (configFile: ConfigFile) => ({
     allowJs: true,
     noEmit: true,
   },
-  include: [`${configFile.in}/**/*.js`, `${configFile.in}/ssg.d.ts`],
+});
+
+const JSConfig = () => ({
+  compilerOptions: {
+    target: 'esnext',
+    module: 'commonjs',
+    checkJs: true,
+  },
+  include: ['./pages/**/*', './pages/graphql-ssg.d.ts'],
 });
 
 export const regenerateTsConfig = (configFile: ConfigFile) => {
   const currentConfig = fs.existsSync('./tsconfig.json')
     ? JSON.parse(fs.readFileSync('./tsconfig.json').toString('utf-8'))
-    : TSConfig(configFile);
+    : TSConfig();
   currentConfig.include = [
     `${configFile.in}/**/*.js`,
-    `${configFile.in}/ssg.d.ts`,
+    `${configFile.in}/graphql-ssg.d.ts`,
   ];
   fs.writeFileSync('./tsconfig.json', JSON.stringify(currentConfig, null, 2));
+};
+
+export const regenerateJsConfig = (configFile: ConfigFile) => {
+  const currentConfig = fs.existsSync('./jsconfig.json')
+    ? JSON.parse(fs.readFileSync('./jsconfig.json').toString('utf-8'))
+    : JSConfig();
+  currentConfig.include = [
+    `${configFile.in}/**/*.js`,
+    `${configFile.in}/graphql-ssg.d.ts`,
+  ];
+  fs.writeFileSync('./jsconfig.json', JSON.stringify(currentConfig, null, 2));
 };

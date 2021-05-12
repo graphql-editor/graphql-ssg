@@ -1,8 +1,8 @@
 import fs from 'fs';
 import path from 'path';
-import { bundle, globalTypings } from './module';
+import { bundle } from './module';
 import { ConfigFile } from './config';
-import { DryadFunctionBodyString } from '@/fn';
+import { DryadFunctionBodyString, GenerateGlobalTypings } from '@/fn';
 import { message } from '@/console';
 
 const fileRegex = /(.*)\.js$/;
@@ -91,27 +91,25 @@ export const injectHtmlFile = async ({
   };
 };
 
-export const generateTypingsFiles = async (configFile: ConfigFile) => {
-  const typings = await globalTypings({
-    configFile,
-  });
-  fs.writeFileSync(path.join(configFile.in, 'ssg.d.ts'), typings);
-};
-
-export const injectJs = ({
-  configFile,
-  file,
+export const generateTypingsFiles = async ({
   schema,
+  configFile,
 }: {
-  configFile: ConfigFile;
-  file: string;
   schema: string;
+  configFile: ConfigFile;
 }) => {
-  const pure = DryadFunctionBodyString({
-    schema,
+  const typings = await GenerateGlobalTypings({
     configFile,
+    schema,
   });
-  return [pure, fs.readFileSync(path.join(configFile.in, file))].join('\n');
+  const ssgFile = await DryadFunctionBodyString(schema);
+  const ssgPath = path.join(configFile.in, 'ssg');
+  if (!fs.existsSync(ssgPath)) {
+    fs.mkdirSync(ssgPath);
+  }
+  fs.writeFileSync(path.join(ssgPath, 'index.js'), ssgFile);
+  fs.writeFileSync(path.join(ssgPath, 'index.d.ts'), typings.ssg);
+  fs.writeFileSync(path.join(configFile.in, 'graphql-ssg.d.ts'), typings.env);
 };
 
 export const transformFiles = async ({
@@ -141,7 +139,7 @@ export const transformFiles = async ({
     }
     fs.writeFileSync(
       path.join(configFile.out, f),
-      injectJs({ configFile, file: f, schema }),
+      fs.readFileSync(path.join(configFile.in, f)),
     );
   });
   htmlFiles.forEach(({ name, code }) => {
@@ -167,14 +165,4 @@ export const copyCssFiles = (configFile: ConfigFile) => {
       copyFile(configFile, f);
     }
   });
-};
-
-export const generateGlobalFile = async (
-  filename: string,
-  configFile: ConfigFile,
-) => {
-  fs.writeFileSync(
-    path.join(configFile.in, `${filename}.d.ts`),
-    await globalTypings({ configFile }),
-  );
 };

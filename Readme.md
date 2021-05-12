@@ -107,13 +107,14 @@ It is available only inside `export default` and `export const head` function to
 
 ### Injected built in helper code syntax functions
 
-GraphQL SSG comes with injected functions
+GraphQL SSG comes with generated library
 
 #### Chain
 
 Works like fetch to GraphQL, where you need to provide host and/or options to receive fully Autocompleted client for schema url from your config.
 
 ```js
+import { Chain } from './ssg/index.js';
 const graphQLClient = Chain(ssg.config.host);
 
 const response = await graphQLClient.query({ people: true });
@@ -124,6 +125,7 @@ const response = await graphQLClient.query({ people: true });
 It doesnt transform html in any way, but gives you syntax coloring
 
 ```js
+import { html } from './ssg/index.js';
 const ADiv = html`
   <div>Hello world</div>
 `;
@@ -134,6 +136,7 @@ const ADiv = html`
 It renders markdown using remarkable renderer so it is transformed to html.
 
 ```js
+import { md } from './ssg/index.js';
 const MarkdownContent = md`
 # Title of my Story
 
@@ -146,18 +149,18 @@ blah blah blah blah blah blah
 #### head
 
 ```js
+import { html } from './ssg/index.js';
 export const head = () => html`<title>Hello world!</div>`;
 ```
 
 ## Assets
 
-## TypeScript
+You can use them as normally.
 
 ## Roadmap
 
 - [ ] Add esbuild
 - [ ] Add TS support
-- [ ] Add loaders for internal files
 - [x] Add intelligent .d.ts autocompletion for imported es modules
 - [x] Add image supports
 - [x] Generate tsconfig
@@ -166,3 +169,5 @@ export const head = () => html`<title>Hello world!</div>`;
 - [x] Pass env to browser
 - [x] Provide a way to inject config
 - [x] TSConfig generation for included declarations to work
+- [x] Make zeus configurable and importable file
+- [ ] Clear error handling

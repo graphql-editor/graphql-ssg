@@ -1,3 +1,5 @@
+import { Chain, html, md } from './ssg/index.js';
+
 const Title = html`
   <h1 class="font-black">
     ✅ FeatureMole.com
@@ -134,6 +136,13 @@ const Features = (features) => {
     )
     .join('');
 };
+
+export const head = () => {
+  return html`
+    <title>Details page</title>
+  `;
+};
+
 export default async () => {
   const response = await Chain(ssg.config.url).query({
     home: {
