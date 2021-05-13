@@ -1,1 +1,1 @@
-declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string
+export declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string

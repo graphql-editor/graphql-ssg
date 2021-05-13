@@ -28,7 +28,7 @@ export const md = (strings, ...expr) => {
   });
   return remarkableRenderer.render(str);
 }`,
-  typings: `declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string`,
+  typings: `export declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string`,
 };
 
 export const basicFunctions = {
@@ -48,8 +48,8 @@ export const basicFunctions = {
     return str;
   }
 `,
-  typings: `declare const html: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare const css: (strings: TemplateStringsArray, ...expr: string[]) => string`,
+  typings: `export declare const html: (strings: TemplateStringsArray, ...expr: string[]) => string
+export declare const css: (strings: TemplateStringsArray, ...expr: string[]) => string`,
 };
 
 const tsType = (a: unknown): string => {

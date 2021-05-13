@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/graphql-ssg.svg?style=flat)]()
 ![Build](https://github.com/graphql-editor/graphql-ssg/actions/workflows/release.yml/badge.svg)
 
-Simple bundler for GraphQL based website using esmodules. What makes it unique? It uses browser for bundling (not node)
+Simple bundler for GraphQL based website using esmodules. What makes it unique? It uses browser for bundling (not node). Remember in ESModules you can use URL imports and relative imports. You can also provide importmap for other imports
 
 ## Installation
 
@@ -62,6 +62,7 @@ graphql-ssg --build
 String returned in contained in file export default is generated via SSG phase.
 
 ```js
+import { html } from './ssg/basic.js';
 export default () => {
   return html`
     <div>Hello world</div>
@@ -135,7 +136,7 @@ const response = await graphQLClient.query({ people: true });
 It doesnt transform html in any way, but gives you syntax coloring
 
 ```js
-import { html } from './ssg/index.js';
+import { html } from './ssg/basic.js';
 const ADiv = html`
   <div>Hello world</div>
 `;
@@ -146,7 +147,7 @@ const ADiv = html`
 It renders markdown using remarkable renderer so it is transformed to html.
 
 ```js
-import { md } from './ssg/index.js';
+import { md } from './ssg/md.js';
 const MarkdownContent = md`
 # Title of my Story
 
@@ -159,7 +160,7 @@ blah blah blah blah blah blah
 #### head
 
 ```js
-import { html } from './ssg/index.js';
+import { html } from './ssg/basic.js';
 export const head = () => html`<title>Hello world!</div>`;
 ```
 
