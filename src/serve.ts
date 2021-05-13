@@ -2,11 +2,12 @@ import chokidar from 'chokidar';
 import liveServer from 'live-server';
 import { ConfigFile, readConfig, regenerateJsConfig } from './config';
 import {
-  copyCssFiles,
-  copyFile,
+  copyStaticFiles,
   generateTypingsFiles,
   readFiles,
   transformFiles,
+  fileRegex,
+  typingsRegex,
 } from './transform';
 import path from 'path';
 import WebSocket from 'ws';
@@ -71,15 +72,13 @@ const initBrowserBundler = async ({
   });
   const browserBundle = http.createServer((req, res) => {
     const requestURL = req.url;
-    console.log(requestURL);
     if (requestURL === '/' || !requestURL) {
       res.writeHead(200, { 'content-type': 'text/html' });
       res.write(browserHtml(configFile));
     } else {
       const [, , ...fileNames] = requestURL.split('/');
       const fileName = fileNames.join('/');
-      console.log(fileName);
-      if (fileName?.endsWith('.js')) {
+      if (fileName?.endsWith('.js') || fileName?.endsWith('.mjs')) {
         const filePath = path.join(configFile.in, fileName);
         const pathContent = fs.readFileSync(filePath).toString('utf-8');
         const fContent = [internals(configFile), pathContent].join('\n');
@@ -114,7 +113,7 @@ export const build = async () => {
     schema,
   });
   await transformAllFiles({ configFile, schema });
-  copyCssFiles(configFile);
+  copyStaticFiles(configFile);
   await close();
 };
 
@@ -150,12 +149,9 @@ export const watch = async () => {
       if (block) {
         return;
       }
-      if (p.match(/\.css$/)) {
-        copyFile(configFile, path.relative(configFile.in, p));
-        return;
-      }
-      if (p.match(/\.(png|gif|jpg|webp|svg|json)$/)) {
-        copyFile(configFile, path.relative(configFile.in, p));
+      const isStaticFile = !(p.match(fileRegex) || p.match(typingsRegex));
+      if (isStaticFile) {
+        copyStaticFiles(configFile);
         return;
       }
       const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';

@@ -1,319 +1,69 @@
 export const AllTypesProps = {
-	Mutation:{
-		signUp:{
-			user:{
-				type:"SignUp",
+	Query:{
+		pokemons:{
+			first:{
+				type:"Int",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		pokemon:{
+			id:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:false
+			},
+			name:{
+				type:"String",
 				array:false,
 				arrayRequired:false,
 				required:false
 			}
 		}
-	},
-	MoleUserMutation:{
-		acceptDealRequest:{
-			request:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		closeDeal:{
-			deal:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		createComment:{
-			comment:{
-				type:"CreateComment",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		createFeatureRequest:{
-			featureRequest:{
-				type:"CreateFeatureRequest",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		finishWork:{
-			deal:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		offerDealRequest:{
-			request:{
-				type:"CreateDealRequest",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	CreateFeatureRequest:{
-		issueURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
-		},
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	DealStatus: "enum",
-	CreateDealRequest:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	UserMutation:{
-		forgotPassword:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		makeAdmin:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		register:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		resetPassword:{
-			reset:{
-				type:"ResetPassword",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserBasicData:{
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
 	}
 }
 
 export const ReturnTypes = {
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
-	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
-	},
-	DealRequest:{
-		accepted:"Boolean",
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		message:"String",
-		user:"MoleUser"
-	},
-	Comment:{
-		content:"String",
-		createdAt:"String",
-		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comment"
-	},
 	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
+		query:"Query",
+		pokemons:"Pokemon",
+		pokemon:"Pokemon"
 	},
-	LoggedInData:{
-		token:"String"
+	Pokemon:{
+		id:"ID",
+		number:"String",
+		name:"String",
+		weight:"PokemonDimension",
+		height:"PokemonDimension",
+		classification:"String",
+		types:"String",
+		resistant:"String",
+		attacks:"PokemonAttack",
+		weaknesses:"String",
+		fleeRate:"Float",
+		maxCP:"Int",
+		evolutions:"Pokemon",
+		evolutionRequirements:"PokemonEvolutionRequirement",
+		maxHP:"Int",
+		image:"String"
 	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
+	PokemonDimension:{
+		minimum:"String",
+		maximum:"String"
 	},
-	FeatureRequest:{
-		comments:"Comment",
-		content:"String",
-		createdAt:"String",
-		createdBy:"MoleUser",
-		issueURL:"String",
-		languages:"ProgrammingLanguage",
-		offeredWorms:"Int",
-		repositoryURL:"String",
-		title:"String"
+	PokemonAttack:{
+		fast:"Attack",
+		special:"Attack"
 	},
-	MoleUser:{
-		avatar:"String",
-		company:"String",
-		createdAt:"String",
-		featureRequests:"FeatureRequest",
-		firstName:"String",
-		lastName:"String",
-		worms:"Int"
+	Attack:{
+		name:"String",
+		type:"String",
+		damage:"Int"
 	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
-	},
-	ProgrammingLanguage:{
-		colour:"String",
+	PokemonEvolutionRequirement:{
+		amount:"Int",
 		name:"String"
 	}
 }
@@ -691,25 +441,20 @@ export const apiSubscription = (options) => (
 
   
 export const Thunder = (fn) => ({
-  query: fullChainConstructor(fn,'query', 'Query'),
-mutation: fullChainConstructor(fn,'mutation', 'Mutation')
+  query: fullChainConstructor(fn,'query', 'Query')
 });
 
 export const Chain = (...options) => ({
-  query: fullChainConstructor(apiFetch(options),'query', 'Query'),
-mutation: fullChainConstructor(apiFetch(options),'mutation', 'Mutation')
+  query: fullChainConstructor(apiFetch(options),'query', 'Query')
 });
 export const Zeus = {
-  query: (o) => queryConstruct('query', 'Query')(o),
-mutation: (o) => queryConstruct('mutation', 'Mutation')(o)
+  query: (o) => queryConstruct('query', 'Query')(o)
 };
 export const Cast = {
-  query: (o) => (b) => o,
-mutation: (o) => (b) => o
+  query: (o) => (b) => o
 };
 export const Selectors = {
-  query: ZeusSelect(),
-mutation: ZeusSelect()
+  query: ZeusSelect()
 };
     
 

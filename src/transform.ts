@@ -5,8 +5,15 @@ import { ConfigFile } from './config';
 import { DryadFunctionBodyString, GenerateGlobalTypings } from '@/fn';
 import { message } from '@/console';
 
-const fileRegex = /(.*)\.js$/;
-const cssRegex = /(.*)\.css$/;
+export const fileRegex = /(.*)\.js$/;
+
+export const typingsRegex = /(.*)\.d\.ts$/;
+export const cssRegex = /(.*)\.css$/;
+
+export const isCss = (p: string) => p.match(cssRegex);
+export const isDirectory = (p: string) => fs.statSync(p).isDirectory();
+export const isStaticFile = (p: string) =>
+  !(p.match(fileRegex) || p.match(typingsRegex));
 
 const getFiles = (dir: string) => {
   const result = [];
@@ -157,12 +164,12 @@ export const copyFile = (configFile: ConfigFile, fileName: string) => {
   );
 };
 
-export const copyCssFiles = (configFile: ConfigFile) => {
+export const copyStaticFiles = (configFile: ConfigFile) => {
   const files = fs.readdirSync(configFile.in);
-  files.forEach((f) => {
-    const regexResult = f.match(cssRegex);
-    if (regexResult && regexResult.length > 1) {
+  files
+    .filter((f) => !isDirectory(path.join(configFile.in, f)))
+    .filter((f) => !(f.match(fileRegex) || f.match(typingsRegex)))
+    .forEach((f) => {
       copyFile(configFile, f);
-    }
-  });
+    });
 };

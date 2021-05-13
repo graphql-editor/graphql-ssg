@@ -67,7 +67,6 @@ const JSConfig = () => ({
   compilerOptions: {
     target: 'esnext',
     module: 'commonjs',
-    checkJs: true,
   },
   include: ['./pages/**/*', './pages/graphql-ssg.d.ts'],
 });

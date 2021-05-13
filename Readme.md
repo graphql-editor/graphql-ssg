@@ -89,9 +89,19 @@ Config file can be generated or created manually. It should contain all the foll
 
 Config file is injected and typed. It is available only inside `export default` and `export const head` function to prevent leaking of secrets.
 
+Usage in JS example:
+
+```js
+const graphQLClient = Chain(ssg.config.HOST, {
+  headers: {
+    Authorization: `Bearer ${ssg.config.TOKEN}`,
+  },
+});
+```
+
 ### Environment variables
 
-Environment variables must be put side by side to `graphql-ssg.json` in `.env` file.
+Environment variables must be put side by side to `graphql-ssg.json` in `.env` file.It is available only inside `export default` and `export const head` .
 
 Usage in JS example:
 
@@ -170,4 +180,4 @@ You can use them as normally.
 - [x] Provide a way to inject config
 - [x] TSConfig generation for included declarations to work
 - [x] Make zeus configurable and importable file
-- [ ] Clear error handling
+- [ ] Clear error handling with line numbers
