@@ -2,7 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import { bundle } from './module';
 import { ConfigFile } from './config';
-import { DryadFunctionBodyString, GenerateGlobalTypings } from '@/fn';
+import {
+  DryadFunctionBodyString,
+  GenerateGlobalTypings,
+  md,
+  basicFunctions,
+} from '@/fn';
 import { message } from '@/console';
 
 export const fileRegex = /(.*)\.js$/;
@@ -14,6 +19,21 @@ export const isCss = (p: string) => p.match(cssRegex);
 export const isDirectory = (p: string) => fs.statSync(p).isDirectory();
 export const isStaticFile = (p: string) =>
   !(p.match(fileRegex) || p.match(typingsRegex));
+
+export const mkFileDirSync = (p: string) => {
+  const dir = path.dirname(p);
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+};
+
+export const fileWriteRecuirsiveSync = (
+  p: string,
+  data: string | NodeJS.ArrayBufferView,
+) => {
+  mkFileDirSync(p);
+  fs.writeFileSync(p, data);
+};
 
 const getFiles = (dir: string) => {
   const result = [];
@@ -66,13 +86,13 @@ export const createTwinFile = (fileToTransform: string, extension: string) => {
 
 export const hasTwinFile = (
   fileToTransform: string,
-  configFile: ConfigFile,
+  config: ConfigFile,
   extension: string,
 ) => {
   let twinFile: string | undefined;
   const twinFileName = createTwinFile(fileToTransform, extension);
   const hasCorrespondingTwinFile = fs.existsSync(
-    path.join(configFile.in, twinFileName),
+    path.join(config.in, twinFileName),
   );
   if (hasCorrespondingTwinFile) {
     twinFile = twinFileName;
@@ -82,17 +102,17 @@ export const hasTwinFile = (
 
 export const injectHtmlFile = async ({
   fileToTransform,
-  configFile,
+  config,
 }: {
   fileToTransform: string;
-  configFile: ConfigFile;
+  config: ConfigFile;
 }) => {
-  const cssFile = hasTwinFile(fileToTransform, configFile, 'css');
+  const cssFile = hasTwinFile(fileToTransform, config, 'css');
   return {
     name: createTwinFile(fileToTransform, 'html'),
     code: await bundle({
       name: fileToTransform,
-      config: configFile,
+      config: config,
       css: cssFile,
     }),
   };
@@ -100,76 +120,80 @@ export const injectHtmlFile = async ({
 
 export const generateTypingsFiles = async ({
   schema,
-  configFile,
+  config,
 }: {
   schema: string;
-  configFile: ConfigFile;
+  config: ConfigFile;
 }) => {
   const typings = await GenerateGlobalTypings({
-    configFile,
+    config,
     schema,
   });
   const ssgFile = await DryadFunctionBodyString(schema);
-  const ssgPath = path.join(configFile.in, 'ssg');
-  if (!fs.existsSync(ssgPath)) {
-    fs.mkdirSync(ssgPath);
-  }
-  fs.writeFileSync(path.join(ssgPath, 'index.js'), ssgFile);
-  fs.writeFileSync(path.join(ssgPath, 'index.d.ts'), typings.ssg);
-  fs.writeFileSync(path.join(configFile.in, 'graphql-ssg.d.ts'), typings.env);
+  const ssgPath = path.join(config.in, 'ssg');
+
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'index.js'), ssgFile);
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'index.d.ts'), typings.ssg);
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'md.js'), md.code);
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'md.d.ts'), md.typings);
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'basic.js'), basicFunctions.code);
+  fileWriteRecuirsiveSync(
+    path.join(ssgPath, 'basic.d.ts'),
+    basicFunctions.typings,
+  );
+
+  fileWriteRecuirsiveSync(
+    path.join(config.in, 'graphql-ssg.d.ts'),
+    typings.env,
+  );
 };
 
 export const transformFiles = async ({
-  configFile,
+  config,
   files,
   schema,
 }: {
-  configFile: ConfigFile;
+  config: ConfigFile;
   files: string[];
   schema: string;
 }) => {
   const htmlFiles = await Promise.all(
-    files.map((f) => injectHtmlFile({ fileToTransform: f, configFile })),
+    files.map((f) => injectHtmlFile({ fileToTransform: f, config })),
   );
-  if (!fs.existsSync(configFile.out)) {
-    fs.mkdirSync(configFile.out);
-  }
   files.forEach((f) => {
-    message(`Writing ${path.join(configFile.out, f)}`, 'yellow');
-    const hasDir = f.split('/');
-    if (hasDir.length > 1) {
-      const dirs = hasDir.splice(0, hasDir.length - 1);
-      const dir = path.join(configFile.out, dirs.join('/'));
-      if (!fs.existsSync(dir)) {
-        fs.mkdirSync(dir, { recursive: true });
-      }
-    }
-    fs.writeFileSync(
-      path.join(configFile.out, f),
-      fs.readFileSync(path.join(configFile.in, f)),
+    message(`Writing ${path.join(config.out, f)}`, 'yellow');
+    fileWriteRecuirsiveSync(
+      path.join(config.out, f),
+      fs.readFileSync(path.join(config.in, f)),
     );
   });
   htmlFiles.forEach(({ name, code }) => {
     if (code) {
-      message(`Writing ${path.join(configFile.out, name)}`, 'yellow');
-      fs.writeFileSync(path.join(configFile.out, name), code);
+      message(`Writing ${path.join(config.out, name)}`, 'yellow');
+      fileWriteRecuirsiveSync(path.join(config.out, name), code);
     }
   });
 };
 
-export const copyFile = (configFile: ConfigFile, fileName: string) => {
-  fs.writeFileSync(
-    path.join(configFile.out, fileName),
-    fs.readFileSync(path.join(configFile.in, fileName)),
+export const copyFile = (config: ConfigFile, relativeFilePath: string) => {
+  fileWriteRecuirsiveSync(
+    path.join(config.out, relativeFilePath),
+    fs.readFileSync(path.join(config.in, relativeFilePath)),
   );
 };
 
-export const copyStaticFiles = (configFile: ConfigFile) => {
-  const files = fs.readdirSync(configFile.in);
+export const copyStaticFiles = (config: ConfigFile) => {
+  const files = getFiles(config.in);
   files
-    .filter((f) => !isDirectory(path.join(configFile.in, f)))
+    .filter((f) => !isDirectory(path.join(config.in, f)))
     .filter((f) => !(f.match(fileRegex) || f.match(typingsRegex)))
     .forEach((f) => {
-      copyFile(configFile, f);
+      copyFile(config, f);
     });
+};
+
+export const cleanBuild = (config: ConfigFile) => {
+  if (fs.existsSync(config.out)) {
+    fs.rmSync(config.out, { recursive: true });
+  }
 };

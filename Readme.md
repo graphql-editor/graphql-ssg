@@ -181,3 +181,4 @@ You can use them as normally.
 - [x] TSConfig generation for included declarations to work
 - [x] Make zeus configurable and importable file
 - [ ] Clear error handling with line numbers
+- [ ] split utility functions css,html,md from zeus

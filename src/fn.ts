@@ -17,16 +17,22 @@ export interface DryadFunctionFunction {
   ): Promise<DryadFunctionResult>;
 }
 
-export const DryadDeclarations = `
-// Return html string from this function fo ssg;
-declare const render: <T>(fn:Function) => void;
-declare const html: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare const css: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string
-`;
+export const md = {
+  code: `
+import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
+const remarkableRenderer = new Remarkable()
+export const md = (strings, ...expr) => {
+  let str = '';
+  strings.forEach((string, i) => {
+      str += string + (expr[i] || '');
+  });
+  return remarkableRenderer.render(str);
+}`,
+  typings: `declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string`,
+};
 
-const injectedFunctions = `
-  import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
+export const basicFunctions = {
+  code: `
   export const html =  (strings, ...expr) => {
     let str = '';
     strings.forEach((string, i) => {
@@ -41,15 +47,10 @@ const injectedFunctions = `
     });
     return str;
   }
-  const remarkableRenderer = new Remarkable()
-  export const md = (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return remarkableRenderer.render(str);
-  } 
-  `;
+`,
+  typings: `declare const html: (strings: TemplateStringsArray, ...expr: string[]) => string
+declare const css: (strings: TemplateStringsArray, ...expr: string[]) => string`,
+};
 
 const tsType = (a: unknown): string => {
   if (a === undefined) {
@@ -69,13 +70,13 @@ const tsType = (a: unknown): string => {
   return typeof a;
 };
 
-export const envsTypings = (configFile: ConfigFile) => {
+export const envsTypings = (config: ConfigFile) => {
   const envs = fs.existsSync('./.env')
     ? parse(fs.readFileSync('./.env'))
     : undefined;
   const ssg = {
     envs,
-    config: configFile,
+    config: config,
   };
   return `
 declare const ssg: ${tsType(ssg)}`;
@@ -85,20 +86,22 @@ export const DryadFunctionBodyString = (schema: string) => {
   const graphqlTree = Parser.parse(schema);
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
   const jsString = jsSplit.const.concat('\n').concat(jsSplit.index);
-  return [jsString, injectedFunctions].join('\n');
+  return jsString;
 };
 
 export const GenerateGlobalTypings = ({
   schema,
-  configFile,
+  config,
 }: {
   schema: string;
-  configFile: ConfigFile;
+  config: ConfigFile;
 }) => {
   const graphqlTree = Parser.parse(schema);
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
   return {
-    ssg: [DryadDeclarations, jsSplit.definitions].join('\n'),
-    env: envsTypings(configFile),
+    ssg: [jsSplit.definitions].join('\n'),
+    env: envsTypings(config),
+    md: md.typings,
+    basic: basicFunctions.typings,
   };
 };

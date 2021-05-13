@@ -3,7 +3,7 @@ import fs from 'fs';
 jest.mock('fs', () => {
   return {
     readFileSync: (path: fs.PathLike) => {
-      return JSON.stringify(mock.configFile);
+      return JSON.stringify(mock.config);
     },
     existsSync: (p: string) => {
       return true;

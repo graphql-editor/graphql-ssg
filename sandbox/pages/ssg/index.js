@@ -9,6 +9,175 @@ export const AllTypesProps = {
 			}
 		}
 	},
+	UserMutation:{
+		forgotPassword:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		makeAdmin:{
+			username:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		register:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		},
+		resetPassword:{
+			reset:{
+				type:"ResetPassword",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	CreateDealRequest:{
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	SignUp:{
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	ResetPassword:{
+		token:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		newPassword:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateFeatureRequest:{
+		issueURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		languages:{
+			type:"String",
+			array:true,
+			arrayRequired:true,
+			required:true
+		},
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		repositoryURL:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateComment:{
+		featureRequest:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		content:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	UserBasicData:{
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		username:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
+				array:false,
+				arrayRequired:false,
+				required:true
+			}
+		}
+	},
+	DealStatus: "enum",
 	MoleUserMutation:{
 		acceptDealRequest:{
 			request:{
@@ -58,197 +227,10 @@ export const AllTypesProps = {
 				required:true
 			}
 		}
-	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	SignUp:{
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	CreateFeatureRequest:{
-		issueURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		languages:{
-			type:"String",
-			array:true,
-			arrayRequired:true,
-			required:true
-		},
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		repositoryURL:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	Query:{
-		featureRequest:{
-			featureRequest:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	DealStatus: "enum",
-	CreateDealRequest:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		}
-	},
-	ResetPassword:{
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	CreateComment:{
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	UserMutation:{
-		forgotPassword:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		makeAdmin:{
-			username:{
-				type:"String",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		register:{
-			user:{
-				type:"UserBasicData",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		},
-		resetPassword:{
-			reset:{
-				type:"ResetPassword",
-				array:false,
-				arrayRequired:false,
-				required:true
-			}
-		}
-	},
-	UserBasicData:{
-		username:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		password:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
 	}
 }
 
 export const ReturnTypes = {
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
-	},
-	UserQuery:{
-		isAdmin:"Boolean",
-		isAdminClaimPossible:"Boolean",
-		login:"LoggedInData"
-	},
 	DealRequest:{
 		accepted:"Boolean",
 		createdAt:"String",
@@ -257,27 +239,16 @@ export const ReturnTypes = {
 		message:"String",
 		user:"MoleUser"
 	},
-	Comment:{
-		content:"String",
-		createdAt:"String",
-		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comment"
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
 	},
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
-	},
-	LoggedInData:{
-		token:"String"
-	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
+	UserMutation:{
+		forgotPassword:"Boolean",
+		makeAdmin:"Boolean",
+		register:"LoggedInData",
+		resetPassword:"Boolean"
 	},
 	FeatureRequest:{
 		comments:"Comment",
@@ -289,6 +260,29 @@ export const ReturnTypes = {
 		offeredWorms:"Int",
 		repositoryURL:"String",
 		title:"String"
+	},
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
+	},
+	Comment:{
+		content:"String",
+		createdAt:"String",
+		featureRequest:"FeatureRequest",
+		index:"Int",
+		replyTo:"Comment"
+	},
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
+	},
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
 	},
 	MoleUser:{
 		avatar:"String",
@@ -306,15 +300,21 @@ export const ReturnTypes = {
 		status:"DealStatus",
 		user:"MoleUser"
 	},
-	UserMutation:{
-		forgotPassword:"Boolean",
-		makeAdmin:"Boolean",
-		register:"LoggedInData",
-		resetPassword:"Boolean"
+	UserQuery:{
+		isAdmin:"Boolean",
+		isAdminClaimPossible:"Boolean",
+		login:"LoggedInData"
 	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
+	LoggedInData:{
+		token:"String"
+	},
+	MoleUserMutation:{
+		acceptDealRequest:"Boolean",
+		closeDeal:"Boolean",
+		createComment:"Boolean",
+		createFeatureRequest:"Boolean",
+		finishWork:"Boolean",
+		offerDealRequest:"Boolean"
 	}
 }
 
@@ -712,28 +712,3 @@ export const Selectors = {
 mutation: ZeusSelect()
 };
     
-
-  import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
-  export const html =  (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return str;
-  }
-  export const css =  (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return str;
-  }
-  const remarkableRenderer = new Remarkable()
-  export const md = (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return remarkableRenderer.render(str);
-  } 
-  

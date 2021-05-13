@@ -8,6 +8,7 @@ import {
   transformFiles,
   fileRegex,
   typingsRegex,
+  cleanBuild,
 } from './transform';
 import path from 'path';
 import WebSocket from 'ws';
@@ -52,14 +53,14 @@ const getPort = (port = 80, maxPort = 65535): Promise<number> => {
 };
 
 const initBrowserBundler = async ({
-  configFile,
+  config,
   schema,
 }: {
-  configFile: ConfigFile;
+  config: ConfigFile;
   schema: string;
 }) => {
   const ws = new WebSocket.Server({
-    port: configFile.websocketPort,
+    port: config.websocketPort,
     perMessageDeflate: true,
   });
   ws.on('connection', (client) => {
@@ -74,21 +75,21 @@ const initBrowserBundler = async ({
     const requestURL = req.url;
     if (requestURL === '/' || !requestURL) {
       res.writeHead(200, { 'content-type': 'text/html' });
-      res.write(browserHtml(configFile));
+      res.write(browserHtml(config));
     } else {
       const [, , ...fileNames] = requestURL.split('/');
       const fileName = fileNames.join('/');
       if (fileName?.endsWith('.js') || fileName?.endsWith('.mjs')) {
-        const filePath = path.join(configFile.in, fileName);
+        const filePath = path.join(config.in, fileName);
         const pathContent = fs.readFileSync(filePath).toString('utf-8');
-        const fContent = [internals(configFile), pathContent].join('\n');
+        const fContent = [internals(config), pathContent].join('\n');
         res.writeHead(200, { 'content-type': 'text/javascript' });
         res.write(fContent);
       }
     }
     res.end();
   });
-  const browserBundlePort = await getPort(configFile.port + 1);
+  const browserBundlePort = await getPort(config.port + 1);
   browserBundle.listen(browserBundlePort);
   const browser = await runBrowser(browserBundlePort);
   return {
@@ -104,29 +105,30 @@ const initBrowserBundler = async ({
 };
 
 export const build = async () => {
-  const configFile = readConfig('./graphql-ssg.json');
-  regenerateJsConfig(configFile);
-  const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
-  await generateTypingsFiles({ configFile, schema });
+  const config = readConfig('./graphql-ssg.json');
+  cleanBuild(config);
+  regenerateJsConfig(config);
+  const schema = await Utils.getFromUrl(config.url, config.headers);
+  await generateTypingsFiles({ config, schema });
   const { close } = await initBrowserBundler({
-    configFile,
+    config,
     schema,
   });
-  await transformAllFiles({ configFile, schema });
-  copyStaticFiles(configFile);
+  await transformAllFiles({ config, schema });
+  copyStaticFiles(config);
   await close();
 };
 
 const transformAllFiles = async ({
-  configFile,
+  config,
   schema,
 }: {
-  configFile: ConfigFile;
+  config: ConfigFile;
   schema: string;
 }) => {
-  const allFiles = await readFiles(configFile.in);
+  const allFiles = await readFiles(config.in);
   await transformFiles({
-    configFile,
+    config,
     files: allFiles,
     schema,
   });
@@ -134,15 +136,15 @@ const transformAllFiles = async ({
 
 export const watch = async () => {
   let block = true;
-  const configFile = readConfig('./graphql-ssg.json');
-  const schema = await Utils.getFromUrl(configFile.url, configFile.headers);
+  const config = readConfig('./graphql-ssg.json');
+  const schema = await Utils.getFromUrl(config.url, config.headers);
   await build();
   await initBrowserBundler({
-    configFile,
+    config,
     schema,
   });
   chokidar
-    .watch(path.join(configFile.in, `**/*.{js,css}`), {
+    .watch(path.join(config.in, `**/*.{js,css}`), {
       interval: 0, // No delay
     })
     .on('all', async (event, p) => {
@@ -151,14 +153,14 @@ export const watch = async () => {
       }
       const isStaticFile = !(p.match(fileRegex) || p.match(typingsRegex));
       if (isStaticFile) {
-        copyStaticFiles(configFile);
+        copyStaticFiles(config);
         return;
       }
       const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
       if (fs.existsSync(jsFilePath)) {
         block = true;
         await transformAllFiles({
-          configFile,
+          config,
           schema,
         });
         block = false;
@@ -168,7 +170,7 @@ export const watch = async () => {
   // `liveServer` local server for hot reload.
   return liveServer.start({
     open: true,
-    port: configFile.port,
+    port: config.port,
     root: './out',
   });
 };

@@ -1,8 +1,7 @@
 {
   "compilerOptions": {
     "target": "esnext",
-    "module": "commonjs",
-    "checkJs": true
+    "module": "commonjs"
   },
   "include": [
     "./pages/**/*.js",

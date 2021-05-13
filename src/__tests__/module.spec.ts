@@ -22,7 +22,7 @@ describe('module.ts tests', () => {
     );
   });
   it('Sends and receive bundle info from websocket', async (done) => {
-    const ws = new WebSocket.Server({ port: mock.configFile.websocketPort });
+    const ws = new WebSocket.Server({ port: mock.config.websocketPort });
     ws.on('connection', (w) => {
       w.on('message', (message) => {
         const m = JSON.parse(message.toString());
@@ -42,7 +42,7 @@ describe('module.ts tests', () => {
       w.on('close', () => done());
     });
 
-    const dryadResult = await sendAndReceiveCode('code', mock.configFile);
+    const dryadResult = await sendAndReceiveCode('code', mock.config);
     expect(dryadResult).toBeTruthy();
     ws.close();
   });

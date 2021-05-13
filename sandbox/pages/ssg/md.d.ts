@@ -1,0 +1,1 @@
+declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string

@@ -12,11 +12,11 @@ export type ConfigFile = typeof GLOBAL_CONFIG_FILE & {
   headers?: string[];
 };
 
-export const validateConfig = (configFile: ConfigFile) => {
+export const validateConfig = (config: ConfigFile) => {
   const errors: string[] = [];
   // Validate config
   Object.keys(GLOBAL_CONFIG_FILE).forEach((key) => {
-    const v = configFile[key as keyof ConfigFile];
+    const v = config[key as keyof ConfigFile];
     if (typeof v === 'undefined' || v === null) {
       errors.push(
         `Invalid config file. Please include "${key}" in your config`,
@@ -33,11 +33,9 @@ export const readConfig = (path: string) => {
   if (!configExists) {
     throw new Error('No config for graphql-ssg please create one using init');
   }
-  const configFile: ConfigFile = JSON.parse(
-    fs.readFileSync(path).toString('utf8'),
-  );
-  validateConfig(configFile);
-  return configFile;
+  const config: ConfigFile = JSON.parse(fs.readFileSync(path).toString('utf8'));
+  validateConfig(config);
+  return config;
 };
 
 export const initConfig = async () => {
@@ -71,24 +69,24 @@ const JSConfig = () => ({
   include: ['./pages/**/*', './pages/graphql-ssg.d.ts'],
 });
 
-export const regenerateTsConfig = (configFile: ConfigFile) => {
+export const regenerateTsConfig = (config: ConfigFile) => {
   const currentConfig = fs.existsSync('./tsconfig.json')
     ? JSON.parse(fs.readFileSync('./tsconfig.json').toString('utf-8'))
     : TSConfig();
   currentConfig.include = [
-    `${configFile.in}/**/*.js`,
-    `${configFile.in}/graphql-ssg.d.ts`,
+    `${config.in}/**/*.js`,
+    `${config.in}/graphql-ssg.d.ts`,
   ];
   fs.writeFileSync('./tsconfig.json', JSON.stringify(currentConfig, null, 2));
 };
 
-export const regenerateJsConfig = (configFile: ConfigFile) => {
+export const regenerateJsConfig = (config: ConfigFile) => {
   const currentConfig = fs.existsSync('./jsconfig.json')
     ? JSON.parse(fs.readFileSync('./jsconfig.json').toString('utf-8'))
     : JSConfig();
   currentConfig.include = [
-    `${configFile.in}/**/*.js`,
-    `${configFile.in}/graphql-ssg.d.ts`,
+    `${config.in}/**/*.js`,
+    `${config.in}/graphql-ssg.d.ts`,
   ];
   fs.writeFileSync('./jsconfig.json', JSON.stringify(currentConfig, null, 2));
 };

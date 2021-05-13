@@ -1,7 +1,7 @@
 import { ConfigFile } from '@/config';
 
 export const mock = {
-  configFile: {
+  config: {
     url: 'sdsad',
     in: './a',
     out: './b',

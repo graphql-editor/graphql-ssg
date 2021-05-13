@@ -1,4 +1,5 @@
-import { html } from './ssg/index.js';
+import { html } from './ssg/basic.js';
+
 const WormIt = (worms) => html`
   <a
     class="

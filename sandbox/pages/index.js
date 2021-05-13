@@ -1,5 +1,6 @@
 import { Features } from './Features.js';
-import { html, Chain, md } from './ssg/index.js';
+import { html } from './ssg/basic.js';
+import { Chain } from './ssg/index.js';
 
 const Title = html`
   <h1 class="font-black">
@@ -16,12 +17,6 @@ const Header = html`
   <div class="mb-2 bg-sblue p-5 text-white">
     ${Title} ${Motto}
   </div>
-`;
-md`
-# Hello world
-
-- adsasd
-- das as
 `;
 
 export const head = () => html`
