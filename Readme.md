@@ -168,6 +168,10 @@ export const head = () => html`<title>Hello world!</div>`;
 
 You can use them as normally.
 
+## Type Streaming
+
+If you use url that begins with `https://cdn.skypack.dev` in your import. It will try to fetch typings from skypack and save them in typings folder referencing to jsconfig. This should provide typings for example in VSCode.
+
 ## Roadmap
 
 - [ ] Add esbuild
@@ -183,3 +187,4 @@ You can use them as normally.
 - [x] Make zeus configurable and importable file
 - [ ] Clear error handling with line numbers
 - [x] split utility functions css,html,md from zeus
+- [ ] allow to auto-zeus multiple schemas

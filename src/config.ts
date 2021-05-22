@@ -65,6 +65,7 @@ const JSConfig = () => ({
   compilerOptions: {
     target: 'esnext',
     module: 'commonjs',
+    baseUrl: './',
   },
   include: ['./pages/**/*', './pages/graphql-ssg.d.ts'],
 });
@@ -81,12 +82,20 @@ export const regenerateTsConfig = (config: ConfigFile) => {
 };
 
 export const regenerateJsConfig = (config: ConfigFile) => {
+  updateJSConfig((oldConfig) => {
+    return {
+      ...oldConfig,
+      include: [`${config.in}/**/*.js`, `${config.in}/graphql-ssg.d.ts`],
+    };
+  });
+};
+
+export const updateJSConfig = (fn: (config: any) => any) => {
   const currentConfig = fs.existsSync('./jsconfig.json')
     ? JSON.parse(fs.readFileSync('./jsconfig.json').toString('utf-8'))
     : JSConfig();
-  currentConfig.include = [
-    `${config.in}/**/*.js`,
-    `${config.in}/graphql-ssg.d.ts`,
-  ];
-  fs.writeFileSync('./jsconfig.json', JSON.stringify(currentConfig, null, 2));
+  fs.writeFileSync(
+    './jsconfig.json',
+    JSON.stringify(fn(currentConfig), null, 2),
+  );
 };

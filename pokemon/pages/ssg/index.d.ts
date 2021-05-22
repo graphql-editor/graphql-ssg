@@ -1,10 +1,3 @@
-
-// Return html string from this function fo ssg;
-declare const render: <T>(fn:Function) => void;
-declare const html: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare const css: (strings: TemplateStringsArray, ...expr: string[]) => string
-declare const md: (strings: TemplateStringsArray, ...expr: string[]) => string
-
 type ZEUS_INTERFACES = never
 type ZEUS_UNIONS = never
 

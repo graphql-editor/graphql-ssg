@@ -457,28 +457,3 @@ export const Selectors = {
   query: ZeusSelect()
 };
     
-
-  import {Remarkable} from 'https://cdn.skypack.dev/remarkable';
-  export const html =  (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return str;
-  }
-  export const css =  (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return str;
-  }
-  const remarkableRenderer = new Remarkable()
-  export const md = (strings, ...expr) => {
-    let str = '';
-    strings.forEach((string, i) => {
-        str += string + (expr[i] || '');
-    });
-    return remarkableRenderer.render(str);
-  } 
-  

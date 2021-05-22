@@ -9,31 +9,13 @@ import {
   basicFunctions,
 } from '@/fn';
 import { message } from '@/console';
-
-export const fileRegex = /(.*)\.js$/;
-
-export const typingsRegex = /(.*)\.d\.ts$/;
-export const cssRegex = /(.*)\.css$/;
-
-export const isCss = (p: string) => p.match(cssRegex);
-export const isDirectory = (p: string) => fs.statSync(p).isDirectory();
-export const isStaticFile = (p: string) =>
-  !(p.match(fileRegex) || p.match(typingsRegex));
-
-export const mkFileDirSync = (p: string) => {
-  const dir = path.dirname(p);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-};
-
-export const fileWriteRecuirsiveSync = (
-  p: string,
-  data: string | NodeJS.ArrayBufferView,
-) => {
-  mkFileDirSync(p);
-  fs.writeFileSync(p, data);
-};
+import { downloadTypings } from '@/typeFetcher';
+import {
+  fileRegex,
+  fileWriteRecuirsiveSync,
+  isDirectory,
+  typingsRegex,
+} from '@/fsAddons';
 
 const getFiles = (dir: string) => {
   const result = [];
@@ -160,12 +142,18 @@ export const transformFiles = async ({
   const htmlFiles = await Promise.all(
     files.map((f) => injectHtmlFile({ fileToTransform: f, config })),
   );
-  files.forEach((f) => {
-    message(`Writing ${path.join(config.out, f)}`, 'yellow');
-    fileWriteRecuirsiveSync(
-      path.join(config.out, f),
-      fs.readFileSync(path.join(config.in, f)),
-    );
+  const readFiles = files.map((f) => ({
+    name: f,
+    path: path.join(config.out, f),
+    content: fs.readFileSync(path.join(config.in, f)),
+  }));
+  await downloadTypings(
+    config,
+    readFiles.map((r) => r.content.toString('utf-8')),
+  );
+  readFiles.forEach((f) => {
+    message(`Writing ${path.join(config.out, f.name)}`, 'yellow');
+    fileWriteRecuirsiveSync(path.join(config.out, f.name), f.content);
   });
   htmlFiles.forEach(({ name, code }) => {
     if (code) {

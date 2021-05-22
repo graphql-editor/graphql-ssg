@@ -6,8 +6,6 @@ import {
   generateTypingsFiles,
   readFiles,
   transformFiles,
-  fileRegex,
-  typingsRegex,
   cleanBuild,
 } from './transform';
 import path from 'path';
@@ -19,6 +17,7 @@ import { createServer } from 'net';
 import fs from 'fs';
 import { parse } from 'dotenv';
 import { Utils } from 'graphql-zeus';
+import { fileRegex, typingsRegex } from '@/fsAddons';
 
 const envs = () =>
   fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {};

@@ -1,4 +1,5 @@
 import { render } from 'https://cdn.skypack.dev/preact-render-to-string';
+import hybrids from 'https://cdn.skypack.dev/hybrids';
 import { html } from 'https://unpkg.com/htm/preact/index.mjs?module';
 import { Chain } from './ssg/index.js';
 
