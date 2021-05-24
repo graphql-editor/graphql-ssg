@@ -3,7 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/graphql-ssg.svg?style=flat)]()
 ![Build](https://github.com/graphql-editor/graphql-ssg/actions/workflows/release.yml/badge.svg)
 
-Simple bundler for GraphQL based website using esmodules. What makes it unique? It uses browser for bundling (not node). Remember in ESModules you can use URL imports and relative imports. You can also provide importmap for other imports
+It is the missing ingredient of Web Components architecture. Simple bundler for GraphQL based website using esmodules. What makes it unique? It uses browser for bundling (not node). Remember in ESModules you can use URL imports and relative imports. You can also provide importmap for other imports
 
 ## Installation
 
