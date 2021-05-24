@@ -188,3 +188,4 @@ If you use url that begins with `https://cdn.skypack.dev` in your import. It wil
 - [ ] Clear error handling with line numbers
 - [x] split utility functions css,html,md from zeus
 - [ ] allow to auto-zeus multiple schemas
+- [x] Types from url streaming

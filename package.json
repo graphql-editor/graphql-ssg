@@ -6,10 +6,12 @@
   "scripts": {
     "build": "ttsc --build tsconfig.build.json",
     "watch": "ttsc --watch --project tsconfig.build.json",
-    "graphql-ssg-sandbox:watch": "cd sandbox && node ../lib/index.js",
-    "graphql-ssg-sandbox:build": "cd sandbox && node ../lib/index.js --build",
-    "graphql-ssg-pokemon:watch": "cd pokemon && node ../lib/index.js",
-    "graphql-ssg-pokemon:build": "cd pokemon && node ../lib/index.js --build",
+    "graphql-ssg-sandbox:watch": "cd examples/sandbox && node ../../lib/index.js",
+    "graphql-ssg-sandbox:build": "cd examples/sandbox && node ../../lib/index.js --build",
+    "graphql-ssg-pokemon:watch": "cd examples/pokemon && node ../../lib/index.js",
+    "graphql-ssg-pokemon:build": "cd examples/pokemon && node ../../lib/index.js --build",
+    "graphql-ssg-hybrids:watch": "cd examples/hybrids && node ../../lib/index.js",
+    "graphql-ssg-hybrids:build": "cd examples/hybrids && node ../../lib/index.js --build",
     "test": "jest"
   },
   "repository": {

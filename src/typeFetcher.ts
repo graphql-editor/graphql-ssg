@@ -4,10 +4,21 @@ import { ConfigFile, updateJSConfig } from '@/config';
 import { message } from '@/console';
 import { fileWriteRecuirsiveSync } from '@/fsAddons';
 
-const URL_REGEX = new RegExp(/import.*https:\/\/cdn.skypack.dev\/(.*)['|"]/gm);
+const URL_REGEX = new RegExp(/import.*(https:\/\/.*)\/(.*)['|"]/gm);
 const TYPINGS_PATH = 'typings';
+
+interface PackageDetails {
+  packageName: string;
+  url: string;
+}
+
 export const parseDocumentToFindPackages = (content: string) => {
-  return [...content.matchAll(URL_REGEX)].map((m) => m[1]);
+  return [...content.matchAll(URL_REGEX)]
+    .filter((m) => m.length > 1)
+    .map((m) => ({
+      packageName: m[2],
+      url: m[1],
+    }));
 };
 
 export const constructTypingsUrl = ({
@@ -38,9 +49,13 @@ export const fetchTypingsForUrl = async (url: string) => {
 export const mergePackages = (filesContent: string[]) => {
   return filesContent
     .map(parseDocumentToFindPackages)
-    .reduce<string[]>((a, b) => {
+    .reduce<Array<PackageDetails>>((a, b) => {
       b.forEach((p) => {
-        if (!a.includes(p)) {
+        if (
+          !a.find(
+            (alreadyInArray) => alreadyInArray.packageName === p.packageName,
+          )
+        ) {
           a.push(p);
         }
       });
@@ -48,7 +63,7 @@ export const mergePackages = (filesContent: string[]) => {
     }, []);
 };
 
-export const fetchTypings = async (packages: string[]) => {
+export const fetchTypings = async (packages: PackageDetails[]) => {
   if (packages.length === 0) {
     return [];
   }
@@ -58,11 +73,11 @@ export const fetchTypings = async (packages: string[]) => {
   );
   const packagesWithTypings = await Promise.all(
     packages.map(async (p) => ({
-      packageName: p,
+      p,
       typings: await fetchTypingsForUrl(
         constructTypingsUrl({
-          baseUrl: 'https://cdn.skypack.dev',
-          packageName: p,
+          baseUrl: p.url,
+          packageName: p.packageName,
           typingsPath: 'types/index.d.ts',
         }),
       ),
@@ -70,7 +85,7 @@ export const fetchTypings = async (packages: string[]) => {
   );
   message('Successfully fetched the types', 'greenBright');
   return packagesWithTypings.filter((p) => p.typings) as Array<{
-    packageName: string;
+    p: PackageDetails;
     typings: string;
   }>;
 };
@@ -86,11 +101,11 @@ export const downloadTypings = async (
     const typingsPath = path.join(
       configFile.in,
       TYPINGS_PATH,
-      t.packageName,
+      t.p.packageName,
       'index.d.ts',
     );
     fileWriteRecuirsiveSync(typingsPath, t.typings);
-    paths[`https://cdn.skypack.dev/${t.packageName}`] = [typingsPath];
+    paths[`${t.p.url}/${t.p.packageName}`] = [typingsPath];
   });
 
   updateJSConfig((jsConfig) => {

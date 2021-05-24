@@ -35,8 +35,7 @@
   "exclude": [
     "lib",
     "node_modules",
-    "sandbox",
-    "pokemon",
+    "examples",
     "out",
     "coverage",
     "jest.config.ts"
