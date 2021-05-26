@@ -4,8 +4,8 @@
     "module": "commonjs",
     "baseUrl": "./",
     "paths": {
-      "https://cdn.skypack.dev/hybrids": [
-        "pages/typings/hybrids/index.d.ts"
+      "https://unpkg.com/htm/preact/index.mjs?module": [
+        "pages/typings/index.mjs?module/index.d.ts"
       ]
     }
   },

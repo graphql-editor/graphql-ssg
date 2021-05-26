@@ -64,7 +64,7 @@ const tsType = (a: unknown): string => {
       return 'null';
     }
     return `{${Object.keys(a)
-      .map((k) => `${k}: ${tsType((a as Record<string, string>)[k])}`)
+      .map((k) => `"${k}": ${tsType((a as Record<string, string>)[k])}`)
       .join(';\n')}}`;
   }
   return typeof a;
@@ -76,7 +76,7 @@ export const envsTypings = (config: ConfigFile) => {
     : undefined;
   const ssg = {
     envs,
-    config: config,
+    config,
   };
   return `
 declare const ssg: ${tsType(ssg)}`;
@@ -100,8 +100,5 @@ export const GenerateGlobalTypings = ({
   const jsSplit = TreeToTS.javascriptSplit(graphqlTree, 'browser');
   return {
     ssg: [jsSplit.definitions].join('\n'),
-    env: envsTypings(config),
-    md: md.typings,
-    basic: basicFunctions.typings,
   };
 };

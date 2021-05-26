@@ -1,16 +1,6 @@
-import { Chain } from './ssg/index.js';
-import { html as hybridshtml, define } from 'https://cdn.skypack.dev/hybrids';
+import { Chain } from './ssg/pokemon/index.js';
 import { html } from './ssg/basic.js';
-
-const StarPokemon = {
-  starred: false,
-  render: ({ name, starred }) =>
-    hybridshtml`<div onclick="${(host) => {
-      host.starred = !host.starred;
-    }}" class="hhh">${starred ? 'Starred' : 'Star'}</div>`,
-};
-
-define('star-pokemon', StarPokemon);
+import './components.js';
 
 const SinglePokemon = ({
   number,
@@ -28,7 +18,7 @@ const SinglePokemon = ({
     ${DisplayCategory({ title: 'Types', textArray: types })}
     ${DisplayCategory({ title: 'Weaknesses', textArray: weaknesses })}
     ${DisplayCategory({ title: 'Resistance', textArray: resistant })}
-    <star-pokemon name=${name}></star-pokemon>
+    <star-pokemon name="${name}"></star-pokemon>
   </hstack>
 `;
 
@@ -51,7 +41,7 @@ export const head = async () => {
 };
 
 const PokemonApp = async () => {
-  const Fetch = Chain('https://graphql-pokemon2.vercel.app/', {
+  const Fetch = Chain(ssg.config.graphql.pokemon.url, {
     headers: {
       'Content-Type': 'application/json',
     },
@@ -71,6 +61,7 @@ const PokemonApp = async () => {
   });
   return html`
     <div>
+      <starred-pokemon-list></starred-pokemon-list>
       ${response.pokemons.map((p) => SinglePokemon(p)).join('')}
     </div>
   `;

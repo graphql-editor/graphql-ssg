@@ -7,6 +7,7 @@ import {
   readFiles,
   transformFiles,
   cleanBuild,
+  generateBasicTypingsFiles,
 } from './transform';
 import path from 'path';
 import WebSocket from 'ws';
@@ -18,6 +19,13 @@ import fs from 'fs';
 import { parse } from 'dotenv';
 import { Utils } from 'graphql-zeus';
 import { fileRegex, typingsRegex } from '@/fsAddons';
+
+const transformHeaders = (headers?: { [x: string]: string }) => {
+  if (!headers) {
+    return undefined;
+  }
+  return Object.keys(headers).map((k) => `${k}:${headers[k]}`);
+};
 
 const envs = () =>
   fs.existsSync('./.env') ? parse(fs.readFileSync('./.env')) : {};
@@ -51,13 +59,7 @@ const getPort = (port = 80, maxPort = 65535): Promise<number> => {
   );
 };
 
-const initBrowserBundler = async ({
-  config,
-  schema,
-}: {
-  config: ConfigFile;
-  schema: string;
-}) => {
+const initBrowserBundler = async ({ config }: { config: ConfigFile }) => {
   const ws = new WebSocket.Server({
     port: config.websocketPort,
     perMessageDeflate: true,
@@ -107,40 +109,44 @@ export const build = async () => {
   const config = readConfig('./graphql-ssg.json');
   cleanBuild(config);
   regenerateJsConfig(config);
-  const schema = await Utils.getFromUrl(config.url, config.headers);
-  await generateTypingsFiles({ config, schema });
+  await generateBasicTypingsFiles(config);
+  if (config.graphql) {
+    await Promise.all(
+      Object.keys(config.graphql).map(async (k) => {
+        const schema = await Utils.getFromUrl(
+          config.graphql![k].url,
+          transformHeaders(config.graphql![k].headers),
+        );
+        await generateTypingsFiles({ config, schema, name: k });
+        return {
+          schema,
+          name: k,
+        };
+      }),
+    );
+  }
   const { close } = await initBrowserBundler({
     config,
-    schema,
   });
-  await transformAllFiles({ config, schema });
+  await transformAllFiles({ config });
   copyStaticFiles(config);
   await close();
 };
 
-const transformAllFiles = async ({
-  config,
-  schema,
-}: {
-  config: ConfigFile;
-  schema: string;
-}) => {
+const transformAllFiles = async ({ config }: { config: ConfigFile }) => {
   const allFiles = await readFiles(config.in);
   await transformFiles({
     config,
     files: allFiles,
-    schema,
   });
 };
 
 export const watch = async () => {
   let block = true;
   const config = readConfig('./graphql-ssg.json');
-  const schema = await Utils.getFromUrl(config.url, config.headers);
   await build();
   await initBrowserBundler({
     config,
-    schema,
   });
   chokidar
     .watch(path.join(config.in, `**/*.{js,css}`), {
@@ -160,7 +166,6 @@ export const watch = async () => {
         block = true;
         await transformAllFiles({
           config,
-          schema,
         });
         block = false;
       }

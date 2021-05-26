@@ -1,0 +1,82 @@
+@import "https://fonts.googleapis.com/css?family=Press+Start+2P";
+@import "https://unpkg.com/nes.css@2.3.0/css/nes.min.css";
+@import "https://unpkg.com/pyloncss@latest/css/pylon.css";
+img{
+    width: 100px;
+    height: auto;
+}
+.DryadBody{
+    font-family: "Press Start 2P";
+}
+.Pokemon{
+    font-size: 11px;
+    padding: 30px;
+}
+.Pokemon.Selected{
+    background: black !important;
+    color: white !important;
+}
+.Pokemon .Name {
+    padding: 5px;
+}
+.Pokemon img{
+    mix-blend-mode: multiply;
+}
+#PokeSearch{
+    padding: 10px;
+    position: fixed;
+    width: 100%;
+    background: white;
+    z-index: 2 ;
+    border: 0;
+    border-bottom: #ddd solid 2px;
+}
+#Pokemons{
+    padding-top: 30px;
+}
+
+.Grass{
+    color:darkgreen;
+}
+
+.Fire{
+    color: red;
+}
+
+.Water{
+    color: royalblue;
+}
+
+.Electric{
+    color:#aa0;
+}
+
+.Ground{
+    background-color: tan;
+}
+
+.Bug{
+    background-color: #fec;
+    color: yellowgreen
+}
+
+.Poison .Name{
+    font-style: italic;
+}
+
+.Flying .Name{
+    background-color: #aef;
+    color:white;
+}
+
+.Psychic{
+    background: #fdf;
+}
+
+.Dragon{
+    color: #f0f;
+}
+
+.Ghost{
+    color: #777 ;
+}

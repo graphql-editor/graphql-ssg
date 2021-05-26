@@ -25,7 +25,11 @@ Set up config.
 
 ```json
 {
-  "url": "https://graphql-pokemon2.vercel.app/",
+  "graphql": {
+    "pokemon": {
+      "url": "https://graphql-pokemon2.vercel.app/"
+    }
+  },
   "in": "./pages",
   "out": "./out",
   "websocketPort": 1414,
@@ -33,13 +37,24 @@ Set up config.
 }
 ```
 
-So you need to provide your schema url in and out dirs for graphql-ssg
+So you need to provide your schema url ( you can declare multiple schemas ) ,in and out dirs for graphql-ssg
 
 You can also add headers if needed:
 
 ```json
 {
-  "headers": ["Authorization: Bearer MyToken"]
+  "graphql": {
+    "pokemon": {
+      "url": "https://graphql-pokemon2.vercel.app/",
+      "headers": {
+        "Authorization": "Bearer MyToken"
+      }
+    }
+  },
+  "in": "./pages",
+  "out": "./out",
+  "websocketPort": 1414,
+  "port": 8080
 }
 ```
 
@@ -78,7 +93,11 @@ Config file can be generated or created manually. It should contain all the foll
 
 ```json
 {
-  "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql",
+  "graphql": {
+    "feature-mole": {
+      "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql"
+    }
+  },
   "in": "./pages",
   "out": "./out",
   "websocketPort": 1416,
@@ -125,8 +144,8 @@ GraphQL SSG comes with generated library
 Works like fetch to GraphQL, where you need to provide host and/or options to receive fully Autocompleted client for schema url from your config.
 
 ```js
-import { Chain } from './ssg/index.js';
-const graphQLClient = Chain(ssg.config.host);
+import { Chain } from './ssg/main-schema/index.js';
+const graphQLClient = Chain(ssg.config.graphql['main-schema'].url);
 
 const response = await graphQLClient.query({ people: true });
 ```
@@ -170,7 +189,7 @@ You can use them as normally.
 
 ## Type Streaming
 
-If you use url that begins with `https://cdn.skypack.dev` in your import. It will try to fetch typings from skypack and save them in typings folder referencing to jsconfig. This should provide typings for example in VSCode.
+For example: If you use url that begins with `https://cdn.skypack.dev` in your import. It will try to fetch typings from skypack and save them in typings folder referencing to jsconfig. This should provide typings for example in VSCode.
 
 ## Roadmap
 
@@ -187,5 +206,5 @@ If you use url that begins with `https://cdn.skypack.dev` in your import. It wil
 - [x] Make zeus configurable and importable file
 - [ ] Clear error handling with line numbers
 - [x] split utility functions css,html,md from zeus
-- [ ] allow to auto-zeus multiple schemas
+- [x] allow to auto-zeus multiple schemas
 - [x] Types from url streaming

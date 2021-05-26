@@ -1,6 +1,6 @@
 import { Features } from './Features.js';
 import { html } from './ssg/basic.js';
-import { Chain } from './ssg/index.js';
+import { Chain } from './ssg/feature-mole/index.js';
 
 const Title = html`
   <h1 class="font-black">
@@ -23,7 +23,7 @@ export const head = () => html`
   <title>Hello world!</title>
 `;
 export default async () => {
-  const response = await Chain(ssg.config.url).query({
+  const response = await Chain(ssg.config.graphql['feature-mole'].url).query({
     home: {
       title: true,
       content: true,

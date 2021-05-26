@@ -1,7 +1,6 @@
 import fs from 'fs';
 
 const GLOBAL_CONFIG_FILE = {
-  url: 'https://example.org/graphql',
   out: './out',
   in: './pages',
   port: 8080,
@@ -9,7 +8,14 @@ const GLOBAL_CONFIG_FILE = {
 };
 
 export type ConfigFile = typeof GLOBAL_CONFIG_FILE & {
-  headers?: string[];
+  graphql?: {
+    [x: string]: {
+      url: string;
+      headers?: {
+        [x: string]: string;
+      };
+    };
+  };
 };
 
 export const validateConfig = (config: ConfigFile) => {

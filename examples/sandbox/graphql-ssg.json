@@ -1,7 +1,11 @@
 {
-  "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql",
   "in": "./pages",
   "out": "./out",
   "websocketPort": 1416,
-  "port": 8082
+  "port": 8082,
+  "graphql": {
+    "feature-mole": {
+      "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql"
+    }
+  }
 }

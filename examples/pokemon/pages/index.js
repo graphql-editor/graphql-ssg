@@ -1,7 +1,6 @@
 import { render } from 'https://cdn.skypack.dev/preact-render-to-string';
-import hybrids from 'https://cdn.skypack.dev/hybrids';
 import { html } from 'https://unpkg.com/htm/preact/index.mjs?module';
-import { Chain } from './ssg/index.js';
+import { Chain } from './ssg/pokemon/index.js';
 
 const Pokemon = ({ number, name, image, weaknesses, resistant, types }) => {
   return html`
@@ -41,7 +40,7 @@ export const head = () => {
 };
 // Create your app
 export default async () => {
-  const Fetch = Chain('https://graphql-pokemon2.vercel.app/', {
+  const Fetch = Chain(ssg.config.graphql.pokemon.url, {
     headers: {
       'Content-Type': 'application/json',
     },

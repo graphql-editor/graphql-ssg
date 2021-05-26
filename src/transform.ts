@@ -16,6 +16,7 @@ import {
   isDirectory,
   typingsRegex,
 } from '@/fsAddons';
+import { envsTypings } from '@/fn';
 
 const getFiles = (dir: string) => {
   const result = [];
@@ -100,22 +101,8 @@ export const injectHtmlFile = async ({
   };
 };
 
-export const generateTypingsFiles = async ({
-  schema,
-  config,
-}: {
-  schema: string;
-  config: ConfigFile;
-}) => {
-  const typings = await GenerateGlobalTypings({
-    config,
-    schema,
-  });
-  const ssgFile = await DryadFunctionBodyString(schema);
+export const generateBasicTypingsFiles = async (config: ConfigFile) => {
   const ssgPath = path.join(config.in, 'ssg');
-
-  fileWriteRecuirsiveSync(path.join(ssgPath, 'index.js'), ssgFile);
-  fileWriteRecuirsiveSync(path.join(ssgPath, 'index.d.ts'), typings.ssg);
   fileWriteRecuirsiveSync(path.join(ssgPath, 'md.js'), md.code);
   fileWriteRecuirsiveSync(path.join(ssgPath, 'md.d.ts'), md.typings);
   fileWriteRecuirsiveSync(path.join(ssgPath, 'basic.js'), basicFunctions.code);
@@ -126,18 +113,35 @@ export const generateTypingsFiles = async ({
 
   fileWriteRecuirsiveSync(
     path.join(config.in, 'graphql-ssg.d.ts'),
-    typings.env,
+    envsTypings(config),
   );
+};
+
+export const generateTypingsFiles = async ({
+  name,
+  schema,
+  config,
+}: {
+  name: string;
+  schema: string;
+  config: ConfigFile;
+}) => {
+  const typings = await GenerateGlobalTypings({
+    config,
+    schema,
+  });
+  const ssgFile = await DryadFunctionBodyString(schema);
+  const ssgPath = path.join(config.in, 'ssg', name);
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'index.js'), ssgFile);
+  fileWriteRecuirsiveSync(path.join(ssgPath, 'index.d.ts'), typings.ssg);
 };
 
 export const transformFiles = async ({
   config,
   files,
-  schema,
 }: {
   config: ConfigFile;
   files: string[];
-  schema: string;
 }) => {
   const htmlFiles = await Promise.all(
     files.map((f) => injectHtmlFile({ fileToTransform: f, config })),

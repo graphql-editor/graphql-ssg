@@ -4,7 +4,11 @@ import { createTwinFile, hasTwinFile } from '@/transform';
 const paths = ['Detail.js', 'Detail.css', 'index.html', 'somemodule.js'];
 
 const config: ConfigFile = {
-  url: 'https://example.org/graphql',
+  graphql: {
+    main: {
+      url: 'https://example.org/graphql',
+    },
+  },
   in: '',
   out: './out',
   websocketPort: 1414,
