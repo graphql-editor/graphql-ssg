@@ -2,6 +2,8 @@ import WebSocket from 'ws';
 import { ConfigFile } from '@/config';
 import { message } from '@/console';
 
+const PARSE_STACK_MESSAGE_REGEX = new RegExp(/https?:\/\/[^\/]*\/[^\/]*\//gm);
+
 interface EventFromWebsocket {
   type: 'rendered' | 'error' | 'module';
   operationId: string;
@@ -62,7 +64,15 @@ export const sendAndReceiveCode = (
         }
         if (event.type === 'error') {
           message(`Unexpected error ocurred in ${filePath}`, 'red');
-          message(JSON.parse(event.error || '{}').message || '', 'red');
+          const stackMessage: string =
+            JSON.parse(event.error || '{}').stack || '';
+          message(
+            stackMessage.replace(
+              PARSE_STACK_MESSAGE_REGEX,
+              config.in.endsWith('/') ? config.in : `${config.in}/`,
+            ),
+            'red',
+          );
           resolve(undefined);
         }
         if (event.type === 'module') {

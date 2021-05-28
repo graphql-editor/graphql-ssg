@@ -37,11 +37,13 @@ declare namespace hybrids {
       keyof Omit<E, keyof HTMLElement>,
       string
     >]: property extends "render" | "content"
-      ? RenderFunction<E> | Property<E, E[property]>
+      ? E[property] extends () => HTMLElement
+        ? RenderFunction<E>
+        : Property<E, E[property]>
       : Property<E, E[property]>;
   } & {
-    render?: RenderFunction<E>;
-    content?: RenderFunction<E>;
+    render?: RenderFunction<E> | Descriptor<E, () => HTMLElement>;
+    content?: RenderFunction<E> | Descriptor<E, () => HTMLElement>;
   };
 
   interface MapOfHybrids {
@@ -49,12 +51,14 @@ declare namespace hybrids {
   }
 
   type MapOfConstructors<T> = {
-    [tagName in keyof T]: typeof HTMLElement;
+    [tagName in keyof T]: T[tagName] extends Hybrids<infer E>
+      ? HybridElement<E>
+      : typeof HTMLElement;
   };
 
   interface HybridElement<E> {
-    new (): E;
-    prototype: E;
+    new (): E & HTMLElement;
+    prototype: E & HTMLElement;
   }
 
   /* Define */
@@ -62,7 +66,8 @@ declare namespace hybrids {
   function define<E>(
     tagName: string | null,
     hybrids: Hybrids<E>,
-  ): HybridElement<E & HTMLElement>;
+  ): HybridElement<E>;
+
   function define(
     mapOfHybrids: MapOfHybrids,
   ): MapOfConstructors<typeof mapOfHybrids>;
@@ -149,8 +154,12 @@ declare namespace hybrids {
     function clear<M>(model: Model<M> | M, clearValue?: boolean): void;
 
     function pending<M>(model: M): false | Promise<M>;
+    function pending(...models: Array<object>): false | Promise<typeof models>;
+
     function error<M>(model: M, propertyName?: keyof M): false | Error | any;
+
     function ready<M>(model: M): boolean;
+    function ready(...models: Array<object>): boolean;
 
     function submit<M>(draft: M, values?: ModelValues<M>): Promise<M>;
     function resolve<M>(model: M): Promise<M>;
