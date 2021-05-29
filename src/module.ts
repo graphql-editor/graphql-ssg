@@ -64,8 +64,8 @@ export const sendAndReceiveCode = (
         }
         if (event.type === 'error') {
           message(`Unexpected error ocurred in ${filePath}`, 'red');
-          const stackMessage: string =
-            JSON.parse(event.error || '{}').stack || '';
+          const e = JSON.parse(event.error || '{}');
+          const stackMessage: string = e.stack || e.message || '';
           message(
             stackMessage.replace(
               PARSE_STACK_MESSAGE_REGEX,
