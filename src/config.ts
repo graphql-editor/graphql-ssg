@@ -77,14 +77,16 @@ const JSConfig = () => ({
 });
 
 export const regenerateTsConfig = (config: ConfigFile) => {
-  const currentConfig = fs.existsSync('./tsconfig.json')
-    ? JSON.parse(fs.readFileSync('./tsconfig.json').toString('utf-8'))
-    : TSConfig();
-  currentConfig.include = [
-    `${config.in}/**/*.js`,
-    `${config.in}/graphql-ssg.d.ts`,
-  ];
-  fs.writeFileSync('./tsconfig.json', JSON.stringify(currentConfig, null, 2));
+  updateTSConfig((oldConfig) => {
+    return {
+      ...oldConfig,
+      include: [
+        `${config.in}/**/*.ts`,
+        `${config.in}/**/*.js`,
+        `${config.in}/graphql-ssg.d.ts`,
+      ],
+    };
+  });
 };
 
 export const regenerateJsConfig = (config: ConfigFile) => {
@@ -94,6 +96,16 @@ export const regenerateJsConfig = (config: ConfigFile) => {
       include: [`${config.in}/**/*.js`, `${config.in}/graphql-ssg.d.ts`],
     };
   });
+};
+
+export const updateTSConfig = (fn: (config: any) => any) => {
+  const currentConfig = fs.existsSync('./tsconfig.json')
+    ? JSON.parse(fs.readFileSync('./tsconfig.json').toString('utf-8'))
+    : TSConfig();
+  fs.writeFileSync(
+    './tsconfig.json',
+    JSON.stringify(fn(currentConfig), null, 2),
+  );
 };
 
 export const updateJSConfig = (fn: (config: any) => any) => {
