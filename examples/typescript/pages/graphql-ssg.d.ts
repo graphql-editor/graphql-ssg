@@ -4,4 +4,5 @@ declare const ssg: {"envs": {};
 "out": string;
 "websocketPort": number;
 "port": number;
+"mode": string;
 "graphql": {"pokemon": {"url": string}}}}

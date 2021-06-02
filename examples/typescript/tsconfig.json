@@ -1,13 +1,26 @@
 {
   "compilerOptions": {
+    "incremental": true,
     "target": "esnext",
-    "module": "commonjs",
-    "baseUrl": "./",
+    "module": "ES2020",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
     "allowJs": true,
-    "rootDir": "./",
+    "noEmit": true,
+    "baseUrl": "./",
     "paths": {
-      "https://cdn.skypack.dev/hybrids": ["pages/typings/hybrids/index.d.ts"]
+      "https://cdn.skypack.dev/hybrids": [
+        "pages/typings/hybrids/index.d.ts"
+      ]
     }
   },
-  "include": ["./pages/**/*.js", "./pages/**/*.ts", "./pages/graphql-ssg.d.ts"]
+  "include": [
+    "./pages/**/*.tsx",
+    "./pages/**/*.jsx",
+    "./pages/**/*.ts",
+    "./pages/**/*.js",
+    "./pages/graphql-ssg.d.ts"
+  ]
 }
