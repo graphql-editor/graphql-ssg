@@ -31,6 +31,13 @@ jest.mock('fs', () => {
   >;
 });
 
+jest.mock('typescript', () => {
+  return {
+    default: {},
+    transpileModule: (b: string, opts: any) => b,
+  };
+});
+
 describe('Transform tests', () => {
   it('Create twin files for mock files', () => {
     const htmlFile = createTwinFile('Detail.js', 'html');

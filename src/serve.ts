@@ -1,10 +1,14 @@
 import chokidar from 'chokidar';
 import liveServer from 'live-server';
-import { ConfigFile, readConfig, regenerateJsConfig } from './config';
+import {
+  ConfigFile,
+  readConfig,
+  regenerateJsConfig,
+  regenerateTsConfig,
+} from './config';
 import {
   copyStaticFiles,
   generateTypingsFiles,
-  readFiles,
   transformFiles,
   cleanBuild,
   generateBasicTypingsFiles,
@@ -18,7 +22,7 @@ import { createServer } from 'net';
 import fs from 'fs';
 import { parse } from 'dotenv';
 import { Utils } from 'graphql-zeus';
-import { fileRegex, typingsRegex } from '@/fsAddons';
+import { isJSFile, isTSFile } from '@/fsAddons';
 
 const transformHeaders = (headers?: { [x: string]: string }) => {
   if (!headers) {
@@ -108,7 +112,11 @@ const initBrowserBundler = async ({ config }: { config: ConfigFile }) => {
 export const build = async () => {
   const config = readConfig('./graphql-ssg.json');
   cleanBuild(config);
-  regenerateJsConfig(config);
+  if (config.mode) {
+    regenerateTsConfig(config);
+  } else {
+    regenerateJsConfig(config);
+  }
   await generateBasicTypingsFiles(config);
   if (config.graphql) {
     await Promise.all(
@@ -128,17 +136,9 @@ export const build = async () => {
   const { close } = await initBrowserBundler({
     config,
   });
-  await transformAllFiles({ config });
+  await transformFiles({ config });
   copyStaticFiles(config);
   await close();
-};
-
-const transformAllFiles = async ({ config }: { config: ConfigFile }) => {
-  const allFiles = await readFiles(config.in);
-  await transformFiles({
-    config,
-    files: allFiles,
-  });
 };
 
 export const watch = async () => {
@@ -149,32 +149,32 @@ export const watch = async () => {
     config,
   });
   chokidar
-    .watch(path.join(config.in, `**/*.{js,css}`), {
+    .watch(path.join(config.in, `**/*.{js,css,ts}`), {
       interval: 0, // No delay
     })
     .on('all', async (event, p) => {
       if (block) {
         return;
       }
-      const isStaticFile = !(p.match(fileRegex) || p.match(typingsRegex));
-      if (isStaticFile) {
-        copyStaticFiles(config);
+      if (isJSFile(p) || isTSFile(p)) {
+        const filePath = p.substr(0, p.lastIndexOf('.')) + '.ts';
+        const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
+        if (fs.existsSync(jsFilePath) || fs.existsSync(filePath)) {
+          block = true;
+          await transformFiles({
+            config,
+          });
+          block = false;
+        }
         return;
       }
-      const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
-      if (fs.existsSync(jsFilePath)) {
-        block = true;
-        await transformAllFiles({
-          config,
-        });
-        block = false;
-      }
+      copyStaticFiles(config);
     });
   block = false;
   // `liveServer` local server for hot reload.
   return liveServer.start({
     open: true,
     port: config.port,
-    root: './out',
+    root: config.out,
   });
 };

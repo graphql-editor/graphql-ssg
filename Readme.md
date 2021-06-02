@@ -105,6 +105,25 @@ Config file can be generated or created manually. It should contain all the foll
 }
 ```
 
+#### Typescript
+
+Turn on typescript support URL imports also works here. Of course you can still import relative modules.
+
+```json
+{
+  "graphql": {
+    "feature-mole": {
+      "url": "https://faker.graphqleditor.com/explore-projects/feature-mole/graphql"
+    }
+  },
+  "in": "./pages",
+  "out": "./out",
+  "websocketPort": 1416,
+  "port": 8082,
+  "mode": "typescript"
+}
+```
+
 #### Config Injection
 
 Config file is injected and typed. It is available only inside `export default` and `export const head` function to prevent leaking of secrets.
@@ -194,7 +213,7 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 ## Roadmap
 
 - [ ] Add esbuild
-- [ ] Add TS support
+- [x] Add TS support
 - [x] Add intelligent .d.ts autocompletion for imported es modules
 - [x] Add image supports
 - [x] Generate tsconfig

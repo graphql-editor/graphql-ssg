@@ -1,6 +1,6 @@
 import fetch from 'node-fetch';
 import path from 'path';
-import { ConfigFile, updateJSConfig } from '@/config';
+import { ConfigFile, updateJSConfig, updateTSConfig } from '@/config';
 import { message } from '@/console';
 import { fileWriteRecuirsiveSync } from '@/fsAddons';
 
@@ -107,7 +107,19 @@ export const downloadTypings = async (
     fileWriteRecuirsiveSync(typingsPath, t.typings);
     paths[`${t.p.url}/${t.p.packageName}`] = [typingsPath];
   });
-
+  if (configFile.mode) {
+    updateTSConfig(configFile, (tsConfig) => {
+      return {
+        ...tsConfig,
+        compilerOptions: {
+          ...tsConfig.compilerOptions,
+          baseUrl: './',
+          paths,
+        },
+      };
+    });
+    return;
+  }
   updateJSConfig((jsConfig) => {
     return {
       ...jsConfig,

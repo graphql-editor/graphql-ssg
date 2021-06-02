@@ -2,14 +2,18 @@ import fs from 'fs';
 import path from 'path';
 
 export const fileRegex = /(.*)\.js$/;
+const typescriptFileRegex = /(.*)\.ts$/;
+const typingsRegex = /(.*)\.d\.ts$/;
+const cssRegex = /(.*)\.css$/;
 
-export const typingsRegex = /(.*)\.d\.ts$/;
-export const cssRegex = /(.*)\.css$/;
-
-export const isCss = (p: string) => p.match(cssRegex);
+export const isJSFile = (p: string) => !!p.match(fileRegex);
+export const isTypingsFile = (p: string) => !!p.match(typingsRegex);
+export const isTSFile = (p: string) =>
+  !!p.match(typescriptFileRegex) && !isTypingsFile(p);
+export const isCss = (p: string) => !!p.match(cssRegex);
 export const isDirectory = (p: string) => fs.statSync(p).isDirectory();
 export const isStaticFile = (p: string) =>
-  !(p.match(fileRegex) || p.match(typingsRegex));
+  !isJSFile(p) && !isTypingsFile(p) && !isTSFile(p);
 
 export const mkFileDirSync = (p: string) => {
   const dir = path.dirname(p);
@@ -17,6 +21,11 @@ export const mkFileDirSync = (p: string) => {
     fs.mkdirSync(dir, { recursive: true });
   }
 };
+
+export const existsJSONOrDefaultSync = (p: string, defaultValue: any) =>
+  fs.existsSync(p)
+    ? JSON.parse(fs.readFileSync(p).toString('utf-8'))
+    : defaultValue;
 
 export const fileWriteRecuirsiveSync = (
   p: string,

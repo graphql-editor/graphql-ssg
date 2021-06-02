@@ -11,12 +11,15 @@ import {
 import { message } from '@/console';
 import { downloadTypings } from '@/typeFetcher';
 import {
-  fileRegex,
   fileWriteRecuirsiveSync,
   isDirectory,
-  typingsRegex,
+  isJSFile,
+  isStaticFile,
+  isTSFile,
+  fileRegex,
 } from '@/fsAddons';
 import { envsTypings } from '@/fn';
+import ts, { transpileModule } from 'typescript';
 
 const getFiles = (dir: string) => {
   const result = [];
@@ -40,8 +43,17 @@ export const readFiles = async (p: string) => {
   const allFiles: string[] = [];
   for await (const f of getFiles(p)) {
     const t = f as string;
-    const regexResult = t.match(fileRegex);
-    if (regexResult && regexResult.length > 1) {
+    if (isJSFile(t)) {
+      allFiles.push(t);
+    }
+  }
+  return allFiles;
+};
+export const readTSFiles = async (p: string) => {
+  const allFiles: string[] = [];
+  for await (const f of getFiles(p)) {
+    const t = f as string;
+    if (isTSFile(t)) {
       allFiles.push(t);
     }
   }
@@ -51,9 +63,8 @@ export const readFiles = async (p: string) => {
 export const createTwinFileWithRegex = (
   fileToTransform: string,
   extension: string,
-  reg: RegExp,
 ) => {
-  const regexResult = fileToTransform.match(reg);
+  const regexResult = fileToTransform.match(fileRegex);
   if (!regexResult) {
     throw new Error(
       'Invalid file provided to function. Only accepting files matching mock regex',
@@ -64,7 +75,7 @@ export const createTwinFileWithRegex = (
 };
 
 export const createTwinFile = (fileToTransform: string, extension: string) => {
-  return createTwinFileWithRegex(fileToTransform, extension, fileRegex);
+  return createTwinFileWithRegex(fileToTransform, extension);
 };
 
 export const hasTwinFile = (
@@ -136,26 +147,35 @@ export const generateTypingsFiles = async ({
   fileWriteRecuirsiveSync(path.join(ssgPath, 'index.d.ts'), typings.ssg);
 };
 
-export const transformFiles = async ({
-  config,
-  files,
-}: {
-  config: ConfigFile;
-  files: string[];
-}) => {
+export const transformFiles = async ({ config }: { config: ConfigFile }) => {
+  const files = await readFiles(config.in);
+  const tsFiles = await readTSFiles(config.in);
+  if (tsFiles.length > 0) {
+    const tsconfig = JSON.parse(
+      fs.readFileSync('./tsconfig.json').toString('utf-8'),
+    );
+    tsFiles.forEach((tsFile) => {
+      const transpiledFile = transpileTS(
+        fs.readFileSync(path.join(config.in, tsFile)).toString('utf-8'),
+        tsconfig,
+      );
+      const jsFileName = path.join(config.in, tsFile.replace(/\.ts$/, '.js'));
+      fileWriteRecuirsiveSync(jsFileName, transpiledFile);
+    });
+  }
   const htmlFiles = await Promise.all(
     files.map((f) => injectHtmlFile({ fileToTransform: f, config })),
   );
-  const readFiles = files.map((f) => ({
+  const rf = files.map((f) => ({
     name: f,
     path: path.join(config.out, f),
     content: fs.readFileSync(path.join(config.in, f)),
   }));
   await downloadTypings(
     config,
-    readFiles.map((r) => r.content.toString('utf-8')),
+    rf.map((r) => r.content.toString('utf-8')),
   );
-  readFiles.forEach((f) => {
+  rf.forEach((f) => {
     message(`Writing ${path.join(config.out, f.name)}`, 'yellow');
     fileWriteRecuirsiveSync(path.join(config.out, f.name), f.content);
   });
@@ -178,7 +198,7 @@ export const copyStaticFiles = (config: ConfigFile) => {
   const files = getFiles(config.in);
   files
     .filter((f) => !isDirectory(path.join(config.in, f)))
-    .filter((f) => !(f.match(fileRegex) || f.match(typingsRegex)))
+    .filter(isStaticFile)
     .forEach((f) => {
       copyFile(config, f);
     });
@@ -188,4 +208,8 @@ export const cleanBuild = (config: ConfigFile) => {
   if (fs.existsSync(config.out)) {
     fs.rmSync(config.out, { recursive: true });
   }
+};
+
+export const transpileTS = (code: string, options: ts.TranspileOptions) => {
+  return transpileModule(code, options).outputText;
 };

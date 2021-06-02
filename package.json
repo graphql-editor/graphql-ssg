@@ -1,6 +1,6 @@
 {
   "name": "graphql-ssg",
-  "version": "0.3.4",
+  "version": "0.3.5",
   "description": "Simple data feed HTML bundler",
   "main": "lib/index.js",
   "scripts": {
@@ -12,6 +12,8 @@
     "graphql-ssg-pokemon:build": "cd examples/pokemon && node ../../lib/index.js --build",
     "graphql-ssg-hybrids:watch": "cd examples/hybrids && node ../../lib/index.js",
     "graphql-ssg-hybrids:build": "cd examples/hybrids && node ../../lib/index.js --build",
+    "graphql-ssg-typescript:watch": "cd examples/typescript && node ../../lib/index.js",
+    "graphql-ssg-typescript:build": "cd examples/typescript && node ../../lib/index.js --build",
     "test": "jest"
   },
   "repository": {
@@ -43,6 +45,7 @@
     "pretty-error": "^3.0.3",
     "puppeteer": "^8.0.0",
     "remarkable": "^2.0.1",
+    "typescript": "^4.3.2",
     "ws": "^7.4.4",
     "yargs": "^16.2.0"
   },
@@ -64,7 +67,6 @@
     "ts-jest": "^26.5.4",
     "ts-node": "^9.1.1",
     "ttypescript": "^1.5.12",
-    "typescript": "^4.0.3",
     "typescript-transform-paths": "^2.2.3"
   }
 }
