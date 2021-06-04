@@ -1,6 +1,6 @@
 {
   "name": "graphql-ssg",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "Simple data feed HTML bundler",
   "main": "lib/index.js",
   "scripts": {
@@ -14,6 +14,8 @@
     "graphql-ssg-hybrids:build": "cd examples/hybrids && node ../../lib/index.js --build",
     "graphql-ssg-typescript:watch": "cd examples/typescript && node ../../lib/index.js",
     "graphql-ssg-typescript:build": "cd examples/typescript && node ../../lib/index.js --build",
+    "graphql-ssg-typescript-react:watch": "cd examples/typescript-react && node ../../lib/index.js",
+    "graphql-ssg-typescript-react:build": "cd examples/typescript-react && node ../../lib/index.js --build",
     "test": "jest"
   },
   "repository": {
@@ -39,7 +41,7 @@
     "chrome-remote-interface": "^0.30.0",
     "dotenv": "^9.0.0",
     "esbuild": "^0.11.6",
-    "graphql-zeus": "^3.0.5",
+    "graphql-zeus": "^3.0.7",
     "live-server": "^1.2.1",
     "node-fetch": "^2.6.1",
     "pretty-error": "^3.0.3",

@@ -10,10 +10,12 @@ export const browserHtml = (config: ConfigFile) => `
           try{
             const c = await import(\`./\${code}\`)
             if(c.default){
-              const body = await c.default()
+              const data = c.data && await c.data()
+              const body = await c.default(data)
               const head = c.head ? await c.head() : ''
               ws.send(JSON.stringify({ type: 'rendered', result: {
-                body: await c.default(),
+                body,
+                data,
                 head,
               }, operationId }));
             }else{

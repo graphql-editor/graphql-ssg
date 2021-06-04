@@ -149,7 +149,7 @@ export const watch = async () => {
     config,
   });
   chokidar
-    .watch(path.join(config.in, `**/*.{js,css,ts}`), {
+    .watch(path.join(config.in, `**/*.{js,css,ts,tsx,jsx}`), {
       interval: 0, // No delay
     })
     .on('all', async (event, p) => {
@@ -158,8 +158,15 @@ export const watch = async () => {
       }
       if (isJSFile(p) || isTSFile(p)) {
         const filePath = p.substr(0, p.lastIndexOf('.')) + '.ts';
+        const filePathTSX = p.substr(0, p.lastIndexOf('.')) + '.tsx';
         const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
-        if (fs.existsSync(jsFilePath) || fs.existsSync(filePath)) {
+        const jsxFilePath = p.substr(0, p.lastIndexOf('.')) + '.jsX';
+        if (
+          fs.existsSync(jsFilePath) ||
+          fs.existsSync(filePath) ||
+          fs.existsSync(filePathTSX) ||
+          fs.existsSync(jsxFilePath)
+        ) {
           block = true;
           await transformFiles({
             config,

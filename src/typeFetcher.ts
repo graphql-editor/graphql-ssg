@@ -21,6 +21,14 @@ export const parseDocumentToFindPackages = (content: string) => {
     }));
 };
 
+export const constructTypingsDefsUrl = ({
+  packageName,
+  baseUrl,
+}: {
+  packageName: string;
+  baseUrl: string;
+}) => `${baseUrl}/@types/${packageName}/index.d.ts`;
+
 export const constructTypingsUrl = ({
   packageName,
   baseUrl,
@@ -34,13 +42,8 @@ export const constructTypingsUrl = ({
 export const fetchTypingsForUrl = async (url: string) => {
   const module = await fetch(url).then((r) => {
     if (r.status === 404) {
-      message(
-        `Can't find typings on ${url} Package will remain untyped`,
-        'redBright',
-      );
       return;
     }
-    message(`Installing typings from ${url}`, 'yellowBright');
     return r.text();
   });
   return module;
@@ -68,20 +71,38 @@ export const fetchTypings = async (packages: PackageDetails[]) => {
     return [];
   }
   message(
-    'Starting streaming types for packages: ' + packages.join(', '),
+    'Starting streaming types for packages: ' +
+      packages.map((p) => p.packageName).join(', '),
     'blueBright',
   );
   const packagesWithTypings = await Promise.all(
-    packages.map(async (p) => ({
-      p,
-      typings: await fetchTypingsForUrl(
+    packages.map(async (p) => {
+      let lookForTypings = await fetchTypingsForUrl(
         constructTypingsUrl({
           baseUrl: p.url,
           packageName: p.packageName,
           typingsPath: 'types/index.d.ts',
         }),
-      ),
-    })),
+      );
+      lookForTypings =
+        lookForTypings ||
+        (await fetchTypingsForUrl(
+          constructTypingsDefsUrl({
+            baseUrl: p.url,
+            packageName: p.packageName,
+          }),
+        ));
+      if (!lookForTypings) {
+        message(
+          `Can't find typings on "${p.packageName}" Package will remain untyped`,
+          'redBright',
+        );
+      }
+      return {
+        p,
+        typings: lookForTypings,
+      };
+    }),
   );
   message('Successfully fetched the types', 'greenBright');
   return packagesWithTypings.filter((p) => p.typings) as Array<{
@@ -104,6 +125,7 @@ export const downloadTypings = async (
       t.p.packageName,
       'index.d.ts',
     );
+    message(`Installing typings for "${t.p.packageName}"`, 'yellowBright');
     fileWriteRecuirsiveSync(typingsPath, t.typings);
     paths[`${t.p.url}/${t.p.packageName}`] = [typingsPath];
   });

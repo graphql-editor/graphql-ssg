@@ -14,6 +14,7 @@ interface EventFromWebsocket {
 
 interface EventResult {
   body: string;
+  data?: string;
   head?: string;
 }
 
@@ -21,9 +22,11 @@ export const HtmlSkeletonStatic = ({
   body,
   cssName,
   scriptName,
+  data,
   head = '',
 }: {
   body: string;
+  data?: any;
   cssName?: string;
   scriptName: string;
   head?: string;
@@ -36,8 +39,13 @@ export const HtmlSkeletonStatic = ({
         : ''
     }
     ${`<script type="module" src="./${scriptName}"></script>`}${
-  head ? `\n${head}` : ''
-}
+  data
+    ? `<script type="module">
+      import { hydrate } from "./${scriptName}";
+      hydrate(${JSON.stringify(data)})
+    </script>`
+    : ''
+}${head ? `\n${head}` : ''}
   </head>
   <body>
     ${body}
@@ -106,8 +114,7 @@ export const bundle = async ({
     return;
   }
   return HtmlSkeletonStatic({
-    body: socketResult.body,
-    head: socketResult.head,
+    ...socketResult,
     scriptName: name,
     cssName: css,
   });

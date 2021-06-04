@@ -39,21 +39,14 @@ const getFiles = (dir: string) => {
 
   return result;
 };
-export const readFiles = async (p: string) => {
+export const readFiles = async (
+  p: string,
+  matchFunction: (p: string) => boolean,
+) => {
   const allFiles: string[] = [];
   for await (const f of getFiles(p)) {
     const t = f as string;
-    if (isJSFile(t)) {
-      allFiles.push(t);
-    }
-  }
-  return allFiles;
-};
-export const readTSFiles = async (p: string) => {
-  const allFiles: string[] = [];
-  for await (const f of getFiles(p)) {
-    const t = f as string;
-    if (isTSFile(t)) {
+    if (matchFunction(t)) {
       allFiles.push(t);
     }
   }
@@ -148,8 +141,7 @@ export const generateTypingsFiles = async ({
 };
 
 export const transformFiles = async ({ config }: { config: ConfigFile }) => {
-  const files = await readFiles(config.in);
-  const tsFiles = await readTSFiles(config.in);
+  const tsFiles = await readFiles(config.in, isTSFile);
   if (tsFiles.length > 0) {
     const tsconfig = JSON.parse(
       fs.readFileSync('./tsconfig.json').toString('utf-8'),
@@ -159,10 +151,11 @@ export const transformFiles = async ({ config }: { config: ConfigFile }) => {
         fs.readFileSync(path.join(config.in, tsFile)).toString('utf-8'),
         tsconfig,
       );
-      const jsFileName = path.join(config.in, tsFile.replace(/\.ts$/, '.js'));
+      const jsFileName = path.join(config.in, tsFile.replace(/\.tsx?$/, '.js'));
       fileWriteRecuirsiveSync(jsFileName, transpiledFile);
     });
   }
+  const files = await readFiles(config.in, isJSFile);
   const htmlFiles = await Promise.all(
     files.map((f) => injectHtmlFile({ fileToTransform: f, config })),
   );

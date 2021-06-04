@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 
 export const fileRegex = /(.*)\.js$/;
-const typescriptFileRegex = /(.*)\.ts$/;
+const typescriptFileRegex = /(.*)\.tsx?$/;
 const typingsRegex = /(.*)\.d\.ts$/;
 const cssRegex = /(.*)\.css$/;
 

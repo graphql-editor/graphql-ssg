@@ -1,0 +1,12 @@
+{
+  "in": "./pages",
+  "out": "./out",
+  "websocketPort": 1414,
+  "port": 8080,
+  "mode": "typescript",
+  "graphql": {
+    "pokemon": {
+      "url": "https://graphql-pokemon2.vercel.app/"
+    }
+  }
+}

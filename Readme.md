@@ -202,6 +202,45 @@ import { html } from './ssg/basic.js';
 export const head = () => html`<title>Hello world!</div>`;
 ```
 
+#### data, hydrate
+
+Data function is used for so called data hydration in JSX frameworks and others also. It is used for Static Site rendered websites to be able to consume the data and work on client side. So you need to handle both data and hydrate functions yourself so they can be executed on output script.
+
+```tsx
+// Create your app
+export const data = async () => {
+  const Fetch = Chain(ssg.config.graphql.pokemon.url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return Fetch.query({
+    pokemons: [
+      { first: 151 },
+      {
+        number: true,
+        name: true,
+        image: true,
+        types: true,
+        resistant: true,
+        weaknesses: true,
+      },
+    ],
+  });
+};
+
+type DataType = ReturnType<typeof data> extends Promise<infer R> ? R : never;
+
+export const hydrate = async (staticData: DataType) =>
+  ReactDOM.hydrate(<PokemonApp response={staticData} />, document.body);
+
+export default async (staticData: DataType) => {
+  const renderBody = document.createElement('div');
+  ReactDOM.render(<PokemonApp response={staticData} />, renderBody);
+  return renderBody.innerHTML;
+};
+```
+
 ## Assets
 
 You can use them as normally.
@@ -227,3 +266,4 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 - [x] split utility functions css,html,md from zeus
 - [x] allow to auto-zeus multiple schemas
 - [x] Types from url streaming
+- [x] JSX, TSX support
