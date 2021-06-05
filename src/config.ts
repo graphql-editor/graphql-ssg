@@ -94,6 +94,9 @@ export const regenerateTsConfig = (config: ConfigFile) => {
   });
 };
 
+export const getTsConfig = (config: ConfigFile) =>
+  existsJSONOrDefaultSync('./tsconfig.json', TSConfig(config));
+
 export const regenerateJsConfig = (config: ConfigFile) => {
   updateJSConfig((oldConfig) => {
     return {
@@ -103,14 +106,13 @@ export const regenerateJsConfig = (config: ConfigFile) => {
   });
 };
 
-export const updateTSConfig = (c: ConfigFile, fn: (config: any) => any) => {
+export const updateTSConfig = (
+  config: ConfigFile,
+  fn: (config: any) => any,
+) => {
   fs.writeFileSync(
     './tsconfig.json',
-    JSON.stringify(
-      fn(existsJSONOrDefaultSync('./tsconfig.json', TSConfig(c))),
-      null,
-      2,
-    ),
+    JSON.stringify(fn(getTsConfig(config)), null, 2),
   );
 };
 

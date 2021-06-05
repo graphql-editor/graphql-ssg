@@ -1,6 +1,11 @@
 import fetch from 'node-fetch';
 import path from 'path';
-import { ConfigFile, updateJSConfig, updateTSConfig } from '@/config';
+import {
+  ConfigFile,
+  getTsConfig,
+  updateJSConfig,
+  updateTSConfig,
+} from '@/config';
 import { message } from '@/console';
 import { fileWriteRecuirsiveSync } from '@/fsAddons';
 
@@ -115,9 +120,12 @@ export const downloadTypings = async (
   configFile: ConfigFile,
   filesContent: string[],
 ) => {
-  const ts = await fetchTypings(mergePackages(filesContent));
+  const tsconfig = getTsConfig(configFile);
+  const packages = mergePackages(filesContent).filter(
+    (p) => !tsconfig.compilerOptions?.paths?.[`${p.url}/${p.packageName}`],
+  );
+  const ts = await fetchTypings(packages);
   const paths: Record<string, string[]> = {};
-
   ts.forEach((t) => {
     const typingsPath = path.join(
       configFile.in,
