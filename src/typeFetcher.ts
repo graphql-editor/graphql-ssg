@@ -2,6 +2,7 @@ import fetch from 'node-fetch';
 import path from 'path';
 import {
   ConfigFile,
+  getJsConfig,
   getTsConfig,
   updateJSConfig,
   updateTSConfig,
@@ -120,9 +121,12 @@ export const downloadTypings = async (
   configFile: ConfigFile,
   filesContent: string[],
 ) => {
-  const tsconfig = getTsConfig(configFile);
+  const compilerConfig = configFile.mode
+    ? getTsConfig(configFile)
+    : getJsConfig();
   const packages = mergePackages(filesContent).filter(
-    (p) => !tsconfig.compilerOptions?.paths?.[`${p.url}/${p.packageName}`],
+    (p) =>
+      !compilerConfig.compilerOptions?.paths?.[`${p.url}/${p.packageName}`],
   );
   const ts = await fetchTypings(packages);
   const paths: Record<string, string[]> = {};

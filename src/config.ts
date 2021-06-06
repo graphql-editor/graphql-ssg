@@ -94,6 +94,9 @@ export const regenerateTsConfig = (config: ConfigFile) => {
   });
 };
 
+export const getJsConfig = () =>
+  existsJSONOrDefaultSync('./jsconfig.json', JSConfig());
+
 export const getTsConfig = (config: ConfigFile) =>
   existsJSONOrDefaultSync('./tsconfig.json', TSConfig(config));
 
