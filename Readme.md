@@ -251,7 +251,7 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 
 ## Roadmap
 
-- [ ] Add esbuild
+- [x] Add esbuild
 - [x] Add TS support
 - [x] Add intelligent .d.ts autocompletion for imported es modules
 - [x] Add image supports
@@ -267,3 +267,5 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 - [x] allow to auto-zeus multiple schemas
 - [x] Types from url streaming
 - [x] JSX, TSX support
+- [ ] Provide verbose info levels
+- [ ] Create docs deployable to pages

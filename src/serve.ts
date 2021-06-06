@@ -1,11 +1,6 @@
 import chokidar from 'chokidar';
 import liveServer from 'live-server';
-import {
-  ConfigFile,
-  readConfig,
-  regenerateJsConfig,
-  regenerateTsConfig,
-} from './config';
+import { ConfigFile, readConfig } from './config';
 import {
   copyStaticFiles,
   generateTypingsFiles,
@@ -23,6 +18,7 @@ import fs from 'fs';
 import { parse } from 'dotenv';
 import { Utils } from 'graphql-zeus';
 import { isJSFile, isTSFile } from '@/fsAddons';
+import { regenerateJsConfig, regenerateTsConfig } from '@/transpilerConfig';
 
 const transformHeaders = (headers?: { [x: string]: string }) => {
   if (!headers) {
@@ -109,8 +105,7 @@ const initBrowserBundler = async ({ config }: { config: ConfigFile }) => {
   };
 };
 
-export const build = async () => {
-  const config = readConfig('./graphql-ssg.json');
+export const preBuild = async (config: ConfigFile) => {
   cleanBuild(config);
   if (config.mode) {
     regenerateTsConfig(config);
@@ -133,6 +128,11 @@ export const build = async () => {
       }),
     );
   }
+};
+
+export const build = async () => {
+  const config = readConfig('./graphql-ssg.json');
+  await preBuild(config);
   const { close } = await initBrowserBundler({
     config,
   });
@@ -143,8 +143,9 @@ export const build = async () => {
 
 export const watch = async () => {
   let block = true;
+  let liveServerRunning = false;
   const config = readConfig('./graphql-ssg.json');
-  await build();
+  await preBuild(config);
   await initBrowserBundler({
     config,
   });
@@ -168,9 +169,19 @@ export const watch = async () => {
           fs.existsSync(jsxFilePath)
         ) {
           block = true;
+          console.time('Build');
           await transformFiles({
             config,
           });
+          console.timeEnd('Build');
+          if (!liveServerRunning) {
+            liveServerRunning = true;
+            liveServer.start({
+              open: true,
+              port: config.port,
+              root: config.out,
+            });
+          }
           block = false;
         }
         return;
@@ -179,9 +190,4 @@ export const watch = async () => {
     });
   block = false;
   // `liveServer` local server for hot reload.
-  return liveServer.start({
-    open: true,
-    port: config.port,
-    root: config.out,
-  });
 };

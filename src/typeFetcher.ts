@@ -1,14 +1,14 @@
 import fetch from 'node-fetch';
 import path from 'path';
-import {
-  ConfigFile,
-  getJsConfig,
-  getTsConfig,
-  updateJSConfig,
-  updateTSConfig,
-} from '@/config';
+import { ConfigFile } from '@/config';
 import { message } from '@/console';
 import { fileWriteRecuirsiveSync } from '@/fsAddons';
+import {
+  getTsConfig,
+  getJsConfig,
+  updateTSConfig,
+  updateJSConfig,
+} from '@/transpilerConfig';
 
 const URL_REGEX = new RegExp(/import.*(https:\/\/.*)\/(.*)['|"]/gm);
 const TYPINGS_PATH = 'typings';
@@ -146,9 +146,11 @@ export const downloadTypings = async (
       return {
         ...tsConfig,
         compilerOptions: {
-          ...tsConfig.compilerOptions,
-          baseUrl: './',
-          paths,
+          ...(tsConfig.compilerOptions || {}),
+          paths: {
+            ...(tsConfig.compilerOptions?.paths || {}),
+            ...paths,
+          },
         },
       };
     });
@@ -158,9 +160,11 @@ export const downloadTypings = async (
     return {
       ...jsConfig,
       compilerOptions: {
-        ...jsConfig.compilerOptions,
-        baseUrl: './',
-        paths,
+        ...(jsConfig.compilerOptions || {}),
+        paths: {
+          ...(jsConfig.compilerOptions?.paths || {}),
+          ...paths,
+        },
       },
     };
   });

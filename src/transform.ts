@@ -19,7 +19,8 @@ import {
   fileRegex,
 } from '@/fsAddons';
 import { envsTypings } from '@/fn';
-import ts, { transpileModule } from 'typescript';
+import ts from 'typescript';
+import { transform } from 'esbuild';
 
 const getFiles = (dir: string) => {
   const result = [];
@@ -146,14 +147,20 @@ export const transformFiles = async ({ config }: { config: ConfigFile }) => {
     const tsconfig = JSON.parse(
       fs.readFileSync('./tsconfig.json').toString('utf-8'),
     );
-    tsFiles.forEach((tsFile) => {
-      const transpiledFile = transpileTS(
-        fs.readFileSync(path.join(config.in, tsFile)).toString('utf-8'),
-        tsconfig,
-      );
-      const jsFileName = path.join(config.in, tsFile.replace(/\.tsx?$/, '.js'));
-      fileWriteRecuirsiveSync(jsFileName, transpiledFile);
-    });
+    await Promise.all(
+      tsFiles.map(async (tsFile) => {
+        const transpiled = await transpileTS(
+          fs.readFileSync(path.join(config.in, tsFile)).toString('utf-8'),
+          tsFile.endsWith('tsx') ? 'tsx' : 'ts',
+          tsconfig,
+        );
+        const jsFileName = path.join(
+          config.in,
+          tsFile.replace(/\.tsx?$/, '.js'),
+        );
+        fileWriteRecuirsiveSync(jsFileName, transpiled.code);
+      }),
+    );
   }
   const files = await readFiles(config.in, isJSFile);
   const htmlFiles = await Promise.all(
@@ -203,6 +210,13 @@ export const cleanBuild = (config: ConfigFile) => {
   }
 };
 
-export const transpileTS = (code: string, options: ts.TranspileOptions) => {
-  return transpileModule(code, options).outputText;
+export const transpileTS = (
+  code: string,
+  loader: 'ts' | 'tsx',
+  options: ts.TranspileOptions,
+) => {
+  return transform(code, {
+    tsconfigRaw: JSON.stringify(options),
+    loader,
+  });
 };
