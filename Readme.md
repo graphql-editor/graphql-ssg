@@ -269,3 +269,5 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 - [x] JSX, TSX support
 - [ ] Provide verbose info levels
 - [ ] Create docs deployable to pages
+- [ ] Resolve imports with no extension
+- [ ] generate ts functions for ts projects

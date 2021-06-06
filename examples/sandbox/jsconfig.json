@@ -3,7 +3,11 @@
     "target": "esnext",
     "module": "commonjs",
     "baseUrl": "./",
-    "paths": {}
+    "paths": {
+      "https://cdn.skypack.dev/remarkable": [
+        "pages/typings/remarkable/index.d.ts"
+      ]
+    }
   },
   "include": [
     "./pages/**/*.js",

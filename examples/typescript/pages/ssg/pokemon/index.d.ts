@@ -155,9 +155,9 @@ export type GraphQLTypes = {
     /** Query any Pokémon by number or name */
 ["Query"]: {
 	__typename: "Query",
-	query: GraphQLTypes["Query"] | null,
-	pokemons: Array<GraphQLTypes["Pokemon"] | null> | null,
-	pokemon: GraphQLTypes["Pokemon"] | null
+	query?: GraphQLTypes["Query"],
+	pokemons?: Array<GraphQLTypes["Pokemon"] | undefined>,
+	pokemon?: GraphQLTypes["Pokemon"]
 };
 	/** Represents a Pokémon */
 ["Pokemon"]: {
@@ -165,67 +165,67 @@ export type GraphQLTypes = {
 	/** The ID of an object */
 	id: string,
 	/** The identifier of this Pokémon */
-	number: string | null,
+	number?: string,
 	/** The name of this Pokémon */
-	name: string | null,
+	name?: string,
 	/** The minimum and maximum weight of this Pokémon */
-	weight: GraphQLTypes["PokemonDimension"] | null,
+	weight?: GraphQLTypes["PokemonDimension"],
 	/** The minimum and maximum weight of this Pokémon */
-	height: GraphQLTypes["PokemonDimension"] | null,
+	height?: GraphQLTypes["PokemonDimension"],
 	/** The classification of this Pokémon */
-	classification: string | null,
+	classification?: string,
 	/** The type(s) of this Pokémon */
-	types: Array<string | null> | null,
+	types?: Array<string | undefined>,
 	/** The type(s) of Pokémons that this Pokémon is resistant to */
-	resistant: Array<string | null> | null,
+	resistant?: Array<string | undefined>,
 	/** The attacks of this Pokémon */
-	attacks: GraphQLTypes["PokemonAttack"] | null,
+	attacks?: GraphQLTypes["PokemonAttack"],
 	/** The type(s) of Pokémons that this Pokémon weak to */
-	weaknesses: Array<string | null> | null,
-	fleeRate: number | null,
+	weaknesses?: Array<string | undefined>,
+	fleeRate?: number,
 	/** The maximum CP of this Pokémon */
-	maxCP: number | null,
+	maxCP?: number,
 	/** The evolutions of this Pokémon */
-	evolutions: Array<GraphQLTypes["Pokemon"] | null> | null,
+	evolutions?: Array<GraphQLTypes["Pokemon"] | undefined>,
 	/** The evolution requirements of this Pokémon */
-	evolutionRequirements: GraphQLTypes["PokemonEvolutionRequirement"] | null,
+	evolutionRequirements?: GraphQLTypes["PokemonEvolutionRequirement"],
 	/** The maximum HP of this Pokémon */
-	maxHP: number | null,
-	image: string | null
+	maxHP?: number,
+	image?: string
 };
 	/** Represents a Pokémon's dimensions */
 ["PokemonDimension"]: {
 	__typename: "PokemonDimension",
 	/** The minimum value of this dimension */
-	minimum: string | null,
+	minimum?: string,
 	/** The maximum value of this dimension */
-	maximum: string | null
+	maximum?: string
 };
 	/** Represents a Pokémon's attack types */
 ["PokemonAttack"]: {
 	__typename: "PokemonAttack",
 	/** The fast attacks of this Pokémon */
-	fast: Array<GraphQLTypes["Attack"] | null> | null,
+	fast?: Array<GraphQLTypes["Attack"] | undefined>,
 	/** The special attacks of this Pokémon */
-	special: Array<GraphQLTypes["Attack"] | null> | null
+	special?: Array<GraphQLTypes["Attack"] | undefined>
 };
 	/** Represents a Pokémon's attack types */
 ["Attack"]: {
 	__typename: "Attack",
 	/** The name of this Pokémon attack */
-	name: string | null,
+	name?: string,
 	/** The type of this Pokémon attack */
-	type: string | null,
+	type?: string,
 	/** The damage of this Pokémon attack */
-	damage: number | null
+	damage?: number
 };
 	/** Represents a Pokémon's requirement to evolve */
 ["PokemonEvolutionRequirement"]: {
 	__typename: "PokemonEvolutionRequirement",
 	/** The amount of candy to evolve */
-	amount: number | null,
+	amount?: number,
 	/** The name of the candy to evolve */
-	name: string | null
+	name?: string
 }
     }
 
@@ -330,7 +330,8 @@ type NotUndefined<T> = T extends undefined ? never : T;
 export type ResolverType<F> = NotUndefined<F extends [infer ARGS, any] ? ARGS : undefined>;
 
 export declare function Thunder(
-  fn: FetchFunction
+  fn: FetchFunction,
+  subscriptionFn: SubscriptionFunction
 ):{
   query: OperationToGraphQL<ValueTypes["Query"],GraphQLTypes["Query"]>
 }

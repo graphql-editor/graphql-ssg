@@ -146,6 +146,7 @@ export const watch = async () => {
   let liveServerRunning = false;
   const config = readConfig('./graphql-ssg.json');
   await preBuild(config);
+  copyStaticFiles(config);
   await initBrowserBundler({
     config,
   });
@@ -158,22 +159,11 @@ export const watch = async () => {
         return;
       }
       if (isJSFile(p) || isTSFile(p)) {
-        const filePath = p.substr(0, p.lastIndexOf('.')) + '.ts';
-        const filePathTSX = p.substr(0, p.lastIndexOf('.')) + '.tsx';
-        const jsFilePath = p.substr(0, p.lastIndexOf('.')) + '.js';
-        const jsxFilePath = p.substr(0, p.lastIndexOf('.')) + '.jsX';
-        if (
-          fs.existsSync(jsFilePath) ||
-          fs.existsSync(filePath) ||
-          fs.existsSync(filePathTSX) ||
-          fs.existsSync(jsxFilePath)
-        ) {
+        if (fs.existsSync(p)) {
           block = true;
-          console.time('Build');
           await transformFiles({
             config,
           });
-          console.timeEnd('Build');
           if (!liveServerRunning) {
             liveServerRunning = true;
             liveServer.start({

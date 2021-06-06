@@ -1,51 +1,13 @@
 import { Chain } from './ssg/pokemon/index.js';
 import React from 'https://cdn.skypack.dev/react';
 import ReactDOM from 'https://cdn.skypack.dev/react-dom';
+import { SinglePokemon } from './SinglePokemon.js';
+import { html } from './ssg/basic.js';
 
-const SinglePokemon = ({
-  number,
-  name,
-  image,
-  weaknesses,
-  resistant,
-  types,
-}: {
-  number: number;
-  name: string;
-  image: string;
-  weaknesses: string[];
-  resistant: string[];
-  types: string[];
-}) => (
-  <div onClick={() => alert('hello')} className={`Pokemon ${types.join(' ')}`}>
-    <div>
-      <img title={name} src={image} />
-      <span className="Name">
-        {number}.{name}
-      </span>
-    </div>
-    <DisplayCategory title="Types" textArray={types} />
-    <DisplayCategory title="Weaknesses" textArray={weaknesses} />
-    <DisplayCategory title="Resistance" textArray={resistant} />
-  </div>
-);
-
-const DisplayCategory = ({
-  title,
-  textArray,
-}: {
-  title: string;
-  textArray: string[];
-}) => (
-  <div>
-    <span>{title}</span>
-    {textArray.map((m: string) => (
-      <span key={m}>{m}</span>
-    ))}
-  </div>
-);
-
-export const head = async () => <title>Pokemon</title>;
+export const head = async () =>
+  html`
+    <title>Pokemon</title>
+  `;
 
 const PokemonApp = ({ response }: { response?: any }) => {
   return (

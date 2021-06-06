@@ -13,6 +13,9 @@
     "paths": {
       "https://cdn.skypack.dev/hybrids": [
         "pages/typings/hybrids/index.d.ts"
+      ],
+      "https://cdn.skypack.dev/remarkable": [
+        "pages/typings/remarkable/index.d.ts"
       ]
     }
   },

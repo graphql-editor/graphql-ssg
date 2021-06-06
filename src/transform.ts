@@ -142,6 +142,7 @@ export const generateTypingsFiles = async ({
 };
 
 export const transformFiles = async ({ config }: { config: ConfigFile }) => {
+  console.time('Build');
   const tsFiles = await readFiles(config.in, isTSFile);
   if (tsFiles.length > 0) {
     const tsconfig = JSON.parse(
@@ -163,9 +164,13 @@ export const transformFiles = async ({ config }: { config: ConfigFile }) => {
     );
   }
   const files = await readFiles(config.in, isJSFile);
-  const htmlFiles = await Promise.all(
-    files.map((f) => injectHtmlFile({ fileToTransform: f, config })),
-  );
+  message('Sending code to browser', 'yellowBright');
+  const htmlFiles = (
+    await Promise.all(
+      files.map((f) => injectHtmlFile({ fileToTransform: f, config })),
+    )
+  ).filter((f) => f.code);
+  message('Code render successful', 'greenBright');
   const rf = files.map((f) => ({
     name: f,
     path: path.join(config.out, f),
@@ -175,16 +180,17 @@ export const transformFiles = async ({ config }: { config: ConfigFile }) => {
     config,
     rf.map((r) => r.content.toString('utf-8')),
   );
+  message(`Writing out ${rf.length} files.`, 'yellow');
   rf.forEach((f) => {
-    message(`Writing ${path.join(config.out, f.name)}`, 'yellow');
     fileWriteRecuirsiveSync(path.join(config.out, f.name), f.content);
   });
+  message(`Writing out ${htmlFiles.length} pages.`, 'yellow');
   htmlFiles.forEach(({ name, code }) => {
     if (code) {
-      message(`Writing ${path.join(config.out, name)}`, 'yellow');
       fileWriteRecuirsiveSync(path.join(config.out, name), code);
     }
   });
+  console.timeEnd('Build');
 };
 
 export const copyFile = (config: ConfigFile, relativeFilePath: string) => {
@@ -218,5 +224,6 @@ export const transpileTS = (
   return transform(code, {
     tsconfigRaw: JSON.stringify(options),
     loader,
+    format: 'esm',
   });
 };

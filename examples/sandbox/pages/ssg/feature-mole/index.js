@@ -1,8 +1,62 @@
 export const AllTypesProps = {
-	Query:{
+	ResetPassword:{
+		newPassword:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		token:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateDealRequest:{
+		deadline:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		},
+		message:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
 		featureRequest:{
-			featureRequest:{
-				type:"String",
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	SignUp:{
+		company:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		firstName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		lastName:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:false
+		}
+	},
+	UserQuery:{
+		login:{
+			user:{
+				type:"UserBasicData",
 				array:false,
 				arrayRequired:false,
 				required:true
@@ -59,13 +113,21 @@ export const AllTypesProps = {
 			}
 		}
 	},
-	CreateFeatureRequest:{
-		issueURL:{
+	UserBasicData:{
+		username:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
-			required:false
+			required:true
 		},
+		password:{
+			type:"String",
+			array:false,
+			arrayRequired:false,
+			required:true
+		}
+	},
+	CreateFeatureRequest:{
 		languages:{
 			type:"String",
 			array:true,
@@ -83,38 +145,25 @@ export const AllTypesProps = {
 			array:false,
 			arrayRequired:false,
 			required:true
-		}
-	},
-	CreateDealRequest:{
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
 		},
-		deadline:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		message:{
+		issueURL:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:false
 		}
 	},
-	UserQuery:{
-		login:{
-			user:{
-				type:"UserBasicData",
+	Query:{
+		featureRequest:{
+			featureRequest:{
+				type:"String",
 				array:false,
 				arrayRequired:false,
 				required:true
 			}
 		}
 	},
+	DealStatus: "enum",
 	Mutation:{
 		signUp:{
 			user:{
@@ -125,39 +174,24 @@ export const AllTypesProps = {
 			}
 		}
 	},
-	UserBasicData:{
-		username:{
+	CreateComment:{
+		replyToIndex:{
+			type:"Int",
+			array:false,
+			arrayRequired:false,
+			required:false
+		},
+		featureRequest:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
 		},
-		password:{
+		content:{
 			type:"String",
 			array:false,
 			arrayRequired:false,
 			required:true
-		}
-	},
-	DealStatus: "enum",
-	SignUp:{
-		company:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		firstName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		lastName:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:false
 		}
 	},
 	UserMutation:{
@@ -193,77 +227,14 @@ export const AllTypesProps = {
 				required:true
 			}
 		}
-	},
-	CreateComment:{
-		replyToIndex:{
-			type:"Int",
-			array:false,
-			arrayRequired:false,
-			required:false
-		},
-		featureRequest:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		content:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
-	},
-	ResetPassword:{
-		newPassword:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		},
-		token:{
-			type:"String",
-			array:false,
-			arrayRequired:false,
-			required:true
-		}
 	}
 }
 
 export const ReturnTypes = {
-	Query:{
-		featureRequest:"FeatureRequest",
-		home:"FeatureRequest",
-		moleUserQuery:"MoleUserQuery",
-		user:"UserQuery"
-	},
-	MoleUserMutation:{
-		acceptDealRequest:"Boolean",
-		closeDeal:"Boolean",
-		createComment:"Boolean",
-		createFeatureRequest:"Boolean",
-		finishWork:"Boolean",
-		offerDealRequest:"Boolean"
-	},
 	UserQuery:{
 		isAdmin:"Boolean",
 		isAdminClaimPossible:"Boolean",
 		login:"LoggedInData"
-	},
-	Mutation:{
-		moleUser:"MoleUserMutation",
-		signUp:"Boolean",
-		user:"UserMutation"
-	},
-	ProgrammingLanguage:{
-		colour:"String",
-		name:"String"
-	},
-	MoleUserQuery:{
-		deals:"Deal",
-		featureRequests:"FeatureRequest",
-		givenDealRequsts:"DealRequest",
-		receivedDealRequests:"DealRequest"
 	},
 	FeatureRequest:{
 		comments:"Comments",
@@ -276,6 +247,36 @@ export const ReturnTypes = {
 		repositoryURL:"String",
 		title:"String"
 	},
+	LoggedInData:{
+		token:"String"
+	},
+	MoleUserQuery:{
+		deals:"Deal",
+		featureRequests:"FeatureRequest",
+		givenDealRequsts:"DealRequest",
+		receivedDealRequests:"DealRequest"
+	},
+	MoleUserMutation:{
+		acceptDealRequest:"Boolean",
+		closeDeal:"Boolean",
+		createComment:"Boolean",
+		createFeatureRequest:"Boolean",
+		finishWork:"Boolean",
+		offerDealRequest:"Boolean"
+	},
+	Query:{
+		featureRequest:"FeatureRequest",
+		home:"FeatureRequest",
+		moleUserQuery:"MoleUserQuery",
+		user:"UserQuery"
+	},
+	Comments:{
+		content:"String",
+		createdAt:"String",
+		featureRequest:"FeatureRequest",
+		index:"Int",
+		replyTo:"Comments"
+	},
 	MoleUser:{
 		avatar:"String",
 		company:"String",
@@ -284,6 +285,22 @@ export const ReturnTypes = {
 		firstName:"String",
 		lastName:"String",
 		worms:"Int"
+	},
+	Mutation:{
+		moleUser:"MoleUserMutation",
+		signUp:"Boolean",
+		user:"UserMutation"
+	},
+	Deal:{
+		createdAt:"String",
+		deadline:"String",
+		featureRequest:"FeatureRequest",
+		status:"DealStatus",
+		user:"MoleUser"
+	},
+	ProgrammingLanguage:{
+		colour:"String",
+		name:"String"
 	},
 	DealRequest:{
 		accepted:"Boolean",
@@ -298,23 +315,6 @@ export const ReturnTypes = {
 		makeAdmin:"Boolean",
 		register:"LoggedInData",
 		resetPassword:"Boolean"
-	},
-	Deal:{
-		createdAt:"String",
-		deadline:"String",
-		featureRequest:"FeatureRequest",
-		status:"DealStatus",
-		user:"MoleUser"
-	},
-	Comments:{
-		content:"String",
-		createdAt:"String",
-		featureRequest:"FeatureRequest",
-		index:"Int",
-		replyTo:"Comments"
-	},
-	LoggedInData:{
-		token:"String"
 	}
 }
 
@@ -690,7 +690,7 @@ export const apiSubscription = (options) => (
   };
 
   
-export const Thunder = (fn) => ({
+export const Thunder = (fn, subscriptionFn) => ({
   query: fullChainConstructor(fn,'query', 'Query'),
 mutation: fullChainConstructor(fn,'mutation', 'Mutation')
 });

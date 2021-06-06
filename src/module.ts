@@ -67,7 +67,6 @@ export const sendAndReceiveCode = (
       const event = JSON.parse(e.toString()) as EventFromWebsocket;
       if (event.operationId === operationId) {
         if (event.type === 'rendered' && event.result) {
-          message('Code render successful', 'greenBright');
           resolve(event.result as EventResult);
         }
         if (event.type === 'error') {
@@ -89,7 +88,6 @@ export const sendAndReceiveCode = (
       }
     });
     wsClient.on('open', () => {
-      message('Sending code to browser', 'yellowBright');
       wsClient.send(
         JSON.stringify({
           code: `${Math.random().toString(32)}/${filePath}`,
