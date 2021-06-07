@@ -168,6 +168,7 @@ export const watch = async () => {
             liveServerRunning = true;
             liveServer.start({
               open: true,
+              logLevel: 0,
               port: config.port,
               root: config.out,
             });
