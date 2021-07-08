@@ -1,6 +1,6 @@
 {
   "name": "graphql-ssg",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "Simple data feed HTML bundler",
   "main": "lib/index.js",
   "scripts": {
