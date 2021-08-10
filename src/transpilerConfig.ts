@@ -2,7 +2,7 @@ import { ConfigFile } from '@/config';
 import { existsJSONOrDefaultSync } from '@/fsAddons';
 import fs from 'fs';
 
-const TSConfig = (config: ConfigFile) => ({
+export const TSConfig = () => ({
   compilerOptions: {
     incremental: true /* Enable incremental compilation */,
     target:
@@ -19,7 +19,7 @@ const TSConfig = (config: ConfigFile) => ({
   },
 });
 
-const JSConfig = () => ({
+export const JSConfig = () => ({
   compilerOptions: {
     target: 'esnext',
     module: 'commonjs',
@@ -32,7 +32,7 @@ export const getJsConfig = () =>
   existsJSONOrDefaultSync('./jsconfig.json', JSConfig());
 
 export const getTsConfig = (config: ConfigFile) =>
-  existsJSONOrDefaultSync('./tsconfig.json', TSConfig(config));
+  existsJSONOrDefaultSync('./tsconfig.json', TSConfig());
 
 export const regenerateTsConfig = (config: ConfigFile) => {
   updateTSConfig(config, (oldConfig) => {

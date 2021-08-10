@@ -1,6 +1,6 @@
 import fs from 'fs';
 
-const GLOBAL_CONFIG_FILE = {
+export const GLOBAL_CONFIG_FILE = {
   out: './out',
   in: './pages',
   port: 8080,

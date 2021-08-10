@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 import { build, watch } from './serve';
 import * as yargs from 'yargs';
-import { initConfig } from './config';
+import { ConfigFile, GLOBAL_CONFIG_FILE, initConfig } from './config';
 const args = yargs
   .usage(
     `
@@ -29,3 +29,14 @@ if (args.build) {
 } else {
   watch();
 }
+
+export const getInitialConfig = ({
+  graphql,
+  mode,
+}: Pick<ConfigFile, 'graphql' | 'mode'>): ConfigFile => {
+  return {
+    ...GLOBAL_CONFIG_FILE,
+    graphql,
+    mode,
+  };
+};
