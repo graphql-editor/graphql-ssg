@@ -241,6 +241,51 @@ export default async (staticData: DataType) => {
 };
 ```
 
+#### pages
+
+If you export pages function you can generate multiple pages per one file. This is useful for example for single blog post page. It takes
+
+```tsx
+export const data = async () => {
+  const Fetch = Chain(ssg.config.graphql.pokemon.url, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  return Fetch.query({
+    pokemons: [
+      { first: 5 },
+      {
+        number: true,
+        name: true,
+        image: true,
+        types: true,
+        resistant: true,
+        weaknesses: true,
+      },
+    ],
+  });
+};
+
+type DataType = ReturnType<typeof data> extends Promise<infer R> ? R : never;
+
+export const pages = (staticData: DataType) => {
+  return staticData.pokemons?.map((p) => {
+    const renderBody = document.createElement('div');
+    ReactDOM.render(<PokemonApp {...p} />, renderBody);
+    return {
+      slug: p.name?.split(' ')[0],
+      body: renderBody.innerHTML,
+      data: p,
+      head: html`
+        <title>${p.name || ''}</title>
+        <link href="../index.css" rel="stylesheet" type="text/css" />
+      `,
+    };
+  });
+};
+```
+
 ## Assets
 
 You can use them as normally.
@@ -272,5 +317,5 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 - [ ] Resolve imports with no extension
 - [ ] generate ts functions for ts projects
 - [ ] catch esbuild transform errors
-- [ ] support files exporting multiple static pages
+- [x] support files exporting multiple static pages
 - [ ] Add possibility to override html tag
