@@ -271,3 +271,6 @@ For example: If you use url that begins with `https://cdn.skypack.dev` in your i
 - [ ] Create docs deployable to pages
 - [ ] Resolve imports with no extension
 - [ ] generate ts functions for ts projects
+- [ ] catch esbuild transform errors
+- [ ] support files exporting multiple static pages
+- [ ] Add possibility to override html tag

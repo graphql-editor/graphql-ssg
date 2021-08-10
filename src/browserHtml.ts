@@ -9,13 +9,15 @@ export const browserHtml = (config: ConfigFile) => `
         if (type === 'initial' && operationId) {
           try{
             const c = await import(\`./\${code}\`)
-            if(c.default){
+            if(c.default || c.pages){
               const data = c.data && await c.data()
-              const body = await c.default(data)
+              const body = c.default ? await c.default(data) : ''
+              const pages = c.pages ? await c.pages(data) : ''
               const head = c.head ? await c.head() : ''
               ws.send(JSON.stringify({ type: 'rendered', result: {
                 body,
                 data,
+                pages,
                 head,
               }, operationId }));
             }else{

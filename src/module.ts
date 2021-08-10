@@ -1,6 +1,7 @@
 import WebSocket from 'ws';
 import { ConfigFile } from '@/config';
 import { message } from '@/console';
+import path from 'path';
 
 const PARSE_STACK_MESSAGE_REGEX = new RegExp(/https?:\/\/[^\/]*\/[^\/]*\//gm);
 
@@ -11,10 +12,16 @@ interface EventFromWebsocket {
   head?: string;
   error?: string;
 }
-
-interface EventResult {
+export interface Page {
+  slug: string;
   body: string;
-  data?: string;
+  data?: any;
+  head?: string;
+}
+interface EventResult {
+  body?: string;
+  pages?: Page[];
+  data?: any;
   head?: string;
 }
 
@@ -24,12 +31,14 @@ export const HtmlSkeletonStatic = ({
   scriptName,
   data,
   head = '',
+  hydrate,
 }: {
   body: string;
   data?: any;
   cssName?: string;
   scriptName: string;
   head?: string;
+  hydrate?: boolean;
 }) => `<!DOCTYPE html><html>
   <head>
     <meta charset="UTF-8">
@@ -106,14 +115,30 @@ export const bundle = async ({
   name: string;
   css?: string;
   config: ConfigFile;
-}) => {
+}): Promise<{ pages?: Page[]; content?: string } | undefined> => {
   const socketResult = await sendAndReceiveCode(name, config);
   if (!socketResult) {
     return;
   }
-  return HtmlSkeletonStatic({
-    ...socketResult,
-    scriptName: name,
-    cssName: css,
-  });
+  if (socketResult.pages) {
+    return {
+      pages: socketResult.pages.map((b) => ({
+        ...b,
+        body: HtmlSkeletonStatic({
+          ...b,
+          scriptName: path.join('..', name),
+          cssName: css ? path.join('..', css) : undefined,
+        }),
+      })),
+    };
+  }
+  return {
+    content: HtmlSkeletonStatic({
+      ...socketResult,
+      body: socketResult.body as string,
+      head: socketResult.head as string,
+      scriptName: name,
+      cssName: css,
+    }),
+  };
 };

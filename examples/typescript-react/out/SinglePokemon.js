@@ -12,8 +12,8 @@ const SinglePokemon = ({
   weaknesses,
   resistant,
   types
-}) => /* @__PURE__ */ React.createElement("div", {
-  onClick: () => alert("hello"),
+}) => /* @__PURE__ */ React.createElement("a", {
+  href: `./PokemonPage/${name}.html`,
   className: `Pokemon ${types.join(" ")}`
 }, /* @__PURE__ */ React.createElement("div", null, /* @__PURE__ */ React.createElement("img", {
   title: name,

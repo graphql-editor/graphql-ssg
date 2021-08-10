@@ -30,7 +30,10 @@ export const SinglePokemon = ({
   resistant: string[];
   types: string[];
 }) => (
-  <div onClick={() => alert('hello')} className={`Pokemon ${types.join(' ')}`}>
+  <a
+    href={`./PokemonPage/${name}.html`}
+    className={`Pokemon ${types.join(' ')}`}
+  >
     <div>
       <img title={name} src={image} />
       <span className="Name">
@@ -40,5 +43,5 @@ export const SinglePokemon = ({
     <DisplayCategory title="Types" textArray={types} />
     <DisplayCategory title="Weaknesses" textArray={weaknesses} />
     <DisplayCategory title="Resistance" textArray={resistant} />
-  </div>
+  </a>
 );

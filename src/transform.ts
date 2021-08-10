@@ -54,22 +54,17 @@ export const readFiles = async (
   return allFiles;
 };
 
-export const createTwinFileWithRegex = (
-  fileToTransform: string,
-  extension: string,
-) => {
+export const createTwinFile = (fileToTransform: string, extension?: string) => {
   const regexResult = fileToTransform.match(fileRegex);
   if (!regexResult) {
     throw new Error(
       'Invalid file provided to function. Only accepting files matching mock regex',
     );
   }
-  const twinFileName = `${regexResult[1]}.${extension}`;
+  const twinFileName = extension
+    ? `${regexResult[1]}.${extension}`
+    : regexResult[1];
   return twinFileName;
-};
-
-export const createTwinFile = (fileToTransform: string, extension: string) => {
-  return createTwinFileWithRegex(fileToTransform, extension);
 };
 
 export const hasTwinFile = (
@@ -97,7 +92,7 @@ export const injectHtmlFile = async ({
 }) => {
   const cssFile = hasTwinFile(fileToTransform, config, 'css');
   return {
-    name: createTwinFile(fileToTransform, 'html'),
+    name: createTwinFile(fileToTransform),
     code: await bundle({
       name: fileToTransform,
       config: config,
@@ -186,8 +181,20 @@ export const transformFiles = async ({ config }: { config: ConfigFile }) => {
   });
   message(`Writing out ${htmlFiles.length} pages.`, 'yellow');
   htmlFiles.forEach(({ name, code }) => {
-    if (code) {
-      fileWriteRecuirsiveSync(path.join(config.out, name), code);
+    if (code?.pages) {
+      code.pages.forEach((page) => {
+        fileWriteRecuirsiveSync(
+          path.join(config.out, name, page.slug + '.html'),
+          page.body,
+        );
+      });
+      return;
+    }
+    if (code?.content) {
+      fileWriteRecuirsiveSync(
+        `${path.join(config.out, name)}.html`,
+        code.content,
+      );
     }
   });
   console.timeEnd('Build');
