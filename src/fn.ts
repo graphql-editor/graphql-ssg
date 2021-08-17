@@ -1,4 +1,5 @@
-import { Parser, TreeToTS } from 'graphql-zeus';
+import { TreeToTS } from 'graphql-zeus';
+import { Parser } from 'graphql-js-tree';
 import { parse } from 'dotenv';
 import fs from 'fs';
 // @ts-ignore
