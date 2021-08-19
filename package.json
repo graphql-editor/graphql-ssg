@@ -1,21 +1,21 @@
 {
   "name": "graphql-ssg",
-  "version": "0.4.7",
+  "version": "0.4.8",
   "description": "Simple data feed HTML bundler",
   "main": "lib/index.js",
   "scripts": {
     "build": "ttsc --build tsconfig.build.json",
     "watch": "ttsc --watch --project tsconfig.build.json",
-    "graphql-ssg-sandbox:watch": "cd examples/sandbox && node ../../lib/index.js",
-    "graphql-ssg-sandbox:build": "cd examples/sandbox && node ../../lib/index.js --build",
-    "graphql-ssg-pokemon:watch": "cd examples/pokemon && node ../../lib/index.js",
-    "graphql-ssg-pokemon:build": "cd examples/pokemon && node ../../lib/index.js --build",
-    "graphql-ssg-hybrids:watch": "cd examples/hybrids && node ../../lib/index.js",
-    "graphql-ssg-hybrids:build": "cd examples/hybrids && node ../../lib/index.js --build",
-    "graphql-ssg-typescript:watch": "cd examples/typescript && node ../../lib/index.js",
-    "graphql-ssg-typescript:build": "cd examples/typescript && node ../../lib/index.js --build",
-    "graphql-ssg-typescript-react:watch": "cd examples/typescript-react && node ../../lib/index.js",
-    "graphql-ssg-typescript-react:build": "cd examples/typescript-react && node ../../lib/index.js --build",
+    "graphql-ssg-sandbox:watch": "cd examples/sandbox && node ../../lib/CLI.js",
+    "graphql-ssg-sandbox:build": "cd examples/sandbox && node ../../lib/CLI.js --build",
+    "graphql-ssg-pokemon:watch": "cd examples/pokemon && node ../../lib/CLI.js",
+    "graphql-ssg-pokemon:build": "cd examples/pokemon && node ../../lib/CLI.js --build",
+    "graphql-ssg-hybrids:watch": "cd examples/hybrids && node ../../lib/CLI.js",
+    "graphql-ssg-hybrids:build": "cd examples/hybrids && node ../../lib/CLI.js --build",
+    "graphql-ssg-typescript:watch": "cd examples/typescript && node ../../lib/CLI.js",
+    "graphql-ssg-typescript:build": "cd examples/typescript && node ../../lib/CLI.js --build",
+    "graphql-ssg-typescript-react:watch": "cd examples/typescript-react && node ../../lib/CLI.js",
+    "graphql-ssg-typescript-react:build": "cd examples/typescript-react && node ../../lib/CLI.js --build",
     "test": "jest"
   },
   "repository": {
@@ -27,7 +27,7 @@
     "graphql"
   ],
   "bin": {
-    "graphql-ssg": "lib/index.js"
+    "graphql-ssg": "lib/CLI.js"
   },
   "author": "Aexol <aexol@aexol.com> (http://aexol.com)",
   "license": "MIT",
